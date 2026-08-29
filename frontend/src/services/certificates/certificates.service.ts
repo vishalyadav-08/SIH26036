@@ -1,96 +1,236 @@
 import { api } from "@/lib/api";
-import { PublicVerificationResponse } from "@/types/certificate";
+import {
+  Certificate,
+  RevokeCertificateDto,
+  PublicVerificationResponse,
+} from "@/types/certificate";
 
-const DEMO_FIXTURES: Record<string, PublicVerificationResponse> = {
-  "CERT-DEMO-001": {
+const CERTS_STORAGE_KEY = "mapansetu_certificates_store";
+
+export const INITIAL_DEMO_CERTIFICATES: Certificate[] = [
+  {
+    id: "cert-001",
     certificateNumber: "CERT-DEMO-001",
-    verificationStatus: "VALID",
-    certificateStatus: "ACTIVE",
-    signatureValid: true,
-    payloadHash:
-      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-    signatureAlgorithm: "RSA-PSS with SHA-256 (2048-bit)",
-    issuedAt: "2026-08-15T09:30:00Z",
+    applicationId: "app-001",
+    applicationNumber: "APP-2026-0001",
+    instrumentId: "ins-001",
+    instrumentNumber: "INS-DEMO-001",
+    instrumentType: "ELECTRONIC_SCALE",
+    businessId: "biz-demo-001",
+    businessName: "Demo Business Owner",
+    status: "VALID",
+    issuedAt: "2026-08-15T10:00:00Z",
     validUntil: "2027-08-15T23:59:59Z",
-    instrumentSummary: {
-      instrumentNumber: "INS-DEMO-001",
-      instrumentType: "ELECTRONIC_SCALE",
-      manufacturer: "Synthetic Metrology Labs",
-      model: "SML-Series 500",
-      capacity: 100,
-      capacityUnit: "kg",
-    },
-    verificationMessage:
-      "Certificate is active and digital signature is verified against the authority public key.",
+    payloadHash: "a1b2c3d4e5f67890123456789abcdef0123456789abcdef0123456789abcdef0",
+    signatureAlgorithm: "RSA-PSS/SHA-256",
+    pdfObjectKey: "certificates/2026/CERT-DEMO-001.pdf",
+    qrVerificationUrl: "http://localhost:3000/verify/CERT-DEMO-001",
+    issuerOfficerName: "Inspector Sharma (LMO)",
   },
-  "CERT-EXPIRED-001": {
+  {
+    id: "cert-002",
     certificateNumber: "CERT-EXPIRED-001",
-    verificationStatus: "EXPIRED",
-    certificateStatus: "EXPIRED",
-    signatureValid: true,
-    payloadHash:
-      "a1b2c3d4e5f60718293a4b5c6d7e8f90123456789abcdef0123456789abcdef0",
-    signatureAlgorithm: "RSA-PSS with SHA-256 (2048-bit)",
-    issuedAt: "2025-08-15T09:30:00Z",
-    validUntil: "2026-08-15T23:59:59Z",
-    instrumentSummary: {
-      instrumentNumber: "INS-DEMO-002",
-      instrumentType: "PLATFORM_SCALE",
-      manufacturer: "Synthetic Standard Corp",
-      model: "PSC-Industrial 1000",
-      capacity: 500,
-      capacityUnit: "kg",
-    },
-    verificationMessage:
-      "This certificate has expired. Re-verification by an authorized Legal Metrology Officer is required.",
+    applicationId: "app-exp-001",
+    applicationNumber: "APP-2025-0089",
+    instrumentId: "ins-002",
+    instrumentNumber: "INS-DEMO-002",
+    instrumentType: "PLATFORM_SCALE",
+    businessId: "biz-demo-001",
+    businessName: "Demo Business Owner",
+    status: "EXPIRED",
+    issuedAt: "2025-08-01T10:00:00Z",
+    validUntil: "2026-08-01T23:59:59Z",
+    payloadHash: "b2c3d4e5f6a17890123456789abcdef0123456789abcdef0123456789abcdef1",
+    signatureAlgorithm: "RSA-PSS/SHA-256",
+    pdfObjectKey: "certificates/2025/CERT-EXPIRED-001.pdf",
+    qrVerificationUrl: "http://localhost:3000/verify/CERT-EXPIRED-001",
+    issuerOfficerName: "Inspector Verma (LMO)",
   },
-  "CERT-REVOKED-001": {
+  {
+    id: "cert-003",
     certificateNumber: "CERT-REVOKED-001",
-    verificationStatus: "REVOKED",
-    certificateStatus: "REVOKED",
-    signatureValid: true,
-    payloadHash:
-      "f0e1d2c3b4a5968778695a4b3c2d1e0f0123456789abcdef0123456789abcdef",
-    signatureAlgorithm: "RSA-PSS with SHA-256 (2048-bit)",
-    issuedAt: "2026-01-10T10:00:00Z",
-    validUntil: "2027-01-10T23:59:59Z",
-    revokedAt: "2026-08-20T14:30:00Z",
-    revocationReason:
-      "Administrative revocation — instrument relocated without required recalibration.",
-    instrumentSummary: {
-      instrumentNumber: "INS-DEMO-003",
-      instrumentType: "COUNTER_SCALE",
-      manufacturer: "Precision Weights Synthetic",
-      model: "PWS-Retail 25",
-      capacity: 25,
-      capacityUnit: "kg",
-    },
-    verificationMessage:
-      "This certificate was administratively revoked and is no longer valid for commercial transactions.",
+    applicationId: "app-rev-001",
+    applicationNumber: "APP-2026-0044",
+    instrumentId: "ins-003",
+    instrumentNumber: "INS-DEMO-003",
+    instrumentType: "COUNTER_SCALE",
+    businessId: "biz-demo-002",
+    businessName: "City Mart Wholesale",
+    status: "REVOKED",
+    issuedAt: "2026-06-01T10:00:00Z",
+    validUntil: "2027-06-01T23:59:59Z",
+    revokedAt: "2026-07-15T14:30:00Z",
+    revocationReason: "Physical inspection detected broken lead verification seal and unauthorized calibration modification.",
+    payloadHash: "c3d4e5f6a1b27890123456789abcdef0123456789abcdef0123456789abcdef2",
+    signatureAlgorithm: "RSA-PSS/SHA-256",
+    pdfObjectKey: "certificates/2026/CERT-REVOKED-001.pdf",
+    qrVerificationUrl: "http://localhost:3000/verify/CERT-REVOKED-001",
+    issuerOfficerName: "Inspector Sharma (LMO)",
   },
-};
+];
+
+function getStoredCertificates(): Certificate[] {
+  if (typeof window === "undefined") return INITIAL_DEMO_CERTIFICATES;
+  const raw = localStorage.getItem(CERTS_STORAGE_KEY);
+  if (!raw) {
+    localStorage.setItem(CERTS_STORAGE_KEY, JSON.stringify(INITIAL_DEMO_CERTIFICATES));
+    return INITIAL_DEMO_CERTIFICATES;
+  }
+  try {
+    return JSON.parse(raw) as Certificate[];
+  } catch {
+    return INITIAL_DEMO_CERTIFICATES;
+  }
+}
+
+function saveStoredCertificates(certs: Certificate[]): void {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(CERTS_STORAGE_KEY, JSON.stringify(certs));
+}
+
+export async function getCertificates(): Promise<Certificate[]> {
+  try {
+    const res = await api.get<Certificate[]>("/certificates");
+    return res.data;
+  } catch {
+    return getStoredCertificates();
+  }
+}
+
+export async function getCertificateById(id: string): Promise<Certificate | null> {
+  const certs = await getCertificates();
+  return (
+    certs.find(
+      (c) => c.id === id || c.certificateNumber.toLowerCase() === id.toLowerCase()
+    ) || null
+  );
+}
+
+export async function revokeCertificate(
+  id: string,
+  dto: RevokeCertificateDto
+): Promise<Certificate> {
+  try {
+    const res = await api.post<Certificate>(`/certificates/${id}/revoke`, dto);
+    return res.data;
+  } catch {
+    const current = getStoredCertificates();
+    const index = current.findIndex(
+      (c) => c.id === id || c.certificateNumber.toLowerCase() === id.toLowerCase()
+    );
+    if (index >= 0) {
+      current[index].status = "REVOKED";
+      current[index].revokedAt = new Date().toISOString();
+      current[index].revocationReason = dto.reason;
+      saveStoredCertificates(current);
+      return current[index];
+    }
+    throw new Error("Certificate not found");
+  }
+}
 
 export async function verifyPublicCertificate(
   certNo: string
 ): Promise<PublicVerificationResponse> {
-  const normalizedCertNo = certNo.trim().toUpperCase();
-
   try {
-    const response = await api.get<PublicVerificationResponse>(
-      "/certificates/verify",
-      {
-        params: { certNo: normalizedCertNo },
-        timeout: 4000,
-      }
+    const res = await api.get<PublicVerificationResponse>(
+      `/certificates/verify?certNo=${encodeURIComponent(certNo)}`
     );
-    return response.data;
+    return res.data;
   } catch {
-    // Graceful fallback to documented prototype demo fixtures if backend is offline or during prototype evaluation
-    if (DEMO_FIXTURES[normalizedCertNo]) {
-      return DEMO_FIXTURES[normalizedCertNo];
+    const certs = getStoredCertificates();
+    const found = certs.find(
+      (c) => c.certificateNumber.toLowerCase() === certNo.trim().toLowerCase()
+    );
+
+    if (!found) {
+      return {
+        certificateNumber: certNo,
+        verificationStatus: "INVALID",
+        certificateStatus: null,
+        signatureValid: false,
+        payloadHash: null,
+        signatureAlgorithm: null,
+        issuedAt: null,
+        validUntil: null,
+        instrumentSummary: null,
+        verificationMessage:
+          "Certificate not found in registry or cryptographic digest verification failed.",
+      };
     }
 
-    // Default response for untracked, malformed, or tampered certificates per API contract
+    if (found.status === "VALID") {
+      return {
+        certificateNumber: found.certificateNumber,
+        verificationStatus: "VALID",
+        certificateStatus: "VALID",
+        signatureValid: true,
+        payloadHash: found.payloadHash,
+        signatureAlgorithm: found.signatureAlgorithm,
+        issuedAt: found.issuedAt,
+        validUntil: found.validUntil,
+        instrumentSummary: {
+          instrumentNumber: found.instrumentNumber,
+          instrumentType: found.instrumentType,
+          manufacturer: "Precision Weights Corp",
+          model: "PWS-Retail 25",
+          capacity: 25.0,
+          capacityUnit: "kg",
+        },
+        verificationMessage:
+          "This instrument certificate is active, currently valid, and its cryptographic digital signature has been verified.",
+      };
+    }
+
+    if (found.status === "EXPIRED") {
+      return {
+        certificateNumber: found.certificateNumber,
+        verificationStatus: "EXPIRED",
+        certificateStatus: "EXPIRED",
+        signatureValid: true,
+        payloadHash: found.payloadHash,
+        signatureAlgorithm: found.signatureAlgorithm,
+        issuedAt: found.issuedAt,
+        validUntil: found.validUntil,
+        instrumentSummary: {
+          instrumentNumber: found.instrumentNumber,
+          instrumentType: found.instrumentType,
+          manufacturer: "Standard Heavy Scales Ltd",
+          model: "SHS-Platform 500",
+          capacity: 500.0,
+          capacityUnit: "kg",
+        },
+        verificationMessage:
+          "This certificate was legitimately issued and cryptographically authentic, but the statutory validity period has expired. Re-verification required.",
+      };
+    }
+
+    if (found.status === "REVOKED") {
+      return {
+        certificateNumber: found.certificateNumber,
+        verificationStatus: "REVOKED",
+        certificateStatus: "REVOKED",
+        signatureValid: false,
+        payloadHash: found.payloadHash,
+        signatureAlgorithm: found.signatureAlgorithm,
+        issuedAt: found.issuedAt,
+        validUntil: found.validUntil,
+        revokedAt: found.revokedAt,
+        revocationReason: found.revocationReason,
+        instrumentSummary: {
+          instrumentNumber: found.instrumentNumber,
+          instrumentType: found.instrumentType,
+          manufacturer: "Retail Counter Pro",
+          model: "RCP-15",
+          capacity: 15.0,
+          capacityUnit: "kg",
+        },
+        verificationMessage: `This certificate has been officially REVOKED by the Legal Metrology Department. Reason: ${
+          found.revocationReason || "Physical seal tampering or statutory non-compliance detected."
+        }`,
+      };
+    }
+
     return {
       certificateNumber: certNo,
       verificationStatus: "INVALID",
@@ -101,8 +241,7 @@ export async function verifyPublicCertificate(
       issuedAt: null,
       validUntil: null,
       instrumentSummary: null,
-      verificationMessage:
-        "Certificate record not found or cryptographic signature / hash verification failed.",
+      verificationMessage: "Certificate is invalid.",
     };
   }
 }

@@ -1,8 +1,32 @@
-export type VerificationStatus = "VALID" | "EXPIRED" | "REVOKED" | "INVALID";
+export type CertificateStatus = "VALID" | "EXPIRED" | "REVOKED" | "INVALID";
 
-export type CertificateStatus = "ACTIVE" | "EXPIRED" | "REVOKED";
+export interface Certificate {
+  id: string;
+  certificateNumber: string;
+  applicationId: string;
+  applicationNumber: string;
+  instrumentId: string;
+  instrumentNumber: string;
+  instrumentType: string;
+  businessId: string;
+  businessName: string;
+  status: CertificateStatus;
+  issuedAt: string;
+  validUntil: string;
+  revokedAt?: string | null;
+  revocationReason?: string | null;
+  payloadHash: string;
+  signatureAlgorithm: string;
+  pdfObjectKey?: string;
+  qrVerificationUrl: string;
+  issuerOfficerName: string;
+}
 
-export interface InstrumentSummary {
+export interface RevokeCertificateDto {
+  reason: string;
+}
+
+export interface InstrumentPublicSummary {
   instrumentNumber: string;
   instrumentType: string;
   manufacturer?: string;
@@ -13,15 +37,15 @@ export interface InstrumentSummary {
 
 export interface PublicVerificationResponse {
   certificateNumber: string;
-  verificationStatus: VerificationStatus;
-  certificateStatus?: CertificateStatus | null;
+  verificationStatus: "VALID" | "EXPIRED" | "REVOKED" | "INVALID";
+  certificateStatus: CertificateStatus | null;
   signatureValid: boolean;
-  payloadHash?: string | null;
-  signatureAlgorithm?: string | null;
-  issuedAt?: string | null;
-  validUntil?: string | null;
+  payloadHash: string | null;
+  signatureAlgorithm: string | null;
+  issuedAt: string | null;
+  validUntil: string | null;
   revokedAt?: string | null;
   revocationReason?: string | null;
-  instrumentSummary?: InstrumentSummary | null;
+  instrumentSummary: InstrumentPublicSummary | null;
   verificationMessage: string;
 }

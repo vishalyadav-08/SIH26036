@@ -1,165 +1,172 @@
 # System Architecture
 
-This document describes the frozen MapanSetu modular monolith. It is an implementation design, not an implementation task.
+MapanSetu is a client-independent verification workflow built as one Django modular monolith and one Next.js application. The current checkout is a working scaffold in several areas; this document defines the boundaries that implementation must preserve.
 
-## 1. Context diagram
+## 1. System context
+
+Actors are Business users, Legal Metrology Officers, Administrators/Supervisors, and public verifiers. Business/admin/public web flows run in Next.js. Officer field work currently runs in the field route group as a React PWA; Flutter/Dart is the conditional native target. Django is the backend authority. PostgreSQL is the target system of record, SQLite is a local fallback, and MinIO/S3-compatible storage is used for binary artifacts when configured.
 
 ```mermaid
 flowchart LR
-  Business[Business / Instrument Owner]
-  Officer[Legal Metrology Officer]
-  Admin[Administrator / Supervisor]
-  Public[Public verifier]
-  Web[React Web App]
-  Field[React Field PWA]
-  API[MapanSetu API]
-  Gov[Future government adapters]
-  Business --> Web
-  Admin --> Web
-  Public --> Web
-  Officer --> Field
-  Web --> API
-  Field --> API
-  API -. future, not available in MVP .-> Gov
+  Business[Business] --> Web[Next.js Web]
+  Admin[Administrator / Supervisor] --> Web
+  Public[Public verifier] --> Web
+  Officer[Legal Metrology Officer] --> Flutter[Flutter field app\nconditional target]
+  Officer --> PWA[React field PWA\ncurrent testing/fallback]
+  Web --> API[Django + DRF API]
+  Flutter --> API
+  PWA --> API
+  API --> DB[(PostgreSQL\nSQLite fallback)]
+  API --> Store[(MinIO / S3-compatible storage)]
 ```
 
-The software records and coordinates verification work. Physical/statutory verification remains with authorized personnel.
+The system records and coordinates verification work. It does not perform physical statutory verification or grant legal approval.
 
-## 2. Container diagram
-
-```mermaid
-graph TD
-    subgraph Frontend [React / TypeScript clients]
-        B[Business and Admin Web]
-        F[Officer Field PWA]
-        P[Public verification page]
-    end
-    subgraph Backend [Single Java 21 / Spring Boot 3 modular monolith]
-        API[REST API]
-        DOM[Domain modules]
-        SEC[Security and authorization]
-        JOB[Expiry/notification jobs]
-    end
-    DB[(PostgreSQL 16+)]
-    S3[(MinIO / S3-compatible storage)]
-    B --> API
-    F --> API
-    P --> API
-    API --> DOM
-    API --> SEC
-    DOM --> JOB
-    DOM --> DB
-    DOM --> S3
-```
-
-## 3. Component/module diagram
-
-The backend package root is `com.mapansetu` with modules:
-
-```text
-common, auth, user, business, instrument, application, scheduling,
-inspection, evidence, certificate, verification, notification, audit, sync
-```
-
-Each module should expose an application/service boundary and keep persistence mapping internal. Cross-module calls use service interfaces or events within the same process; modules do not access another module’s tables through ad hoc queries.
-
-## 4. Request and data flow
-
-1. Web or field client sends an authenticated request (or public verification request).
-2. API validates DTO shape and normalizes errors.
-3. Spring Security authenticates and authorization checks role plus ownership/assignment.
-4. Domain module validates state transition and performs a transaction.
-5. PostgreSQL stores domain records; MinIO stores validated binary artifacts.
-6. AuditLog is appended for material actions; notifications are created where configured.
-7. Response returns canonical resource fields from the API contract.
-
-The field client may first write locally. Its sync operation later follows the same authorization, validation, idempotency, conflict, and audit path.
-
-## 5. Certificate trust flow
-
-```mermaid
-sequenceDiagram
-  participant Officer
-  participant API
-  participant DB
-  participant Storage
-  participant Public
-  Officer->>API: Submit eligible decision
-  API->>DB: Build and persist canonical certificate payload
-  API->>API: SHA-256 payload; RSA-PSS/SHA-256 sign
-  API->>Storage: Store PDF artifact
-  API->>DB: Store hash, signature metadata, QR URL
-  Public->>API: Verify certificate number
-  API->>DB: Load payload/status/signature
-  API->>API: Verify signature using public key
-  API-->>Public: VALID/EXPIRED/REVOKED/INVALID minimal response
-```
-
-QR is lookup/discovery only. It is not the cryptographic security mechanism. See [CRYPTOGRAPHY.md](CRYPTOGRAPHY.md).
-
-## 6. Offline sync flow
+## 2. Container and request architecture
 
 ```mermaid
 flowchart TD
-  Cache[Cache assigned inspection online] --> Draft[Local draft in IndexedDB]
-  Draft --> Queue[READY_TO_SYNC operation with UUID]
-  Queue --> Network{Network available?}
-  Network -- no --> Queue
-  Network -- yes --> API[POST /api/v1/sync]
-  API --> Idem{Known clientOperationId?}
-  Idem -- same payload --> Replay[Return original result]
-  Idem -- new --> Version{Version compatible?}
-  Version -- yes --> Apply[Apply transaction and audit]
-  Version -- no --> Conflict[CONFLICT with server/client versions]
-  Apply --> Synced[SYNCED]
-  Replay --> Synced
-  Conflict --> Review[Explicit user resolution]
+  subgraph Clients
+    WEB[Business/Admin/Public Next.js routes]
+    PWA[Field PWA routes]
+    FLUTTER[Flutter native field app if ready]
+  end
+  subgraph Backend[Python Django modular monolith]
+    API[DRF API]
+    AUTH[Authentication and authorization]
+    DOMAIN[Domain apps]
+    SYNC[Sync and idempotency]
+    AUDIT[Audit and notifications]
+  end
+  DB[(PostgreSQL / SQLite fallback)]
+  OBJ[(MinIO / S3-compatible storage)]
+  WEB --> API
+  PWA --> API
+  FLUTTER --> API
+  API --> AUTH
+  API --> DOMAIN
+  API --> SYNC
+  DOMAIN --> DB
+  DOMAIN --> OBJ
+  DOMAIN --> AUDIT
 ```
 
-## 7. Authentication flow
+Every protected request follows: client → API routing → authentication → role/ownership/assignment authorization → serializer/domain validation → Django ORM transaction → object storage where needed → audit/notification → canonical response. Public verification skips login but is rate-limited and returns only minimal public data.
 
-The client submits credentials to `/auth/login`; Spring Security validates the account and returns a short-lived JWT access token. Each protected request carries the bearer token. The backend checks token validity, role, business ownership, and officer assignment. Logout/refresh/storage policy remains a security implementation decision, but secrets must not be persisted in shared packages or logs.
+## 3. Backend modules and repository structure
 
-## 8. Audit flow
-
-Material actions append an AuditLog event containing actor, action, entity, timestamp, metadata, previous hash, and current hash. The chain is tamper-evident, not absolutely immutable. Audit metadata excludes passwords, tokens, private keys, and unnecessary personal data.
-
-## 9. Deployment architecture
-
-Local/SIH deployment uses Docker Compose for PostgreSQL, MinIO, API, and Nginx/static web assets as needed. Development ports are Web `5173`, Field `5174`, API `8080`, PostgreSQL `5432`, MinIO API `9000`, and MinIO console `9001`. Production deployment may move to managed PostgreSQL and S3-compatible storage, but that is future scope.
-
-## 10. Security boundaries
-
-- Browser clients are untrusted; protected routes are UX only.
-- API authorization is authoritative.
-- PostgreSQL is the transactional system of record.
-- MinIO objects are accessed through controlled server policy, not public credentials.
-- Certificate private keys exist only in protected backend runtime/key custody.
-- Public verification returns minimal data and is rate-limited.
-- Future government adapters are isolated extension points and are not active integrations.
-
-## 11. Data ownership boundaries
-
-Business owns its profile, instruments, applications, and permitted certificate history. Officers own their inspection actions only within assigned/authorized work. Admins administer the prototype scope and are audited. The public owns no stored account or role and receives only minimal certificate verification data.
-
-## 12. Future extension points
-
-Potential future adapters include jurisdiction configuration, external identity, government case systems, production PKI/HSM, notification providers, analytics export, and AI providers. Each requires a new contract/ADR and must not alter the MVP stack implicitly.
-
-## 13. Canonical repository structure
+The backend module names are the Django app directories already present under `backend/`:
 
 ```text
-apps/web
-apps/field
-services/api
-packages/types
-packages/ui
-packages/config
-infra
-scripts
-tests
-docs
+backend/
+  root/            settings.py, URL composition, ASGI/WSGI
+  common/          shared backend concerns
+  authentication/  identity, login, token/session boundary
+  businesses/      business ownership
+  instruments/     instrument registry
+  applications/    verification requests and lifecycle
+  scheduling/      assignment and scheduling
+  inspections/     inspection session and measurements
+  evidence/        file metadata and object-storage boundary
+  certificates/    certificate generation and status
+  verification/    public certificate lookup
+  notifications/   in-product notifications
+  audit/           append-only audit boundary
+  sync/            offline operation acceptance and idempotency
 ```
 
-The active backend package root is `services/api/src/main/java/com/mapansetu` and follows the module list above. Archived documents are historical only.
+Each domain app may own `models.py`, `serializers.py`, `services.py`, `views.py`, `urls.py`, and tests. Views stay thin. Serializers own request/response validation and shape; services own domain rules and state transitions; models own persistence mapping; cross-app access uses explicit services rather than ad hoc queries.
 
+## 4. API flow and authority
+
+```text
+Web / Flutter / PWA
+        |
+        v
+    Django API
+        |
+        v
+Authentication + RBAC + ownership/assignment
+        |
+        v
+Serializer and domain validation
+        |
+        v
+Django ORM transaction
+        |
+        +--> PostgreSQL (SQLite fallback locally)
+        +--> MinIO/S3 object storage for evidence/PDFs
+        +--> AuditLog
+        +--> Notification
+```
+
+The backend remains authoritative for authentication, authorization, ownership, officer assignment, application transitions, certificate status, sync acceptance, conflict resolution, and public verification. A client-side guard or local state never grants permission.
+
+## 5. Offline architecture
+
+The PWA path is implemented in `frontend/src/offline`, `frontend/src/services/field`, and `frontend/public/sw.js`:
+
+```text
+React field routes
+      |
+IndexedDB / Dexie
+      |
+Offline drafts + evidence + sync queue
+      |
+Idempotent /api/v1/sync requests
+      |
+Django API
+```
+
+The conditional Flutter path uses the same contract:
+
+```text
+Flutter UI
+      |
+Flutter local database (package is an open decision)
+      |
+Offline repository + sync queue
+      |
+Idempotent /api/v1/sync requests
+      |
+Django API
+```
+
+Do not invent a Flutter database or create server states specific to a client. Canonical local states are `LOCAL_DRAFT`, `READY_TO_SYNC`, `SYNCING`, `SYNCED`, `FAILED`, and `CONFLICT`.
+
+## 6. Certificate trust architecture
+
+```text
+Canonical certificate payload
+       |
+       v
+SHA-256 digest
+       |
+       v
+RSA-2048 / RSA-PSS / SHA-256 signature
+       |
+       v
+Certificate PDF/artifact + metadata
+       |
+       v
+QR verification URL
+       |
+       v
+Public verification API
+```
+
+QR is only a discovery mechanism. Trust comes from backend status, canonical-payload hash recomputation, and public-key signature verification. The private signing key is backend-only.
+
+## 7. Field-client decision
+
+```text
+Flutter ready before internal hackathon?
+  YES -> Flutter is the primary field demo; PWA remains testing/fallback.
+  NO  -> PWA is the primary field demo; Flutter remains a future target.
+```
+
+This gate changes only the field client. It does not change the API contract, logical data model, authentication, certificate architecture, or domain workflow.
+
+## 8. Deployment boundary
+
+The checkout contains no Docker, Compose, Nginx, or CI configuration. Local development is therefore backend process + frontend process, with PostgreSQL/MinIO optional according to environment configuration. Deployment automation is an open implementation task and must not be represented as present infrastructure.

@@ -2,46 +2,64 @@
 
 ## Purpose and guardrails
 
-Demonstrate the end-to-end prototype with synthetic users/data. The demo shows workflow digitization and certificate verification mechanics; it must not claim statutory approval, government integration, legal-signature authority, or real regulatory tolerances.
+Demonstrate the end-to-end prototype with synthetic users and configurable demo values. The demo shows workflow coordination and certificate verification mechanics; it must not claim statutory approval, government integration, legal-signature authority, or real regulatory tolerances.
 
 ## Pre-demo setup
 
-- Start the documented Web `5173`, Field `5174`, API `8080`, PostgreSQL `5432`, MinIO API `9000`, and MinIO console `9001` services.
-- Seed synthetic Business, ADMIN, OFFICER, instrument, and configurable DEMO certificate data.
-- Confirm reset/reseed works and critical tests have passed.
-- Prepare one valid active certificate, one expired certificate, one revoked certificate, and one tamper fixture.
-- Keep a no-AI run path; AI is optional advisory only.
+- Start the documented Next.js web/PWA on port 3000 and Django API on port 8000.
+- Configure PostgreSQL through `DATABASE_URI` and MinIO through `MINIO_ENDPOINT` only if those services are available; otherwise state the local fallback clearly.
+- Seed synthetic Business, ADMIN, OFFICER, instrument, and certificate fixtures.
+- Confirm reset/reseed and critical tests. Prepare active, expired, revoked, and tampered certificate fixtures.
+- Keep a PWA path available even if Flutter is selected. Keep an AI-disabled path.
 
-## Preferred narrative
+## Preferred path when Flutter is ready
 
-1. **Business login:** Sign in as a synthetic BUSINESS user and show own dashboard.
-2. **Instrument registration:** Register a synthetic electronic scale with instrument/serial identity and DEMO-labelled configuration.
-3. **Application:** Submit a verification Application and show `SUBMITTED` status/timeline.
-4. **Assignment/scheduling:** Sign in as ADMIN, assign an active OFFICER, schedule the visit, and show the audit/notification effect.
-5. **Field app:** Open the Field PWA as the assigned officer and cache the assigned case.
-6. **Offline switch:** Enable airplane mode or network blocking; show cached case and explicit offline banner.
-7. **Inspection:** Complete checklist, enter synthetic readings, capture a synthetic evidence photo, and capture GPS if permitted.
-8. **Local save:** Review and queue the decision; show `READY_TO_SYNC`, not server completion.
-9. **Reconnect/sync:** Restore network, run sync, and show `SYNCED` with the same UUID if retried.
-10. **Decision:** Show officer result `PASS` and the backend application state transition to `COMPLETED`.
-11. **Certificate:** Generate certificate, SHA-256 payload hash, RSA-PSS/SHA-256 signature metadata, PDF reference, and QR URL.
-12. **Public verifier:** Scan/open `/verify/<certificateNo>` and show `VALID` without login.
-13. **Passport:** Return to the instrument passport and show chronological application/certificate history.
-14. **Admin dashboard:** Show queue, workload, expiry bucket, notifications, and audit chain fields.
-15. **Tamper demonstration:** Use the isolated synthetic tamper fixture and show public verification returning `INVALID`.
+```text
+Business Web
+  ↓
+Admin Web
+  ↓
+Flutter Field App
+  ↓
+Offline inspection
+  ↓
+Sync
+  ↓
+Certificate
+  ↓
+Public verification
+```
 
-## Backup paths
+## Fallback path when Flutter is not ready
 
-able path and continue with synthetic permitted evidence metadata.
-- If offline sync fails, show `FAILED`, retry, and explain the recovery path rather than hiding the failure.
-- If a live deployment is unavailable, use a local Compose environment and state that it is a prototype environment.
+```text
+Business Web
+  ↓
+Admin Web
+  ↓
+React Field PWA
+  ↓
+Offline inspection
+  ↓
+Sync
+  ↓
+Certificate
+  ↓
+Public verification
+```
 
-## Demo acceptance
+Only the field client changes; the backend workflow and API contract do not.
 
-- Every step uses a documented route/API/entity/state.
-- Public verification exposes minimal data and no login.
-- Certificate status and signature outcomes are explained separately.
-- Synthetic/demo labels are visible where values could be mistaken for statutory data.
-- No fake government integration, legal signature, statutory tolerance, or absolute immutability claim is made.
-- Reset and rehearsal are repeatable; no critical/high test defect remains.
+## Narrative
 
+1. Business signs in, registers a synthetic instrument, and submits an application.
+2. Admin assigns an officer, schedules the case, and shows notification/audit effects.
+3. The selected field client caches assigned work, enters airplane mode, completes checklist/readings, captures synthetic evidence and available GPS, and saves locally.
+4. Show `READY_TO_SYNC`, restore network, sync with the same `clientOperationId`, and show `SYNCED`.
+5. Show `PASS` as the inspection result and `COMPLETED` as the separate application state.
+6. Generate certificate metadata/PDF/QR, then verify publicly without login.
+7. Show instrument history, expiry/notification/admin views, and an isolated tamper fixture returning `INVALID`.
+
+## Failure rehearsal
+
+Show an explicit `FAILED` retry and a `CONFLICT` resolution if the happy path is unavailable. Never hide a failed sync or claim local data is server-confirmed. If the backend certificate or storage implementation is not yet complete, label the corresponding step as a planned contract rather than simulating it as production behavior.

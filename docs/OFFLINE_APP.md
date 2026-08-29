@@ -1,172 +1,94 @@
-# MapanSetu Field Application — PRD, Offline Architecture, UX and Sync Specification
+# Field Application — Offline Architecture and Sync Specification
 
-## 1. Purpose and field persona
+## 1. Purpose
 
-The field application is for an authorized Legal Metrology Officer working at shops, businesses, or other field locations on a mobile device. The officer works under time pressure, may have unreliable connectivity, needs camera evidence, may need GPS, and must be able to distinguish locally saved work from server-confirmed work.
+Define the shared offline contract for the officer field workflow and the two possible clients: the current React PWA and the conditional Flutter native app. The backend must not care which client produced a request.
 
-The app records the officer’s inspection workflow; it does not automate or replace the officer’s physical/statutory judgment.
+## 2. Field application strategy
 
-## 2. Technology and assumptions
+```text
+Flutter ready before internal hackathon?
+  YES -> Flutter is the primary demo/native target; PWA remains testing/fallback.
+  NO  -> React field PWA is the primary demo/testing path; Flutter remains future target.
+```
 
-React, TypeScript, Vite, PWA manifest, Service Worker, Workbox where useful, IndexedDB via Dexie, Browser Camera API, and Browser Geolocation API. The app runs online to authenticate/cache assigned work and remains useful offline for previously cached cases. Browser storage quotas, permission denial, unavailable hardware, battery, and interrupted sync are expected conditions.
+These are alternative field-client paths. Do not describe both as simultaneously required production clients. The API, data model, authentication, certificate flow, and domain states remain unchanged.
 
-## 3. Routes/screens
+## 3. Client selection
 
-`/login` · `/field` · `/field/inspections` · `/field/inspections/:id` · `/field/inspections/:id/checklist` · `/field/inspections/:id/readings` · `/field/inspections/:id/evidence` · `/field/inspections/:id/review` · `/field/sync` · `/field/profile`
+The current checkout selects the PWA path: field screens live under `frontend/src/app/field/`, storage under `frontend/src/offline/`, services under `frontend/src/services/field/`, and the service worker at `frontend/public/sw.js`. No Flutter/Dart project exists. Flutter adoption is conditional on a readiness review before the internal hackathon.
 
-## 4. Field workflow
+## 4. Common offline contract
 
-1. Officer authenticates online and caches assigned scheduled cases.
-2. Officer opens a cached case and starts it, moving the server application through the documented workflow when online or queueing the operation offline.
-3. Officer completes checklist, readings, evidence, GPS/time capture, and review.
-4. Officer records `PASS`, `FAIL`, or `REQUIRES_CORRECTION` as the separate Inspection result.
-5. Offline operations become `READY_TO_SYNC`; the sync center sends them to `POST /api/v1/sync` when network returns.
-6. Server response becomes `SYNCED`, `FAILED`, or `CONFLICT`; the app never reports a server state before confirmation.
+Both clients must use the same authenticated API and the same canonical states:
 
-## 5. Screen specifications
+```text
+LOCAL_DRAFT -> READY_TO_SYNC -> SYNCING -> SYNCED
+                                      \-> FAILED -> READY_TO_SYNC
+                                      \-> CONFLICT -> explicit resolution
+```
 
-Every screen supports: visible online/offline indicator, accessible loading/error feedback, no silent data loss, local save confirmation, keyboard/touch operation, and safe back navigation.
+`clientOperationId` is a UUID for every retriable/offline mutation. The client sends the operation type, entity ID, payload, expected server version, and operation ID. The server stores an operation result and applies the operation at most once:
 
-### Field login — `/login`
+- same operation ID + same payload hash → return the original result;
+- same operation ID + different payload → `CONFLICT`;
+- stale entity version → explicit `CONFLICT`;
+- network failure → do not claim server confirmation; retry with the same operation ID.
 
-- **Purpose/user:** Officer authentication.
-- **Layout/controls:** Email, password, sign-in, connection state, retry/help.
-- **Validation:** Required email/password; generic auth errors.
-- **Online:** `POST /api/v1/auth/login`, then `GET /api/v1/users/me`; cache only permitted assigned data.
-- **Offline:** Do not pretend first-time login works; allow a previously authenticated session only under the approved session policy and show session age.
-- **Acceptance:** No token/secret in logs or screenshots; denied login has a clear recovery path.
+No client-specific server state is allowed. Conflict resolution is explicit; unsafe silent merge/overwrite is forbidden.
 
-### Field dashboard — `/field`
+## 5. React PWA implementation
 
-- **Purpose/user:** Officer overview of assigned work and sync health.
-- **Layout/controls:** Assigned count, local drafts, ready-to-sync count, last sync, connection banner, links to inspections/sync/profile.
-- **Validation/data:** `GET /api/v1/applications` for assigned work; local Dexie summaries.
-- **Online/offline:** Online refreshes from server; offline shows last cached time and never implies freshness.
-- **Acceptance:** Officer can reach every local draft and sync error in two actions.
+The current implementation uses:
 
-### Assigned inspection list — `/field/inspections`
+- Next.js/React routes and providers;
+- Dexie 4 over IndexedDB (`frontend/src/offline/db.ts`);
+- tables for app metadata, cached inspections, drafts, evidence blobs, sync queue, and sync results;
+- a bounded queue processor in `frontend/src/services/field/sync.service.ts`;
+- `public/sw.js` for network-first caching of GET/static assets and network pass-through for API calls;
+- browser file input for evidence (with a camera-labelled action in the current UI) and Geolocation API;
+- a mock sync interceptor for local workflow testing because the Django sync endpoint is not implemented.
 
-- **Purpose/user:** Browse assigned/scheduled cases.
-- **Layout/controls:** Search/filter by canonical application state, list/card, cache action, local sync badge.
-- **API/local:** `GET /api/v1/applications` for assigned scope; cache `cachedInspections` and metadata.
-- **Offline:** Show cached cases only, with last server update and unavailable-data notice.
-- **Acceptance:** A cached case opens in airplane mode; unassigned cases never appear through local guessing.
+The current PWA is not evidence that the final backend endpoints or production service-worker strategy are complete. API responses remain authoritative when online.
 
-### Inspection overview — `/field/inspections/:id`
+## 6. Flutter implementation
 
-- **Purpose/user:** Start/resume one case.
-- **Layout/controls:** Instrument identity, business/site summary, schedule, current application state, progress steps, start/resume.
-- **API/local:** `GET /api/v1/applications/{id}`, `GET /api/v1/inspections/{id}` where available; create via `POST /api/v1/inspections`.
-- **Offline:** Load cached record; create a local inspection operation with UUID; show `LOCAL_DRAFT`/`READY_TO_SYNC`.
-- **Acceptance:** No start action on an uncached/unauthorized case; server response or local queue status is explicit.
+Flutter is the planned native field client and is not implemented in this repository. Its exact local persistence, state-management, networking, camera, location, secure-storage, and background-sync packages remain an implementation decision and must be documented by a new ADR before implementation. Do not guess packages or create Flutter-only endpoints/models.
 
-### Checklist — `/field/inspections/:id/checklist`
+The Flutter repository, once approved, must implement the common operation envelope, local states, version/conflict handling, evidence metadata, session behavior, and API contract defined here.
 
-- **Purpose/user:** Complete configured inspection checklist.
-- **Layout/controls:** One item per section, required markers, notes, progress, save/next/back.
-- **Validation:** Required items complete; no invented statutory checks; DEMO/CONFIGURABLE rules are labelled.
-- **Online/offline:** Persist locally on every accepted change; online may sync draft operations but not bypass final decision.
-- **Acceptance:** App restart preserves accepted checklist data; incomplete required item blocks review with exact location.
+## 7. Local persistence
 
-### Measurement entry — `/field/inspections/:id/readings`
+Persist only the minimum data needed to continue assigned work offline: cached inspection snapshot, draft checklist/readings/decision, evidence blobs/metadata, sync queue, operation results, schema version, and timestamps. Every local record must carry provenance (`serverVersion`, local state, and updated/captured time as applicable). Local data is untrusted and may be deleted or unavailable due to quota/device lifecycle.
 
-- **Purpose/user:** Record Measurements.
-- **Layout/controls:** Test point rows, reference/indicated/unit/error fields, add/remove configured points, notes, validation summary.
-- **Validation:** Numeric ranges/precision, required fields, unit, sequence; tolerance is configurable demo data only.
-- **API/local:** Local `inspectionDrafts`; online or queued `POST /api/v1/inspections/{id}/readings`.
-- **Acceptance:** Invalid numeric input is not accepted; saved values survive reload; version conflict is surfaced.
+On app restart, recover operations left in `SYNCING` to `READY_TO_SYNC` only when their request outcome is unknown; the original operation ID must remain unchanged. Logout with unsynced work requires a warning and explicit product-approved handling.
 
-### Evidence capture — `/field/inspections/:id/evidence`
+## 8. Sync queue
 
-- **Purpose/user:** Capture machine/nameplate/site photo or document evidence.
-- **Layout/controls:** Camera/file picker, preview, retake/delete before finalization, evidence type/note, upload queue and size/MIME feedback.
-- **Validation:** `image/jpeg`, `image/png`, `image/webp`, or `application/pdf`; compressed image where possible; maximum 10 MiB per item; non-empty file; hash stored when required.
-- **API/local:** Blob in `evidenceBlobs`; metadata/operation in `syncQueue`; online upload through `POST /api/v1/inspections/{id}/evidence`.
-- **Offline:** Capture and save Blob without network; show local-only badge; do not claim upload.
-- **Acceptance:** Invalid/oversized file is rejected before queue; browser restart preserves accepted Blob or shows a storage failure before loss.
+Queue operations deterministically by creation time and process bounded batches. Mark `SYNCING` before transmission, keep the same operation ID for transient retries, and record attempt/error information. Map `400/413` payload failures to `FAILED`, auth failures to a re-auth-required failure, transient network/server/rate-limit failures to retryable state, and server version/payload conflicts to `CONFLICT`.
 
-### GPS/time capture — part of overview/evidence/review
+The `/api/v1/sync` response returns one result per submitted operation, including operation ID, status, entity ID, server version where available, and a safe message. A client may display `SYNCED` only from that result.
 
-- **Purpose/user:** Record available capture context.
-- **Controls:** Capture location, accuracy, timestamp; permission status and manual unavailable reason.
-- **Validation/privacy:** Coordinates must be valid; deny/unavailable is an explicit state; retain only needed precision/policy; timestamps distinguish device capture from server receipt.
-- **Online/offline:** Geolocation can work offline; server receipt is added on sync.
-- **Acceptance:** Permission denial never blocks an honest unavailable path unless a documented demo rule explicitly requires it.
+## 9. Conflict handling
 
-### Review before submit — `/field/inspections/:id/review`
+Show the local and server versions and require an explicit user decision. A resolution is a new operation with a new UUID and the original conflict remains auditable. The client must not silently choose local or server data.
 
-- **Purpose/user:** Confirm completeness and final result.
-- **Layout/controls:** Summary of checklist/readings/evidence/GPS/time, result selector, notes, submit/return-to-edit.
-- **Validation:** Required data and notes; result exactly `PASS`, `FAIL`, or `REQUIRES_CORRECTION`; explicit confirmation.
-- **Online:** `POST /api/v1/inspections/{id}/decision`; server controls parent state.
-- **Offline:** Save decision operation as `READY_TO_SYNC`; label as pending and prevent certificate claim.
-- **Acceptance:** No certificate is shown as issued until server confirmation; duplicate submit is idempotent.
+## 10. Evidence capture
 
-### Offline queue — `/field/sync`
+Evidence is queued locally with filename, MIME type, size, blob, capture timestamp, inspection ID, and optional GPS. Current prototype allowlist: JPEG, PNG, WebP, and PDF; maximum 10 MiB per item. The server repeats every validation, generates object keys, stores metadata in the database, and stores binary content in configured object storage. A local blob is not an uploaded artifact until the API confirms it.
 
-- **Purpose/user:** Show local operations and storage health.
-- **Layout/controls:** Counts by `LOCAL_DRAFT`, `READY_TO_SYNC`, `SYNCING`, `SYNCED`, `FAILED`, `CONFLICT`; retry, inspect, discard only before server application and with confirmation.
-- **API/local:** Dexie stores; `POST /api/v1/sync` for queued operations.
-- **Acceptance:** Each item shows UUID, entity, created time, attempts, last error, and next action.
+## 11. Camera and GPS
 
-### Sync center and conflict screen — `/field/sync`
+The PWA uses browser APIs and must handle denied permission, unavailable hardware, timeout, inaccurate location, and no network. Capture time and GPS provenance must remain explicit. Flutter will use native capabilities only after its implementation ADR; GPS is useful evidence metadata, not a replacement for server authorization.
 
-- **Purpose/user:** Recover from failed/conflicting operations.
-- **Layout/controls:** Server/client version comparison, field-level differences, keep server/keep client/merge where safe, retry, contact admin.
-- **Validation:** Resolution creates a new explicit operation; original record remains auditable.
-- **Offline/online:** Conflict can be reviewed offline; resolution submission requires network unless the resolution is itself safely queueable.
-- **Acceptance:** No silent overwrite; same operation ID with changed payload is rejected as conflict.
+## 12. Authentication/session
 
-### Field profile — `/field/profile`
+Both clients authenticate through the common JWT contract. Access/refresh expiry, re-authentication, token storage, and logout behavior must avoid exposing secrets in logs or ordinary local domain records. Offline work may continue only for previously authorized/cached assignments; the client must not mint authorization or extend server permissions.
 
-- **Purpose/user:** Show officer identity, session, storage/cache controls.
-- **Controls:** User info, last sync, clear cached data, logout.
-- **API/local:** `GET /api/v1/users/me`; local cleanup with confirmation.
-- **Security:** Clearing local data warns that unsynced data may be lost; logout policy must protect or deliberately clear cached sensitive data.
-- **Acceptance:** No secret or full token is rendered.
+## 13. Security
 
-## 6. Offline-first data architecture
+Never store private signing keys in either field client. Treat IndexedDB/device storage as recoverable exposure: minimize data, clear on approved sign-out/device reset, and protect sensitive logs. The backend independently validates role, assignment, ownership, state transition, evidence, idempotency, and version.
 
-The service worker caches the offline shell and versioned static assets. Dexie stores domain drafts and operations. Server data is authoritative; local data is a working copy with provenance (`serverVersion`, `cachedAt`, `localState`). Local writes are transactional where possible: update draft, append operation, and update local status together.
+## 14. Testing
 
-### IndexedDB conceptual stores
-
-| Store | Key | Purpose | Retention/relationship |
-|---|---|---|---|
-| `appMetadata` | `key` | schema/cache version, last successful sync, session metadata | Small; replace on upgrade |
-| `cachedInspections` | `inspectionId` | permitted assigned case snapshot | Until unassigned/expired/cleared |
-| `inspectionDrafts` | `inspectionId` | checklist/readings/result draft, server version | Until synced/retained by policy |
-| `evidenceBlobs` | `evidenceId` | compressed Blob and metadata | Until upload confirmed plus retention cleanup |
-| `syncQueue` | `clientOperationId` | pending operation, payload, attempt/error/status | Until result retained/audited |
-| `syncResults` | `clientOperationId` | server outcome/version/message | Retain for user recovery/audit window |
-
-Relationships use IDs, not duplicated mutable ownership facts. Local stores never contain private signing keys.
-
-## 7. Sync contract and conflict handling
-
-Every offline operation contains `clientOperationId` UUID, `createdAt`, `entityType`, `entityId`, `payload`, `operationType`, `attemptCount`, `lastError`, `status`, and `expectedServerVersion` where applicable. The server stores the operation in SyncRecord with payload hash and returns a stable result on replay.
-
-Client states are exactly:
-
-`LOCAL_DRAFT` → `READY_TO_SYNC` → `SYNCING` → `SYNCED`  
-Failure goes to `FAILED`; version/payload mismatch goes to `CONFLICT`.
-
-Conflict detection compares server version and client expected version, plus operation identity/payload hash. The UI shows both versions and requires an explicit user/admin resolution. Never silently overwrite or mark local data as server-confirmed.
-
-## 8. Evidence, camera, GPS, and security
-
-Compress images before storage/upload where quality remains sufficient; use Blob rather than large base64 JSON. The prototype allowlist is `image/jpeg`, `image/png`, `image/webp`, and `application/pdf`, with a maximum of 10 MiB per evidence item. MIME and size limits are enforced client-side for usability and server-side for security. Camera permission denial, unavailable hardware, and file-picker fallback are explicit. GPS coordinates include accuracy when supplied, are optional when unavailable, and follow coarse-location/privacy policy. Local sensitive data has expiration/cleanup controls; storage pressure produces a visible warning and prevents pretending a save succeeded.
-
-The app requires authentication, protects cached data from casual disclosure, never stores private keys, uses secure transport online, and clears or deliberately retains local data on logout according to the approved session policy.
-
-## 9. PWA requirements and update strategy
-
-- Installable manifest with app name, icons, start URL, and standalone display.
-- Service Worker caches the app shell and versioned assets; API data is not treated as universally cacheable.
-- Workbox may manage precaching/runtime strategies where it does not hide freshness or security state.
-- New versions notify the officer and provide a safe update path that does not discard unsynced data.
-- Storage quota is estimated; cleanup is explicit and observable.
-
-## 10. Field testing requirements
-
-Test online cache, airplane mode, offline restart, slow/intermittent network, interrupted sync, duplicate operation replay, conflict, storage pressure, permission denial, unavailable camera/GPS, failed upload, logout with unsynced data, service-worker update, and public separation from field auth. See [TESTING_SECURITY.md](TESTING_SECURITY.md).
+PWA tests cover offline mode, app restart, Dexie persistence, queue transitions, duplicate replay, changed-payload conflict, version conflict, evidence limits, camera/GPS denial, service-worker cache behavior, re-authentication, and unsynced logout. Flutter tests are conditional until the project exists: Dart unit/widget/integration tests must cover the same contract and lifecycle cases. API tests cover both clients through the same endpoints.

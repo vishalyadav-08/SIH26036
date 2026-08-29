@@ -1,42 +1,23 @@
 # Documentation Changelog
 
-## 2026-08-28 — Documentation finalization
+## 2026-08-30 — Architecture and field-client migration
 
-### Created
+### Changed
 
-- `docs/README.md`
-- `docs/PRD.md`
-- `docs/TASK_BOARD.md`
-- `docs/DEVELOPMENT_WORKFLOW.md`
-- `docs/DEFINITION_OF_DONE.md`
-- `docs/AI_TASK_TEMPLATE.md`
+- Migrated active architecture documentation from the obsolete Java/Spring/Maven description to the repository-confirmed Python/Django 6.1 + Django REST Framework 3.18 backend.
+- Replaced old backend paths and Flyway assumptions with `backend/`, Django ORM, and Django migrations.
+- Corrected the web stack to Next.js 16.3.3 + React 19.2.8 + TypeScript + pnpm; removed Vite/React Router as active claims.
+- Reframed the existing React field workflow as the current testing/fallback PWA, backed by Dexie/IndexedDB and the current service worker.
+- Added the conditional Flutter/Dart native target and the readiness gate without inventing packages, paths, or server states.
+- Aligned API, logical data, offline sync, cryptography, testing, ownership, task, workflow, DoD, and demo documents.
+- Updated security guidance to Django/SimpleJWT/Argon2id while preserving SHA-256 and RSA-2048/RSA-PSS/SHA-256 certificate intent.
+- Documented the absence of Docker/Compose/Nginx/CI and the scaffold status of most backend domain implementations.
+- Updated `docs/archive/README.md` so the archive explicitly points to the current authority and cannot be mistaken for the final architecture.
 
-### Rewritten
+### Files reviewed and rewritten/aligned
 
-- `docs/ARCHITECTURE_DECISIONS.md` — completed ADR-001 through ADR-020.
-- `docs/ARCHITECTURE.md` — added context/container/component, trust, sync, auth, audit, deployment, security, ownership, and extension views.
-- `docs/TECH_STACK.md` — froze stack, exclusions, version/build policy, and ports.
-- `docs/DATA_MODEL.md` — added canonical fields, relationships, constraints, lifecycle, ownership, and separated state enums.
-- `docs/API_CONTRACT.md` — added endpoint-level auth, role, request/response, errors, validation, pagination, examples, and idempotency.
-- `docs/FRONTEND.md` — expanded into web PRD, route/screen contract, design system, state/API/security/accessibility architecture.
-- `docs/OFFLINE_APP.md` — expanded into field PWA PRD, screen contract, IndexedDB model, sync/conflict/evidence/device/security specification.
-- `docs/CRYPTOGRAPHY.md` — defined threat model, canonical certificate pipeline, RSA-PSS/SHA-256 verification, QR boundary, key handling, and audit chain.
-- `docs/TESTING_SECURITY.md` — added test layers, critical acceptance tests, security controls, review gates, performance, observability, and AI evaluation requirements.
-- `docs/EXECUTION_PLAN.md` — replaced the six-phase outline with dependency-aware M0–M13 roadmap and gates.
-- `docs/TEAM_AND_AI_AGENTS.md` — defined six team slots, ownership boundaries, merge recommendations, and AI process.
-- `docs/DEMO_PLAN.md` — added repeatable synthetic end-to-end flow, backup paths, and non-claim guardrails.
-- `docs/DOCUMENTATION_CONSISTENCY_REPORT.md` — recorded findings, classifications, cross-document checks, and open decisions.
+All 21 active root documents were reviewed; the migration changed every active document listed in [README.md](README.md)'s reading order and the task brief. `docs/archive/` remains historical and was not treated as authority.
 
-### Corrected
+### Scope
 
-- Removed active references to the nonexistent `MASTER_PROMPT.md`.
-- Removed non-canonical `PENDING_SYNC` terminology.
-- Centralized public verification at `/verify/:certNo` and `GET /api/v1/certificates/verify?certNo=...`.
-- Standardized roles to `ADMIN`, `OFFICER`, `BUSINESS`; public access is unauthenticated.
-- Standardized application states, inspection results, certificate statuses, offline states, algorithms, ports, and repository paths.
-- Made prototype, synthetic-data, statutory, government-integration, legal-signature, and absolute-immutability limitations explicit.
-
-## Scope note
-
-This changelog covers documentation only. No web, field, backend, authentication, certificate-signing, AI, or offline-sync feature was implemented by this finalization task.
-
+Documentation only. No backend, frontend, database, infrastructure, or application source was changed.

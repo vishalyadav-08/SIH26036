@@ -1,5 +1,7 @@
 # Cryptography and Trust Specification
 
+The primitives in this document are backend/client independent. The current implementation target is Python/Django; the repository includes the `cryptography` package but does not yet include certificate signing code. A framework migration must not change these primitives without a security ADR.
+
 ## 1. Scope and limitations
 
 This specification defines prototype integrity, signature, authentication, QR, and audit mechanisms. A valid prototype signature does not constitute an authorized legal signature, statutory approval, or absolute immutability. Production deployment requires authorized PKI/key custody decisions.
@@ -13,7 +15,7 @@ Protect against accidental/hostile modification of certificate payloads, forged 
 - **Integrity:** SHA-256 hash of canonical UTF-8 bytes.
 - **Certificate authenticity:** RSA 2048 key with RSA-PSS padding and SHA-256 used for signing and public-key verification.
 - **Password storage:** Argon2id; never encryption or reversible storage.
-- **API authentication:** JWT access tokens validated by Spring Security.
+- **API authentication:** JWT access tokens validated by the Django/DRF authentication boundary using the configured SimpleJWT dependency.
 - **QR:** ZXing-generated lookup URL; discovery only, not a security proof.
 
 Do not use the phrase “decrypt signature.” The correct operation is “verify the signature using the public key.”

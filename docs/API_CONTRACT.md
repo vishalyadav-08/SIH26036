@@ -1,5 +1,7 @@
 # API Contract
 
+This is the client-independent contract for the Django/Django REST Framework backend. The same `/api/v1` semantics serve the Next.js Business/Admin web routes, the current React field PWA, and the conditional Flutter field app. Endpoint documentation is a target contract until corresponding backend views, serializers, and tests exist.
+
 **Base path:** `/api/v1`  
 **Transport:** HTTPS in production; JSON for resource requests/responses; multipart for evidence upload.  
 **Authority:** The backend is the source of truth for authorization, ownership, state, certificate status, and sync outcomes.

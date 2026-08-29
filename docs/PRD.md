@@ -11,6 +11,10 @@ MapanSetu is a digital lifecycle management platform for regulated weighing and 
 
 The software manages records and workflow. It does not physically verify an instrument, replace an authorized Legal Metrology Officer, grant statutory approval, or claim a live government integration.
 
+### Client strategy
+
+Business and Administrator/Supervisor workflows are delivered through the React/Next.js web application. Officer field work is client-independent: the current testing/fallback path is the React field PWA, while Flutter is the preferred native field client if it is ready before the internal hackathon. The officer must be able to continue previously cached inspection work without network connectivity; the PRD does not prescribe browser storage or a mobile database.
+
 ## 2. Problem definition and background
 
 Regulated weighing and measuring instruments require periodic verification or re-verification by authorized personnel under applicable Legal Metrology rules. In the target problem context, requests, schedules, inspection notes, evidence, certificates, and expiry follow-up may be manual or fragmented. This creates uncertainty about queue status, officer workload, evidence completeness, certificate retrieval, and whether a record is current.
@@ -119,7 +123,7 @@ Permitted users see identity, current status, applications, inspections, certifi
 
 ### Identity and access
 
-- **FR-001:** The system shall authenticate users through the Spring Security/JWT API.
+- **FR-001:** The system shall authenticate users through the Django/DRF API using the configured JWT authentication boundary.
 - **FR-002:** The system shall support exactly the authenticated roles `ADMIN`, `OFFICER`, and `BUSINESS`; public verification shall not require an authenticated role.
 - **FR-003:** The system shall enforce both role authorization and object ownership/assignment on the backend.
 - **FR-004:** The system shall provide the authenticated user profile through `GET /api/v1/users/me`.
@@ -154,7 +158,7 @@ Permitted users see identity, current status, applications, inspections, certifi
 ### Offline and sync
 
 - **FR-023:** The field app shall cache previously assigned inspection data for offline use.
-- **FR-024:** The field app shall persist drafts, Measurements, Evidence blobs, and sync operations in IndexedDB/Dexie.
+- **FR-024:** The current PWA field app shall persist drafts, Measurements, Evidence blobs, and sync operations in IndexedDB/Dexie. A future Flutter client shall provide equivalent offline behavior through its approved local persistence implementation.
 - **FR-025:** Every offline operation shall include a UUID `clientOperationId`.
 - **FR-026:** The server shall process duplicate `clientOperationId` retries idempotently and return the prior result.
 - **FR-027:** The field app shall expose `LOCAL_DRAFT`, `READY_TO_SYNC`, `SYNCING`, `SYNCED`, `FAILED`, and `CONFLICT` states.

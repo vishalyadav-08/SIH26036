@@ -1,75 +1,41 @@
 # Team and AI Agents
 
-## 1. Operating model
+Ownership is by boundary. One task has one human owner and one implementation agent; reviewers may inspect but do not edit the same area concurrently.
 
-The six team slots preserve ownership boundaries even if one person fills multiple slots. A task has one human owner slot and one implementation owner. Other agents may review but do not edit the same implementation area concurrently.
+## Team slots
 
-## 2. Team slots
+### Team 1 — Project Lead / Architecture
 
-### Team 1 — Project Lead / Architect
-
-- **Responsibilities:** product decisions, ADRs, cross-document consistency, milestone gates, legal/prototype wording, priority.
-- **Outputs:** ADRs, PRD decisions, freeze reports, approvals, release/demo sign-off.
-- **Owned paths:** `docs/*`, root `README.md` for project-level guidance, cross-cutting review.
-- **Dependencies:** all teams; receives API/data/security changes before approval.
-- **Reviews:** architecture, scope, cross-module contracts, open decisions.
-- **Prohibited changes:** feature implementation, unapproved stack/schema/API changes.
+Owns ADRs, PRD scope, documentation authority, milestone gates, legal/prototype wording, and cross-boundary decisions. Owned paths: `docs/**` and project-level README guidance. Reviews API/data/security changes.
 
 ### Team 2 — Backend / Domain
 
-- **Responsibilities:** Java/Spring modular monolith, domain rules, API, persistence, migrations, notifications, sync server behavior.
-- **Outputs:** `services/api`, OpenAPI/contract alignment, backend tests and fixtures.
-- **Owned paths:** `services/api/src/main/java/com/mapansetu`, `services/api/src/main/resources`, backend tests, backend README.
-- **Dependencies:** ADRs, PRD, DATA_MODEL, API_CONTRACT, Security review.
-- **Reviews:** Web/Field API usage, migration compatibility, state/ownership rules.
-- **Prohibited changes:** frontend UX, private key exposure, undocumented endpoints, direct schema edits outside approved migration task.
+Owns the Python/Django/DRF modular monolith under `backend/**`: Django models/migrations, serializers, services, views, URLs, API tests, authentication integration, domain rules, notifications, and server-side sync. Does not own web UX, client storage, private keys, or undocumented API changes.
 
-### Team 3 — Web Frontend
+### Team 3 — Web Application
 
-- **Responsibilities:** Business/Admin/Public web UX, routes, forms, queries, accessibility, responsive design.
-- **Outputs:** `apps/web`, shared UI/type requests, component/E2E tests.
-- **Owned paths:** `apps/web`, web-specific tests; shared packages only through coordinated task.
-- **Dependencies:** API_CONTRACT, DATA_MODEL, FRONTEND, packages/types/ui/config.
-- **Reviews:** Backend DTO alignment, accessibility, security-sensitive rendering.
-- **Prohibited changes:** backend state/authorization, field offline stores, undocumented routes.
+Owns the Next.js/React/TypeScript Business, Admin, and Public web routes under `frontend/src/app/app`, `frontend/src/app/admin`, and `frontend/src/app/verify`, plus web components and tests. Does not own backend authorization or field-client persistence.
 
-### Team 4 — Field PWA
+### Team 4 — Field Client
 
-- **Responsibilities:** officer workflow, PWA shell, camera/GPS UX, Dexie local stores, queue, conflict UI.
-- **Outputs:** `apps/field`, field tests, offline diagnostics.
-- **Owned paths:** `apps/field`, field-specific tests; shared packages only through coordination.
-- **Dependencies:** OFFLINE_APP, API_CONTRACT, DATA_MODEL, Backend sync contract, Security review.
-- **Reviews:** backend sync semantics, storage/privacy, permission/error behavior.
-- **Prohibited changes:** server authorization, certificate private keys, silent conflict resolution, alternative client technology.
+Owns the current PWA field routes, Dexie/IndexedDB stores, service worker, camera/GPS UX, queue, and conflict UI. The same team evaluates or implements Flutter if ADR-022's readiness gate approves it. PWA and Flutter are sub-paths of one Field Client boundary; neither may redefine the API.
 
-### Team 5 — Security / Crypto / DevOps
+### Team 5 — Security / Crypto / Operations
 
-- **Responsibilities:** threat model, JWT/Argon2id review, certificate signing/verification, audit chain, storage/TLS/CORS, CI/Compose/Nginx, ZAP/k6 support.
-- **Outputs:** crypto fixtures, security checks, infrastructure configuration, findings and remediation guidance.
-- **Owned paths:** `infra`, `.github`, security/crypto test support, relevant backend crypto modules with Backend coordination.
-- **Dependencies:** ADRs, CRYPTOGRAPHY, TESTING_SECURITY, API_CONTRACT, deployment constraints.
-- **Reviews:** all high-risk auth/file/crypto/deployment changes.
-- **Prohibited changes:** inventing algorithms, placing secrets in Git, claiming legal signatures/absolute immutability, unreviewed production key custody.
+Owns threat-model review, JWT/Argon2id review, certificate signing/verification, audit chain, evidence/storage controls, CORS/TLS/secret guidance, and security/performance test support. No private keys in clients or Git. Deployment automation is not currently present and may be added only through an approved task.
 
-### Team 6 — AI / Data / QA
+### Team 6 — QA / Data / AI
 
-- **Responsibilities:** synthetic data, test strategy, evaluation fixtures, regression/E2E/accessibility/performance, optional advisory AI.
-- **Outputs:** `tests`, scripts/seed fixtures, QA reports, AI evaluation and fallback checks.
-- **Owned paths:** `tests`, `scripts/seed`, QA artifacts; AI code only in an approved task.
-- **Dependencies:** all canonical docs and stable API/data fixtures.
-- **Reviews:** acceptance coverage, demo data privacy, AI non-decision behavior.
-- **Prohibited changes:** real personal data, statutory rule invention, autonomous legal decision, fixing another team’s module without owner coordination.
+Owns synthetic fixtures, regression/API/E2E/accessibility/performance testing, acceptance reports, and optional advisory AI evaluation. AI cannot make a legal or workflow final decision.
 
-## 3. Merge recommendations for smaller teams
+## Coordination rules
 
-- One developer may combine Teams 1 and 5 only with independent review of security/crypto changes.
-- Teams 2 and 6 may share a person for backend tests, but domain ownership remains Team 2.
-- Teams 3 and 4 may share frontend expertise, but web and offline stores remain separate task areas.
-- The project lead must remain the final reviewer for cross-boundary changes.
+- The Project Lead owns the canonical API/data contract decision; Backend implements it; Web, PWA, and Flutter consume it.
+- Backend remains the security authority for auth, role, ownership, assignment, state transitions, certificate status, and sync acceptance.
+- No two teams independently create endpoint semantics or duplicate domain logic.
+- Cross-cutting work must name allowed files and dependencies in [TASK_BOARD.md](TASK_BOARD.md).
+- Human review is mandatory for auth, ownership, files, public responses, offline sync, crypto, migrations, and architecture.
 
-## 4. AI-agent process
+## AI process
 
-An AI agent reads the assigned task and relevant canonical docs, checks dependencies and allowed files, proposes a small change, writes tests, runs the listed verification commands, and reports files changed, tests, risks, and remaining decisions. It must not infer requirements from archived material or implement adjacent features “for completeness.”
-
-Every task uses [AI_TASK_TEMPLATE.md](AI_TASK_TEMPLATE.md) and the rules in [AI_AGENT_RULES.md](AI_AGENT_RULES.md). Human review is mandatory.
-
+Agents read the assigned task and canonical docs, inspect repository evidence, check dependencies and allowed files, make the smallest scoped change, run listed verification commands, and report files/results/risks. They do not infer requirements from `docs/archive/`. Every assignment uses [AI_TASK_TEMPLATE.md](AI_TASK_TEMPLATE.md) and [AI_AGENT_RULES.md](AI_AGENT_RULES.md).

@@ -1,25 +1,24 @@
 # AI Agent Rules
 
-These rules apply to Codex, Claude Code, Antigravity, and other AI agents working on MapanSetu.
+These rules apply to all coding and documentation agents working on MapanSetu.
 
-1. Read the assigned task and relevant active docs before coding.
-2. Treat ADRs, PRD, DATA_MODEL, API_CONTRACT, and TECH_STACK as authoritative in that order.
-3. Archived documents are historical only; never use them as active requirements.
-4. Do not invent architecture, technologies, roles, routes, endpoints, fields, states, tolerances, integrations, or performance claims.
-5. Do not change the frozen stack without an approved ADR.
-6. Do not create undocumented endpoints or UI routes.
-7. Do not change database structure without an approved task and Flyway migration.
-8. Do not modify unrelated modules or files outside the task’s allowed list.
-9. Do not expose secrets, credentials, JWTs, private keys, or real personal data.
-10. Backend authorization is authoritative; never substitute UI hiding for security.
-11. Keep Application state, Inspection result, Certificate status, and offline sync state separate.
-12. Use `clientOperationId` UUIDs for offline/retriable operations and preserve idempotency.
-13. Never silently overwrite sync conflicts or claim local state is server-confirmed.
-14. Use RSA 2048/RSA-PSS/SHA-256 and SHA-256 as documented; verify signatures using the public key.
-15. AI features are advisory only; never make the legal final decision.
-16. Write tests with implementation and run the task’s verification commands before completion.
-17. Use a feature branch and provide a concise change/test/risk summary.
-18. Human review is mandatory, especially for auth, ownership, files, crypto, public data, and migrations.
-19. Do not work concurrently on the same implementation area without explicit coordination.
-20. If requirements conflict or a dependency is missing, stop, record evidence, and escalate through the workflow.
-
+1. Read the assigned task and relevant active docs before acting.
+2. Never assume Java or Spring Boot is active.
+3. Never reintroduce Java, Spring Boot, or Maven unless a new ADR explicitly approves it.
+4. Treat the Django/DRF backend and Next.js/React frontend as repository-confirmed; verify any proposed dependency in source/manifests first.
+5. Never assume Flutter is ready unless the current milestone/task says so.
+6. Never assume the PWA is the final production field application.
+7. Treat API and logical data contracts as client-independent across Web, PWA, and Flutter.
+8. Do not create separate business logic or server states for Flutter and PWA.
+9. Do not duplicate backend validation in a client as a security mechanism.
+10. The backend is authoritative for authentication, authorization, ownership, assignment, transitions, certificates, sync, and public verification.
+11. Preserve the canonical roles, application states, inspection results, certificate statuses, and offline states in `DATA_MODEL.md`.
+12. Use UUID `clientOperationId` and idempotent replay semantics for retriable/offline mutations.
+13. Never silently overwrite, merge unsafe changes, or report local data as server-confirmed.
+14. Never change SHA-256, RSA-2048, RSA-PSS, or Argon2id primitives during a framework migration without a security ADR.
+15. Never expose secrets, JWTs, password hashes, private keys, or unnecessary public data.
+16. Do not use archived documentation as active architecture.
+17. If documentation and repository architecture disagree, stop and report the conflict with evidence.
+18. Do not modify unrelated paths or application code during a documentation-only task.
+19. Run the task's verification commands and report exact results.
+20. Human review is mandatory for auth, ownership, files, crypto, public data, migrations, API changes, and architecture.

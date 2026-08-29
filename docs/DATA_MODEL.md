@@ -1,6 +1,6 @@
 # Canonical Logical Data Model
 
-This document is the single logical domain model for MapanSetu. It is not a SQL schema. The future database implementation will use Flyway migrations under `services/api/src/main/resources/db/migration`.
+This document is the single logical domain model for MapanSetu. It is not a SQL schema and contains no ORM annotations. The future relational implementation will use Django models and Django migrations under the relevant `backend/*/migrations/` directories; the logical contract remains independent of that mapping.
 
 ## Canonical terminology
 

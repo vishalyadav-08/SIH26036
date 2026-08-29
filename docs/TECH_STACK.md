@@ -1,56 +1,95 @@
 # Technology Stack
 
-This is the frozen MVP/SIH prototype stack. A change requires an approved ADR before implementation work starts.
+This document records technology evidenced by the current repository. It is not a license to add alternative frameworks. A material change requires an ADR.
 
-## Stack
+## Runtime and backend
 
-| Area | Technology | MVP use | Future note |
-|---|---|---|---|
-| Web | React + TypeScript + Vite | Business/admin/public web app | Continue unless a new ADR replaces it |
-| Web styling | Tailwind CSS + shadcn/ui | Accessible, consistent components | Keep design tokens centralized |
-| Web routing/data/forms | React Router, TanStack Query, React Hook Form, Zod | Navigation, server state, forms, validation | No alternate state framework by default |
-| Web charts | Recharts | Admin/dashboard charts | Use only for actionable metrics |
-| Field | React + TypeScript + Vite | Officer field PWA | No separate native client in MVP |
-| Field offline | PWA, Service Worker, Workbox where useful, IndexedDB, Dexie | Cached cases, drafts, evidence, sync queue | Storage and update strategy remain explicit |
-| Device APIs | Browser Camera API, Browser Geolocation API | Evidence and location capture | Permission and denial paths are mandatory |
-| Backend | Java 21 LTS + Spring Boot 3.x + Maven | One modular monolith API | Modular boundaries precede any later extraction decision |
-| Backend libraries | Spring Web, Spring Security, Spring Data JPA, Hibernate, Bean Validation, Flyway, MapStruct, springdoc OpenAPI | HTTP, auth, persistence, migrations, mapping, API docs | Versions follow supported Spring Boot 3.x line |
-| Database | PostgreSQL 16+ | Transactional system of record | Managed PostgreSQL is a future deployment concern |
-| Object storage | MinIO | Local/SIH evidence and PDF storage | S3-compatible production adapter later |
-| Auth | JWT access tokens, Spring Security, Argon2id | Authenticated API access | Token storage strategy must follow security review |
-| Integrity/signing | SHA-256; RSA 2048 with RSA-PSS and SHA-256 | Certificate payload integrity and signature | Production key custody requires authorized PKI/HSM decision |
-| QR/PDF | ZXing; maintained Java PDF library compatible with license | Certificate discovery QR and PDF artifact | Library version is selected during bootstrap review |
-| Testing | JUnit 5, Mockito, Testcontainers, Vitest, Testing Library, Playwright, Bruno or Postman, OWASP ZAP, k6 | Unit through security/performance gates | Tool-specific scripts are implementation deliverables |
-| Delivery | Git, GitHub, Docker, Docker Compose, GitHub Actions, Nginx | Local/SIH repeatable environments and CI | No Kubernetes in MVP |
+| Concern | Repository-confirmed choice | Evidence/status |
+|---|---|---|
+| Runtime/language | Python | `backend/manage.py`, Python modules |
+| Web/API framework | Django 6.1 + Django REST Framework 3.18 | `backend/requirements.txt`, settings |
+| Project shape | One Django modular monolith | `backend/root/urls.py` and domain-app directories |
+| Package/install | Python virtual environment + `backend/requirements.txt` | Present; no alternative lockfile |
+| Validation/serialization | DRF serializers | Module serializer scaffolds and API contract |
+| Authentication | Django auth boundary with `djangorestframework-simplejwt` 5.5.1 configured | JWT settings exist; auth URLs/views are still scaffolded |
+| Authorization | DRF/backend permission and service rules; role, ownership, and assignment checks | Contract requirement; implementation gap to close |
+| ORM | Django ORM | Django is installed; domain models are currently stubs |
+| Schema migration | Django migrations under each app's `migrations/` directory | Directories exist; only initializers are present in this checkout |
+| API documentation | drf-spectacular 0.30.0; schema `/api/v1/schema/`, Swagger `/api/v1/docs/` | Mounted in `backend/root/urls.py` |
+| Backend tests | Django test runner (`python manage.py test`) | Test modules are scaffolded; no pytest dependency is present |
+| Email/notifications | Django email settings and in-product notification domain boundary | Console email fallback configured; delivery is prototype scope |
 
-## Explicit exclusions
+## Web frontend
 
-The MVP does not use Node.js as the backend, Express, NestJS, Prisma, Flutter, Dart, React Native, MongoDB, MySQL, Firebase, Supabase, Turborepo, Kafka, Redis, Kubernetes, or blockchain as core architecture. A future alternative may be considered only through an ADR; it is not an active implementation option.
+| Concern | Repository-confirmed choice | Evidence/status |
+|---|---|---|
+| Framework | Next.js 16.3.3 with React 19.2.8 | `frontend/package.json`, App Router tree |
+| Language | TypeScript 5 | `package.json`, `.tsx`/`.ts` sources |
+| Package manager | pnpm 11.9.0 | `packageManager`, `pnpm-lock.yaml` |
+| Routing | Next.js App Router | `frontend/src/app/**` |
+| Server state/API | TanStack Query 5, Axios | Dependencies and providers/services |
+| Forms/validation | React Hook Form, `@hookform/resolvers`, Zod 4 | Dependencies and readings form |
+| Styling/UI | Tailwind CSS 4, shadcn package, Radix primitives, `tailwind-merge`, Lucide | Dependencies and `globals.css`/components |
+| Testing | Vitest 4 + Testing Library packages + jsdom | `vitest.config.ts` and package manifest; no test script yet |
+| Lint/build | ESLint 9, `pnpm lint`, `pnpm build` | `package.json`; Next config currently ignores TypeScript build errors |
 
-## Version policy
+Vite and React Router are not used by the current frontend and must not be documented as active dependencies.
 
-- Pin major versions in package manifests and Maven parent/dependency management.
-- Prefer the latest compatible patch release within the selected major line after security review.
-- Java 21 and PostgreSQL 16+ are minimums.
-- Spring Boot remains on a supported 3.x release.
-- Dependency upgrades must include regression tests and a documentation/ADR impact check.
+## Current field PWA
 
-## Package/build rules
+The field client is a route group inside the Next.js app at `frontend/src/app/field/`, not a separate `apps/field` project. It is the current testing/prototype and fallback client. It uses:
 
-- Root `package.json` owns npm workspaces for `apps/*` and `packages/*`.
-- `package-lock.json` is the npm lockfile and is updated with workspace dependency changes.
-- `services/api` is independently built by Maven using `pom.xml` and Maven Wrapper.
-- Database changes are Flyway migrations under `services/api/src/main/resources/db/migration` once implementation begins.
-- No SQL schema is maintained in this documentation set.
+- Next.js/React/TypeScript UI routes;
+- `public/sw.js` for the current app-shell/static cache behavior;
+- IndexedDB through Dexie 4 and `dexie-react-hooks`;
+- browser file input for evidence (the current UI labels a camera action; no standalone camera API integration is present) and browser Geolocation API;
+- a local sync queue with `LOCAL_DRAFT`, `READY_TO_SYNC`, `SYNCING`, `SYNCED`, `FAILED`, and `CONFLICT`;
+- Axios services, with a mock sync adapter currently present because the backend sync endpoint is not implemented.
 
-## Development ports
+PWA storage, browser permissions, cache freshness, and offline recovery are implementation constraints, not backend authority.
 
-| Service | Port |
-|---|---:|
-| Web | 5173 |
-| Field | 5174 |
-| Backend | 8080 |
-| PostgreSQL | 5432 |
-| MinIO API | 9000 |
-| MinIO console | 9001 |
+## Native field application — Flutter
 
+Flutter/Dart is not present in the repository and is not a current implementation dependency. It is the target native field client if it is ready before the internal hackathon. Its local database, state-management, networking, camera, location, secure-storage, and background-sync packages are open implementation decisions and require a dedicated ADR before adoption.
+
+Flutter and the PWA must consume the same API and data contracts. They are alternative field-client paths, not simultaneously required production clients.
+
+## Data, storage, and infrastructure
+
+| Concern | Choice | Evidence/status |
+|---|---|---|
+| System of record | PostgreSQL via `psycopg` and `dj-database-url` | Target in settings; SQLite fallback for fresh clone |
+| Development fallback | SQLite at `backend/db.sqlite3` when `DATABASE_URI` is absent | Explicit settings behavior |
+| Object storage | MinIO/S3-compatible storage through `django-storages` and `boto3` when `MINIO_ENDPOINT` is set | Evidence/PDF storage configuration exists; local filesystem otherwise |
+| Certificate/PDF | ReportLab 5.0.1 and Segno 1.6.6 are installed | Certificate implementation is not yet present |
+| Crypto library | `cryptography` 50.0.1 | Primitive intent is specified; signing code is not present |
+| Deployment | No Dockerfile, Compose, Nginx, or CI/CD configuration is present | Keep deployment as a future implementation task; do not claim it exists |
+
+## Authentication and cryptography
+
+- JWT access/refresh behavior is configured through SimpleJWT; the API remains authoritative for authentication, RBAC, ownership, assignment, and state transitions.
+- Password hashing is Argon2id first, with Django's PBKDF2 fallback currently listed in settings; parameters and migration policy require security review.
+- Certificate trust remains SHA-256 plus RSA-2048/RSA-PSS/SHA-256, with the private signing key backend-only. The concrete signing implementation is not yet in the checkout.
+- QR encodes a lookup URL only; it is discovery, not proof.
+
+## Commands
+
+```bash
+# Backend
+cd backend
+python -m pip install -r requirements.txt
+python manage.py check
+python manage.py migrate
+python manage.py test
+python manage.py runserver 8000
+
+# Frontend
+cd frontend
+pnpm install
+pnpm dev
+pnpm lint
+pnpm build
+pnpm exec vitest run
+```
+
+The repository does not provide a root workspace command, a backend pytest command, a Flutter command, or a Docker Compose command. Do not add those commands to task instructions until the corresponding files exist.

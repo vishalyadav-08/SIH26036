@@ -1,61 +1,58 @@
 # Development Workflow
 
-This process applies after M0. The current task performs documentation only and does not start Stage 2 implementation.
+This workflow applies after documentation freeze. The current migration is documentation-only and does not start feature implementation.
 
 ## Standard flow
 
 ```text
-Task selected
-→ Dependencies checked
-→ Relevant docs read
-→ Branch created
-→ Human/AI owner assigned
+Task
+→ Dependencies
+→ Canonical docs
+→ Branch
 → Implementation
 → Tests
 → Local verification
 → Pull request
 → Human review
-→ Fix comments
-→ Merge to develop
-→ Integration test
-→ Task marked DONE
+→ Merge
+→ Integration verification
+→ DONE
 ```
 
-## Task and branch rules
+## Repository commands
+
+```bash
+# Backend
+cd backend
+python manage.py check
+python manage.py test
+
+# Frontend
+cd frontend
+pnpm lint
+pnpm exec vitest run
+pnpm build
+```
+
+Use `python manage.py migrate` only for an approved database task. Use `pnpm dev` and `python manage.py runserver 8000` for local development. There is no root workspace command, no pytest command, and no Docker/Compose command in this checkout.
+
+## Task, branch, and review rules
 
 - Select a `READY` task from [TASK_BOARD.md](TASK_BOARD.md); do not invent scope.
-- Confirm dependency tasks are `DONE`, or record an approved exception.
+- Confirm dependencies are `DONE`, or record an approved exception.
 - Read ADRs, PRD, DATA_MODEL, API_CONTRACT, and the relevant frontend/offline/security document.
-- One task has one implementation owner; use `feature/<TASK-ID>-<short-name>`.
-- No direct commits to `main`; merge feature branches into `develop`, then release through review.
-- Keep commits small and use Conventional Commit style, e.g. `feat(api): add instrument ownership checks` or `test(field): cover restart persistence`.
+- Use one implementation owner and a dedicated `feature/<TASK-ID>-<short-name>` branch; docs migrations may use `docs/<short-name>`.
+- Keep commits small and conventional. Do not commit application code for a documentation task.
+- A PR states task ID, scope, allowed files, API/data/security impact, commands/results, screenshots where relevant, migration notes, and known risks.
 
-## Pull requests
+## Architecture and API changes
 
-PRs must state task ID, problem, scope, files changed, API/data/security impact, tests/commands, screenshots for UI, migration notes, and known limitations. A PR may not add an undocumented endpoint, status, role, field, dependency, or route. Reviewers verify allowed files and task acceptance criteria.
+Architecture changes require an ADR with context, alternatives, decision, consequences, and migration impact before implementation. API/data changes update API_CONTRACT, DATA_MODEL, frontend/offline docs, tests, and task dependencies together. Web, PWA, and Flutter never receive separate business contracts.
 
-## Review and escalation
+## Database changes
 
-Human review is required before merge. Security/crypto/file/auth/public-data changes require Team 5 review. Cross-module/API/data changes require Project Lead review. If implementation conflicts with a canonical document, stop and raise an ADR or clarification task; do not silently choose a new design. If a dependency is blocked, set the task `BLOCKED` with evidence and owner.
+Database changes require an approved task, Django model/migration plan, rollback or forward-recovery plan, ownership review, integration tests, and documentation alignment. Django migrations are the only active schema migration mechanism; the logical data model remains the technology-independent contract.
 
-## Architecture-change procedure
+## Security and completion
 
-1. Open an architecture decision task.
-2. Describe context, alternatives, decision, consequences, and migration impact.
-3. Obtain Project Lead approval.
-4. Update the relevant ADR and dependent docs.
-5. Update task dependencies and tests.
-6. Only then implement.
-
-## API-change procedure
-
-Update `API_CONTRACT.md`, `DATA_MODEL.md` if fields/entities change, frontend/offline docs if behavior changes, security tests, and affected task board entries before code review. Preserve backward compatibility or document migration/versioning.
-
-## Database-change procedure
-
-Database changes require a dedicated approved task, a Flyway migration, rollback/forward-recovery plan, data ownership review, integration tests, and documentation alignment. The logical data model remains the contract; it is not replaced by an unreviewed SQL file.
-
-## Completion and release
-
-The owner reports summary, tests, verification commands, risks, and follow-ups. QA confirms critical acceptance tests. The task is marked `DONE` only when [DEFINITION_OF_DONE.md](DEFINITION_OF_DONE.md) passes and integration checks are green.
-
+Auth, ownership, evidence, public data, sync, certificate, key, and cryptography changes require security review. If source and docs disagree, stop and record the conflict instead of silently selecting a new architecture. The owner reports files, tests, verification output, risks, and follow-ups. QA confirms critical tests before the task is marked `DONE`.

@@ -4,32 +4,40 @@
 
 A task is `DONE` only when:
 
-- requirement and acceptance criteria are implemented;
-- API contract and canonical data model are satisfied;
-- validation, authorization, ownership, and error handling are present;
-- tests pass at the appropriate unit/integration/component/E2E/security layer;
-- no known critical/high defect remains, or an explicit project-lead risk acceptance exists;
-- documentation, task board, migrations, and examples are updated;
-- logs and metrics are appropriate and redact secrets;
+- requirements and acceptance criteria are satisfied;
+- API contract and canonical logical data model are preserved;
+- backend validation, authorization, ownership, and error handling are present;
+- appropriate tests pass and verification commands are recorded;
+- no unaccepted critical/high defect remains;
+- documentation, task board, and Django migrations/examples are aligned where applicable;
+- logs and metrics redact secrets;
 - security review is complete for the risk level;
-- pull request has human review and comments are resolved;
-- integration with dependent modules is confirmed;
-- verification commands and expected output are recorded in the task.
+- human review comments are resolved;
+- integration with dependent modules is verified.
 
-## Module DoD
+## Client-specific checks
 
-| Module | Additional completion checks |
+### Web
+
+Responsive layouts, keyboard/focus/accessibility behavior, loading/empty/error states, and documented API integration are verified. UI guards do not replace backend authorization.
+
+### React PWA
+
+Offline banner and recovery are clear; cached work survives restart; Dexie persistence and queue states are correct; sync is idempotent; conflicts are explicit; service worker behavior, camera/file, GPS permission, and unsynced logout paths are tested.
+
+### Flutter
+
+Only when the native client is approved: mobile lifecycle, approved local persistence, offline queue/sync/conflict behavior, camera/location handling, and secure local handling are tested. Flutter packages and storage must be backed by an ADR.
+
+## Module checks
+
+| Module | Required evidence |
 |---|---|
-| Auth | Login/profile work; JWT expiry/rejection; Argon2id; no secret leakage; inactive user and rate-limit tests |
-| Instrument | Canonical identity fields; duplicate and ownership rules; list/detail/passport; API and component tests |
-| Application | Draft/submit/list/detail; every canonical transition; server-authoritative state; ownership tests |
-| Scheduling | Assignment prerequisite; valid UTC schedule; conflict/retry behavior; admin-only tests |
-| Inspection | Assigned officer boundary; checklist/readings/result; timestamps/GPS availability; completion tests |
-| Evidence | MIME/size/object-key validation; safe storage; hash where required; upload/failure/retry tests |
-| Certificate | Eligibility; canonical payload/hash; RSA-PSS/SHA-256 verification; PDF/QR metadata; tamper tests |
-| Public Verification | Single route/API; no login; `VALID`/`EXPIRED`/`REVOKED`/`INVALID`; minimal data/rate-limit tests |
-| Offline Sync | Dexie stores; restart; UUID idempotency; `FAILED`/`CONFLICT`; explicit resolution; no silent overwrite |
-| AI | Optional/advisory; confidence/explanation/fallback; human review; core works when disabled; evaluation report |
-| Dashboard | Documented API data; pagination/filters; accessible chart summaries; loading/empty/error tests |
-| Audit | Actor/action/entity/time; hash-chain fields; redaction; recomputation detects tampering; admin-only viewer |
-
+| Auth | JWT expiry/rejection, Argon2id, inactive user, rate limit, no secret leakage |
+| Instrument/Application | Canonical fields, duplicate/ownership rules, state transitions, negative API tests |
+| Scheduling/Inspection | Assignment prerequisite, UTC schedule, readings/result separation, timestamps/GPS availability |
+| Evidence | MIME/size/object-key validation, safe storage, failure/retry tests |
+| Certificate | Eligibility, canonical payload/hash, RSA-PSS/SHA-256 fixtures, PDF/QR metadata, tamper tests |
+| Public verification | No login, minimal response, `VALID`/`EXPIRED`/`REVOKED`/`INVALID`, rate limiting |
+| Offline sync | UUID idempotency, restart, retry, version conflict, explicit resolution, no silent overwrite |
+| Audit/AI | Tamper-evident chain/redaction; optional AI remains advisory and human-reviewed |

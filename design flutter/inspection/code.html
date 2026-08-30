@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Inspection Review - MapanSetu Field</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary-fixed": "#ffdbd0",
+                      "on-primary-fixed": "#000767",
+                      "inverse-on-surface": "#f2eff8",
+                      "on-primary-container": "#8690ee",
+                      "on-secondary-fixed-variant": "#42465a",
+                      "primary-fixed-dim": "#bdc2ff",
+                      "tertiary": "#76546d",
+                      "on-tertiary-fixed-variant": "#7b2e12",
+                      "on-surface-variant": "#454652",
+                      "surface-container-high": "#eae7ef",
+                      "primary-container": "#1a237e",
+                      "surface-container": "#eeeeef",
+                      "outline": "#767683",
+                      "surface-container-highest": "#e4e1ea",
+                      "secondary": "#5a5d72",
+                      "on-secondary-fixed": "#171a2c",
+                      "on-primary-fixed-variant": "#343d96",
+                      "secondary-fixed-dim": "#c3c5dd",
+                      "on-background": "#1b1b21",
+                      "background": "#fbf8ff",
+                      "error-container": "#ffdad6",
+                      "surface-container-low": "#f5f2fb",
+                      "on-tertiary": "#ffffff",
+                      "primary-fixed": "#e0e0ff",
+                      "surface-dim": "#dbd9e1",
+                      "on-surface": "#1b1b21",
+                      "surface-tint": "#4c56af",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#303036",
+                      "surface-container-lowest": "#ffffff",
+                      "surface": "#f8f9fa",
+                      "on-error": "#ffffff",
+                      "outline-variant": "#c6c5d4",
+                      "warning": "#f9a825",
+                      "on-tertiary-fixed": "#390c00",
+                      "surface-bright": "#fbf8ff",
+                      "on-tertiary-container": "#e17c5a",
+                      "on-secondary": "#ffffff",
+                      "secondary-fixed": "#dfe1fa",
+                      "tertiary-container": "#5c1800",
+                      "inverse-primary": "#bdc2ff",
+                      "on-error-container": "#93000a",
+                      "success": "#2e7d32",
+                      "tertiary-fixed-dim": "#ffb59d",
+                      "on-secondary-container": "#5e6177",
+                      "surface-variant": "#e4e1ea",
+                      "secondary-container": "#dcdef7",
+                      "error": "#ba1a1a",
+                      "primary": "#000666"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "card": "24px",
+                      "standard": "16px",
+                      "major": "48px",
+                      "micro": "4px",
+                      "compact": "8px",
+                      "gap": "12px",
+                      "section": "32px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Inter"],
+                      "title-md": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "display-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "label-lg": ["Inter"],
+                      "display-md": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "label-sm": ["Inter"],
+                      "title-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                      "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                      "body-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.4px", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                      "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                      "display-lg": ["57px", {"lineHeight": "64px", "fontWeight": "400"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                      "display-sm": ["36px", {"lineHeight": "44px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                      "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                      "display-md": ["45px", {"lineHeight": "52px", "fontWeight": "400"}],
+                      "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                      "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                      "title-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col pb-[120px]">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface-dim w-full top-0 sticky flex justify-between items-center px-standard h-16 z-50">
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-highest rounded-full p-2 transition-colors flex items-center justify-center active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed-dim">Review</h1>
+</div>
+</header>
+<!-- Warning Banner -->
+<div class="bg-warning/20 text-on-surface-variant px-standard py-3 flex items-center gap-3">
+<span class="material-symbols-outlined text-warning" data-icon="cloud_off">cloud_off</span>
+<p class="font-body-md">Ready to sync once online</p>
+</div>
+<!-- Main Content -->
+<main class="flex-1 px-standard py-section max-w-4xl mx-auto w-full">
+<!-- Summary Header -->
+<div class="mb-section">
+<p class="font-label-md text-label-md text-on-surface-variant uppercase tracking-wider mb-1">Inspection Summary</p>
+<h2 class="font-headline-md text-headline-md text-on-surface">APP-DEMO-001 | Counter Scale</h2>
+</div>
+<!-- Bento Grid for Review Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-standard mb-major">
+<!-- Checklist Card -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-standard flex flex-col justify-between">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="bg-secondary-container text-on-secondary-container p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined fill" data-icon="checklist">checklist</span>
+</div>
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Checklist</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">12/12 Completed</p>
+</div>
+</div>
+<button class="text-primary hover:bg-primary/10 rounded-full p-2 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+<div class="w-full bg-surface-container-highest rounded-full h-1.5 mb-2">
+<div class="bg-success h-1.5 rounded-full" style="width: 100%"></div>
+</div>
+</div>
+<!-- Readings Card -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-standard flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<div class="bg-secondary-container text-on-secondary-container p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined fill" data-icon="speed">speed</span>
+</div>
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Readings</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">2/2 Recorded</p>
+</div>
+</div>
+<button class="text-primary hover:bg-primary/10 rounded-full p-2 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+<!-- Evidence Card -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-standard flex flex-col justify-between md:col-span-2 lg:col-span-1">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="bg-secondary-container text-on-secondary-container p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined fill" data-icon="photo_camera">photo_camera</span>
+</div>
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Evidence</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">3 items attached</p>
+</div>
+</div>
+<button class="text-primary hover:bg-primary/10 rounded-full p-2 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+<div class="flex gap-2 overflow-x-auto pb-2">
+<div class="w-16 h-16 rounded bg-surface-container-highest flex-shrink-0 flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-outline" data-icon="image">image</span>
+</div>
+<div class="w-16 h-16 rounded bg-surface-container-highest flex-shrink-0 flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-outline" data-icon="image">image</span>
+</div>
+<div class="w-16 h-16 rounded bg-surface-container-highest flex-shrink-0 flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-outline" data-icon="image">image</span>
+</div>
+</div>
+</div>
+<!-- Location Card -->
+<div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-standard flex flex-col justify-between md:col-span-2 lg:col-span-1">
+<div class="flex items-start justify-between mb-4">
+<div class="flex items-center gap-3">
+<div class="bg-secondary-container text-on-secondary-container p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined fill" data-icon="location_on">location_on</span>
+</div>
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">Location</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Captured</p>
+</div>
+</div>
+<button class="text-primary hover:bg-primary/10 rounded-full p-2 transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+<div class="bg-surface-container h-24 rounded flex items-center justify-center relative overflow-hidden">
+<span class="material-symbols-outlined text-outline absolute z-10" data-icon="map">map</span>
+<!-- Map placeholder -->
+</div>
+</div>
+</div>
+<!-- Inspection Result & Notes -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-standard mb-section shadow-sm">
+<h3 class="font-title-lg text-title-lg text-on-surface mb-6 border-b border-outline-variant pb-4">Final Assessment</h3>
+<div class="mb-6">
+<label class="block font-label-lg text-label-lg text-on-surface mb-3">Inspection Result</label>
+<div class="flex flex-col sm:flex-row gap-3">
+<label class="flex-1 cursor-pointer">
+<input checked="" class="peer sr-only" name="result" type="radio" value="pass"/>
+<div class="rounded-lg border border-outline-variant p-4 flex flex-col items-center justify-center gap-2 peer-checked:bg-success/10 peer-checked:border-success peer-checked:text-success transition-colors h-full text-on-surface-variant">
+<span class="material-symbols-outlined text-[32px]" data-icon="check_circle">check_circle</span>
+<span class="font-title-sm text-title-sm">PASS</span>
+</div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="peer sr-only" name="result" type="radio" value="fail"/>
+<div class="rounded-lg border border-outline-variant p-4 flex flex-col items-center justify-center gap-2 peer-checked:bg-error/10 peer-checked:border-error peer-checked:text-error transition-colors h-full text-on-surface-variant">
+<span class="material-symbols-outlined text-[32px]" data-icon="cancel">cancel</span>
+<span class="font-title-sm text-title-sm">FAIL</span>
+</div>
+</label>
+<label class="flex-1 cursor-pointer">
+<input class="peer sr-only" name="result" type="radio" value="correction"/>
+<div class="rounded-lg border border-outline-variant p-4 flex flex-col items-center justify-center gap-2 peer-checked:bg-warning/10 peer-checked:border-warning peer-checked:text-warning-dark transition-colors h-full text-on-surface-variant text-center">
+<span class="material-symbols-outlined text-[32px]" data-icon="build">build</span>
+<span class="font-title-sm text-title-sm">REQUIRES CORRECTION</span>
+</div>
+</label>
+</div>
+</div>
+<div>
+<label class="block font-label-lg text-label-lg text-on-surface mb-2" for="officer-notes">Officer Notes</label>
+<textarea class="w-full bg-surface-container-low border-outline-variant rounded-lg p-3 font-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary transition-shadow resize-none" id="officer-notes" placeholder="Add any final observations..." rows="4"></textarea>
+</div>
+</div>
+</main>
+<!-- Sticky Bottom Action -->
+<div class="fixed bottom-0 left-0 w-full bg-surface-container-lowest border-t border-outline-variant p-standard z-40 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] pb-safe">
+<div class="max-w-4xl mx-auto flex gap-standard">
+<button class="flex-1 bg-primary text-on-primary font-title-sm text-title-sm h-12 rounded-full hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 shadow-sm">
+<span class="material-symbols-outlined" data-icon="send">send</span>
+                Submit Inspection
+            </button>
+</div>
+</div>
+</body></html>

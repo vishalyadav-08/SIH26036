@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Assigned Inspections - MapanSetu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#bdc2ff",
+                        "surface-container-highest": "#e4e1ea",
+                        "primary-container": "#1a237e",
+                        "warning": "#f9a825",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#343d96",
+                        "outline-variant": "#c6c5d4",
+                        "surface-container-low": "#f5f2fb",
+                        "inverse-on-surface": "#f2eff8",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "on-secondary-fixed-variant": "#42465a",
+                        "secondary-fixed": "#dfe1fa",
+                        "on-secondary-fixed": "#171a2c",
+                        "on-surface-variant": "#454652",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "surface-container": "#efecf5",
+                        "background": "#fbf8ff",
+                        "inverse-surface": "#303036",
+                        "surface-dim": "#dbd9e1",
+                        "success": "#2e7d32",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#390c00",
+                        "surface-bright": "#fbf8ff",
+                        "secondary": "#5a5d72",
+                        "surface-variant": "#e4e1ea",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#e17c5a",
+                        "on-primary": "#ffffff",
+                        "on-background": "#1b1b21",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#8690ee",
+                        "outline": "#767683",
+                        "primary-fixed": "#e0e0ff",
+                        "primary": "#000666",
+                        "surface": "#f8f9fa",
+                        "on-surface": "#1b1b21",
+                        "tertiary": "#76546d",
+                        "tertiary-container": "#5c1800",
+                        "secondary-container": "#dcdef7",
+                        "secondary-fixed-dim": "#c3c5dd",
+                        "on-secondary-container": "#5e6177",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#000767",
+                        "tertiary-fixed": "#ffdbd0",
+                        "surface-tint": "#4c56af",
+                        "surface-container-high": "#eae7ef"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "major": "48px",
+                        "standard": "16px",
+                        "micro": "4px",
+                        "section": "32px",
+                        "compact": "8px",
+                        "gap": "12px",
+                        "card": "24px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"], "label-md": ["Inter"], "display-md": ["Inter"], "headline-sm": ["Inter"], "headline-lg": ["Inter"], "body-lg": ["Inter"], "display-sm": ["Inter"], "display-lg": ["Inter"], "headline-md": ["Inter"], "body-sm": ["Inter"], "body-md": ["Inter"], "title-sm": ["Inter"], "title-lg": ["Inter"], "title-md": ["Inter"], "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500" }],
+                        "display-md": ["45px", { "lineHeight": "52px", "fontWeight": "400" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400" }],
+                        "display-sm": ["36px", { "lineHeight": "44px", "fontWeight": "400" }],
+                        "display-lg": ["57px", { "lineHeight": "64px", "fontWeight": "400" }],
+                        "headline-md": ["28px", { "lineHeight": "36px", "fontWeight": "400" }],
+                        "body-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.4px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400" }],
+                        "title-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500" }],
+                        "title-lg": ["22px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500" }],
+                        "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-lg min-h-screen pb-[80px]">
+<!-- TopAppBar -->
+<header class="bg-surface w-full top-0 sticky z-40">
+<div class="flex justify-between items-center px-standard h-16 w-full max-w-7xl mx-auto">
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full p-2 active:scale-95 transition-transform duration-150">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<div class="font-headline-sm text-headline-sm font-bold text-primary">MapanSetu</div>
+<button class="hover:bg-surface-container-low transition-colors rounded-full overflow-hidden w-8 h-8 active:scale-95 transition-transform duration-150">
+<img alt="Officer profile picture" class="w-full h-full object-cover" data-alt="A small circular profile picture of an inspection officer in a smart casual uniform, smiling slightly, set against a bright modern corporate office background. The lighting is soft and professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCyCrowhxaH-dTj06Wamvny5Lacs5Fh49HnwNG_oHv60AMBS-UeSLbpcLmo7M6RjZVHPiFZtsMEH4VdJTSsgHrZbhKO0S2xHRiJFoipK5SeTBNjKmWS-XWlmXG8Vv9ERvNJfoPfr1qfyX0czjKVoCuL-aCYxijCFkOTcKPch2ZmSwg1eBs_lQDRRxrEI5nw1rqhSQNATu57LC7Dy6oy-6QAbMacKeU4MY_ekOvu8aPrlDnOqsz3krmocg"/>
+</button>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-standard py-standard">
+<!-- Header & Actions -->
+<div class="mb-section">
+<h1 class="font-display-sm text-display-sm mb-standard text-primary">Assigned Inspections</h1>
+<div class="flex gap-gap">
+<div class="relative flex-1">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full h-[40px] pl-10 pr-3 rounded-lg border border-outline bg-surface-container-low text-on-surface focus:border-primary focus:ring-1 focus:ring-primary font-body-lg text-body-lg" placeholder="Search App-ID or Business..." type="text"/>
+</div>
+<button class="h-[40px] px-4 rounded-lg bg-surface-container-high border border-outline-variant flex items-center gap-2 hover:bg-surface-container-highest transition-colors active:scale-95">
+<span class="material-symbols-outlined">filter_list</span>
+<span class="font-title-sm text-title-sm">Filter</span>
+</button>
+</div>
+</div>
+<!-- Bento Grid Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gap">
+<!-- Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-standard flex flex-col gap-standard shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-label-md text-label-md text-primary mb-1">APP-DEMO-001</div>
+<h2 class="font-title-lg text-title-lg text-on-surface">Counter Scale</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Demo Measurement...</p>
+</div>
+<div class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+                        Scheduled
+                    </div>
+</div>
+<div class="mt-auto pt-standard border-t border-surface-variant flex items-center text-on-surface-variant">
+<span class="material-symbols-outlined mr-2 text-[18px]">calendar_today</span>
+<span class="font-label-lg text-label-lg">Today 10:00 AM</span>
+</div>
+</div>
+<!-- Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-standard flex flex-col gap-standard shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-label-md text-label-md text-primary mb-1">APP-DEMO-042</div>
+<h2 class="font-title-lg text-title-lg text-on-surface">Fuel Dispenser</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">City Gas Station #4</p>
+</div>
+<div class="bg-warning/20 text-warning px-3 py-1 rounded-full font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">draft</span>
+                        Local Draft
+                    </div>
+</div>
+<div class="mt-auto pt-standard border-t border-surface-variant flex items-center text-on-surface-variant">
+<span class="material-symbols-outlined mr-2 text-[18px]">calendar_today</span>
+<span class="font-label-lg text-label-lg">Today 11:30 AM</span>
+</div>
+</div>
+<!-- Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-standard flex flex-col gap-standard shadow-sm hover:shadow-md transition-shadow">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-label-md text-label-md text-primary mb-1">APP-DEMO-088</div>
+<h2 class="font-title-lg text-title-lg text-on-surface">Platform Scale</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Industrial Logistics</p>
+</div>
+<div class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">cloud_sync</span>
+                        Ready to Sync
+                    </div>
+</div>
+<div class="mt-auto pt-standard border-t border-surface-variant flex items-center text-on-surface-variant">
+<span class="material-symbols-outlined mr-2 text-[18px]">event_available</span>
+<span class="font-label-lg text-label-lg">Yesterday 14:00 PM</span>
+</div>
+</div>
+<!-- Card 4 -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-standard flex flex-col gap-standard shadow-sm hover:shadow-md transition-shadow opacity-75">
+<div class="flex justify-between items-start">
+<div>
+<div class="font-label-md text-label-md text-primary mb-1">APP-DEMO-105</div>
+<h2 class="font-title-lg text-title-lg text-on-surface">Taxi Meter</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Metro Cabs HQ</p>
+</div>
+<div class="bg-success/20 text-success px-3 py-1 rounded-full font-label-md text-label-md flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+                        Completed
+                    </div>
+</div>
+<div class="mt-auto pt-standard border-t border-surface-variant flex items-center text-on-surface-variant">
+<span class="material-symbols-outlined mr-2 text-[18px]">event_available</span>
+<span class="font-label-lg text-label-lg">Yesterday 09:00 AM</span>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="bg-surface-container-low fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 px-compact pb-safe md:hidden shadow-md">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-highest transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check" data-weight="fill">fact_check</span>
+<span class="font-label-md text-label-md mt-1">Inspections</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-highest transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="sync">sync</span>
+<span class="font-label-md text-label-md mt-1">Sync</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-highest transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

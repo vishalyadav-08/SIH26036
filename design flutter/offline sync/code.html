@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sync Center - MapanSetu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error-container": "#93000a",
+                      "inverse-primary": "#bdc2ff",
+                      "surface-container-highest": "#e4e1ea",
+                      "primary-container": "#1a237e",
+                      "warning": "#f9a825",
+                      "on-error": "#ffffff",
+                      "primary-fixed-dim": "#bdc2ff",
+                      "error-container": "#ffdad6",
+                      "on-primary-fixed-variant": "#343d96",
+                      "outline-variant": "#c6c5d4",
+                      "surface-container-low": "#f5f2fb",
+                      "inverse-on-surface": "#f2eff8",
+                      "on-tertiary-fixed-variant": "#7b2e12",
+                      "on-secondary-fixed-variant": "#42465a",
+                      "secondary-fixed": "#dfe1fa",
+                      "on-secondary-fixed": "#171a2c",
+                      "on-surface-variant": "#454652",
+                      "tertiary-fixed-dim": "#ffb59d",
+                      "surface-container": "#efecf5",
+                      "background": "#fbf8ff",
+                      "inverse-surface": "#303036",
+                      "surface-dim": "#dbd9e1",
+                      "success": "#2e7d32",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-fixed": "#390c00",
+                      "surface-bright": "#fbf8ff",
+                      "secondary": "#5a5d72",
+                      "surface-variant": "#e4e1ea",
+                      "error": "#ba1a1a",
+                      "on-tertiary-container": "#e17c5a",
+                      "on-primary": "#ffffff",
+                      "on-background": "#1b1b21",
+                      "on-secondary": "#ffffff",
+                      "on-primary-container": "#8690ee",
+                      "outline": "#767683",
+                      "primary-fixed": "#e0e0ff",
+                      "primary": "#000666",
+                      "surface": "#f8f9fa",
+                      "on-surface": "#1b1b21",
+                      "tertiary": "#76546d",
+                      "tertiary-container": "#5c1800",
+                      "secondary-container": "#dcdef7",
+                      "secondary-fixed-dim": "#c3c5dd",
+                      "on-secondary-container": "#5e6177",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed": "#000767",
+                      "tertiary-fixed": "#ffdbd0",
+                      "surface-tint": "#4c56af",
+                      "surface-container-high": "#eae7ef"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "major": "48px",
+                      "standard": "16px",
+                      "micro": "4px",
+                      "section": "32px",
+                      "compact": "8px",
+                      "gap": "12px",
+                      "card": "24px"
+              },
+              "fontFamily": {
+                      "label-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "display-md": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "display-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "title-sm": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "title-md": ["Inter"],
+                      "label-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                      "display-md": ["45px", {"lineHeight": "52px", "fontWeight": "400"}],
+                      "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                      "display-sm": ["36px", {"lineHeight": "44px", "fontWeight": "400"}],
+                      "display-lg": ["57px", {"lineHeight": "64px", "fontWeight": "400"}],
+                      "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                      "body-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.4px", "fontWeight": "400"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                      "title-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                      "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                      "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col pb-24 md:pb-0">
+<!-- Shared Component: TopAppBar -->
+<header class="bg-surface dark:bg-surface-dim text-primary dark:text-primary-fixed-dim font-title-lg text-title-lg w-full top-0 sticky bg-surface dark:bg-surface-dim flat no shadows flex justify-between items-center px-standard h-16 w-full z-40">
+<div class="flex items-center gap-4">
+<button class="hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors active:scale-95 transition-transform duration-150 p-2 rounded-full">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary dark:text-primary-fixed-dim">MapanSetu</h1>
+</div>
+<div>
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest border border-outline-variant flex items-center justify-center">
+<img alt="Officer profile picture" class="object-cover w-full h-full" data-alt="A small, circular profile picture of an officer. The portrait is well-lit, professional, and clear, fitting the modern corporate aesthetic of the application. The background is a subtle gradient matching the system's surface container colors." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB38t2-W-jWjTRF31nmY48rCe8qjG7ToNpLCh4XiL4j0KsOGGCpUsa77aPIVFgU2Qf_kNZXSErqWUxpuGG-lY0-O_wEg8WyFiNaeiDuS6uHUlhmygQLfiShEtESM7Z11s-ivEGy0rnPtrxKaoW4nuksDYEj8Jb_V38t6HIB6ZQBUHd6dUXXUuMg98mLwnAzu53fJn0X4bR16wjNyfms3jNEMw6y3mhIzjTzTb0joxJm8mGTAWNLKKAe-w"/>
+</div>
+</div>
+</header>
+<!-- Top Navigation for Desktop (Hidden on Mobile) -->
+<nav class="hidden md:flex justify-center bg-surface border-b border-surface-variant px-standard z-30 shadow-sm sticky top-16">
+<div class="flex space-x-8">
+<a class="flex flex-col items-center justify-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="fact_check">fact_check</span>
+<span class="font-label-md text-label-md">Inspections</span>
+</a>
+<a class="flex flex-col items-center justify-center px-4 py-3 text-primary font-bold border-b-2 border-primary" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="sync" style="font-variation-settings: 'FILL' 1;">sync</span>
+<span class="font-label-md text-label-md">Sync</span>
+</a>
+<a class="flex flex-col items-center justify-center px-4 py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</div>
+</nav>
+<main class="flex-grow flex flex-col items-center w-full px-standard md:px-major py-section gap-section max-w-4xl mx-auto">
+<!-- Page Header -->
+<div class="w-full">
+<h2 class="font-display-sm text-display-sm text-on-surface mb-2">Sync Center</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Manage your data synchronization.</p>
+</div>
+<!-- Connectivity Banner -->
+<div class="w-full bg-error-container text-on-error-container rounded-lg p-standard flex items-start gap-3 border border-error/20">
+<span class="material-symbols-outlined mt-0.5" data-icon="wifi_off">wifi_off</span>
+<div>
+<h3 class="font-title-sm text-title-sm font-semibold">Offline Mode</h3>
+<p class="font-body-sm text-body-sm mt-1">Syncing will resume when connectivity returns.</p>
+</div>
+</div>
+<!-- Sync Status Card -->
+<div class="w-full bg-surface-container-lowest rounded-lg p-card shadow-sm border border-outline-variant flex flex-col md:flex-row items-center justify-between gap-standard">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-2xl" data-icon="cloud_upload">cloud_upload</span>
+</div>
+<div>
+<h3 class="font-title-md text-title-md text-on-surface">3 Items Ready</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Waiting for connection to sync.</p>
+</div>
+</div>
+<button class="w-full md:w-auto h-10 px-6 rounded-md bg-surface-container-high text-on-surface-variant font-title-sm text-title-sm opacity-50 cursor-not-allowed flex items-center justify-center gap-2" disabled="">
+<span class="material-symbols-outlined text-lg" data-icon="sync">sync</span>
+                Sync All Data
+            </button>
+</div>
+<!-- Pending Operations List -->
+<div class="w-full">
+<h3 class="font-title-md text-title-md text-on-surface mb-standard">Pending Operations</h3>
+<div class="flex flex-col gap-compact">
+<!-- Item 1: Local Draft -->
+<div class="bg-surface-container-lowest rounded-lg p-standard border border-outline-variant flex items-center justify-between gap-4">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-secondary mt-0.5" data-icon="draft">draft</span>
+<div>
+<p class="font-body-md text-body-md font-medium text-on-surface">APP-DEMO-001</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Local Draft</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant px-2 py-1 bg-surface-variant rounded-full">Pending</span>
+</div>
+<!-- Item 2: Ready to Sync -->
+<div class="bg-surface-container-lowest rounded-lg p-standard border border-outline-variant flex items-center justify-between gap-4">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary mt-0.5" data-icon="image">image</span>
+<div>
+<p class="font-body-md text-body-md font-medium text-on-surface">Evidence Photo</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Ready to Sync</p>
+</div>
+</div>
+<span class="font-label-sm text-label-sm text-primary px-2 py-1 bg-primary-container/20 rounded-full flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="cloud_queue">cloud_queue</span> Queue
+                     </span>
+</div>
+<!-- Item 3: Failed -->
+<div class="bg-surface-container-lowest rounded-lg p-standard border border-error-container bg-error-container/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-error mt-0.5" data-icon="error">error</span>
+<div>
+<p class="font-body-md text-body-md font-medium text-on-surface">APP-DEMO-002</p>
+<p class="font-body-sm text-body-sm text-error mt-1">Failed: Connection timeout during upload.</p>
+</div>
+</div>
+<button class="h-8 px-4 rounded-md border border-error text-error font-title-sm text-title-sm hover:bg-error-container transition-colors self-end sm:self-auto flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="refresh">refresh</span>
+                        Retry
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Shared Component: BottomNavBar (Mobile Only) -->
+<nav class="md:hidden bg-surface-container-low dark:bg-surface-container-high font-label-md text-label-md font-headline-sm text-headline-sm font-bold text-primary fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 px-compact pb-safe shadow-md border-t border-transparent">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-secondary-fixed-variant px-4 py-1 hover:bg-surface-container-highest dark:hover:bg-secondary-fixed-dim transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-secondary-fixed-variant px-4 py-1 hover:bg-surface-container-highest dark:hover:bg-secondary-fixed-dim transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="fact_check">fact_check</span>
+<span class="font-label-md text-label-md">Inspections</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-xl px-4 py-1 hover:bg-surface-container-highest dark:hover:bg-secondary-fixed-dim transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="sync" style="font-variation-settings: 'FILL' 1;">sync</span>
+<span class="font-label-md text-label-md font-bold">Sync</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-secondary-fixed-variant px-4 py-1 hover:bg-surface-container-highest dark:hover:bg-secondary-fixed-dim transition-colors active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+</body></html>

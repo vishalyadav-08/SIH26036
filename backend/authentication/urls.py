@@ -1,5 +1,10 @@
-"""Routes for the authentication module, mounted under /api/v1/ by root/urls.py."""
+"""Auth routes, mounted at /api/v1/auth/ by root/urls.py."""
 
-from django.urls import path  # noqa: F401
+from django.urls import path
 
-urlpatterns = []
+from .views import GoogleLoginView, LoginView
+
+urlpatterns = [
+    path("login/", LoginView.as_view(), name="auth-login"),
+    path("google/", GoogleLoginView.as_view(), name="auth-google"),
+]

@@ -32,6 +32,13 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
+# Google sign-in -------------------------------------------------------------
+# External identity is an extension point (ARCHITECTURE.md section 12). Leave
+# the client id unset and the endpoint reports itself unavailable rather than
+# half-working.
+
+GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
+
 # Core ----------------------------------------------------------------------
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-change-me-before-any-deployment")
@@ -39,6 +46,8 @@ SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-change-me-before-any-deplo
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = [h for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h]
+
+AUTH_USER_MODEL = "authentication.User"
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -176,6 +185,12 @@ CORS_ALLOW_CREDENTIALS = True
 # DRF -----------------------------------------------------------------------
 
 REST_FRAMEWORK = {
+    # Bearer token in the Authorization header, per ARCHITECTURE.md section 7.
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "EXCEPTION_HANDLER": "common.exceptions.exception_handler",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_THROTTLE_CLASSES": ("rest_framework.throttling.ScopedRateThrottle",),
     # Public certificate verification is unauthenticated (ADR-017), so it is
@@ -183,6 +198,7 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_RATES": {
         "public_verify": "30/min",
         "login": "10/min",
+        "google_login": "10/min",
     },
 }
 

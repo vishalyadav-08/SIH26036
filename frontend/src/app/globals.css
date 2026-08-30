@@ -1,23 +1,123 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap");
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ─── MapanSetu Design Tokens ─────────────────────────────────────────── */
+@theme {
+  /* Primary — deep navy (MapanSetu brand) */
+  --color-primary: #000666;
+  --color-primary-dark: #00044d;
+  --color-primary-container: #1a237e;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #8690ee;
+  --color-primary-fixed: #e0e0ff;
+  --color-primary-fixed-dim: #bdc2ff;
+  --color-on-primary-fixed: #000767;
+  --color-on-primary-fixed-variant: #343d96;
+  --color-surface-tint: #4c56af;
+
+  /* Secondary — slate blue */
+  --color-secondary: #515f74;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #d5e3fc;
+  --color-on-secondary-container: #57657a;
+  --color-secondary-fixed: #d5e3fc;
+  --color-secondary-fixed-dim: #b9c7df;
+  --color-on-secondary-fixed: #0d1c2e;
+  --color-on-secondary-fixed-variant: #3a485b;
+
+  /* Tertiary — teal */
+  --color-tertiary: #00201c;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #003732;
+  --color-on-tertiary-container: #34a89c;
+  --color-tertiary-fixed: #89f5e7;
+  --color-tertiary-fixed-dim: #6bd8cb;
+  --color-on-tertiary-fixed: #00201d;
+  --color-on-tertiary-fixed-variant: #005049;
+
+  /* Surface & Background */
+  --color-background: #f7f9fb;
+  --color-on-background: #191c1e;
+  --color-surface: #f7f9fb;
+  --color-on-surface: #191c1e;
+  --color-surface-variant: #e0e3e5;
+  --color-on-surface-variant: #454652;
+  --color-surface-bright: #ffffff;
+  --color-surface-dim: #d8dadc;
+
+  /* Surface containers */
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f2f4f6;
+  --color-surface-container: #eceef0;
+  --color-surface-container-high: #e6e8ea;
+  --color-surface-container-highest: #e0e3e5;
+
+  /* Semantic */
+  --color-surface-border: #e2e8f0;
+  --color-text-main: #1e293b;
+  --color-outline: #767683;
+  --color-outline-variant: #c6c5d4;
+
+  /* Status colors */
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+  --color-danger-red: #b91c1c;
+  --color-warning-amber: #b45309;
+  --color-success-green: #166534;
+  --color-info-blue: #1d4ed8;
+
+  /* Typography */
+  --font-sans: "Inter", "Noto Sans", ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── Base ─────────────────────────────────────────────────────────────── */
+html {
+  /* Force light mode — government service sites use fixed light mode */
+  color-scheme: light;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: var(--color-background);
+  color: var(--color-text-main);
+  font-family: var(--font-sans);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Focus Ring (WCAG 2.1 AA) ─────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* ─── Smooth transitions ────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  a,
+  button {
+    transition-property: color, background-color, border-color, box-shadow,
+      opacity, transform;
+    transition-duration: 150ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* ─── Skip link (WCAG keyboard navigation) ─────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  z-index: 9999;
+  padding: 0.5rem 1rem;
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+.skip-link:focus {
+  top: 0;
 }

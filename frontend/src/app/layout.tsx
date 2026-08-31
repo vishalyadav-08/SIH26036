@@ -1,11 +1,15 @@
 import type { Metadata } from "next";
+import { Inter } from "next/font/google";
 import { AuthProvider } from "@/components/providers/AuthProvider";
+import { LanguageProvider } from "@/components/providers/LanguageProvider";
 
 import "./globals.css";
 
+const inter = Inter({ subsets: ["latin"] });
+
 export const metadata: Metadata = {
   title: "MapanSetu",
-  description: "Verification lifecycle for weighing and measuring instruments.",
+  description: "Digital Verification Portal for Instruments",
 };
 
 export default function RootLayout({
@@ -15,10 +19,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <AuthProvider>{children}</AuthProvider>
+      <body className={inter.className}>
+        <LanguageProvider>
+          <AuthProvider>{children}</AuthProvider>
+        </LanguageProvider>
       </body>
     </html>
   );
 }
-

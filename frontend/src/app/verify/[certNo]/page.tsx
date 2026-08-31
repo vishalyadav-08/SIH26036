@@ -32,10 +32,13 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PublicHeader } from "@/components/layout/PublicHeader";
+import { useLanguage } from "@/components/providers/LanguageProvider";
 
 export default function PublicCertificateVerificationPage({
   params,
 }: PageProps) {
+  const { t } = useLanguage();
   const resolvedParams = use(params);
   const rawCertNo = resolvedParams?.certNo || "";
   const decodedCertNo = decodeURIComponent(rawCertNo);
@@ -187,39 +190,10 @@ export default function PublicCertificateVerificationPage({
   const StatusIcon = theme.icon;
 
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground selection:bg-primary/20">
-      {/* Header */}
-      <header className="sticky top-0 z-30 bg-background/95 backdrop-blur-sm border-b shadow-xs print:hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="sm" asChild className="gap-2">
-              <Link href="/">
-                <ArrowLeft className="w-4 h-4" />
-                Back to Lookup
-              </Link>
-            </Button>
-            <div className="h-4 w-px bg-border" />
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground">
-                <Scale className="w-4 h-4" />
-              </div>
-              <span className="font-bold text-base tracking-tight">MapanSetu</span>
-              <Badge variant="secondary" className="hidden sm:inline-flex uppercase tracking-wider text-[10px]">
-                SIH26036
-              </Badge>
-            </div>
-          </div>
-
-          <nav className="flex items-center gap-3">
-            <Button variant="outline" size="sm" asChild className="gap-1.5">
-              <Link href="/login">
-                Portal Sign In
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </Button>
-          </nav>
-        </div>
-      </header>
+    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-blue-600/20">
+      <div className="print:hidden">
+        <PublicHeader />
+      </div>
 
       {/* Main Verification Container */}
       <main

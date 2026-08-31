@@ -2,8 +2,11 @@
 
 import Link from 'next/link';
 import { Scale, Globe, ShieldCheck } from 'lucide-react';
+import { useLanguage } from '@/components/providers/LanguageProvider';
 
 export function PublicHeader() {
+  const { language, setLanguage, t } = useLanguage();
+
   return (
     <header className="sticky top-0 z-50 bg-[#000666] text-white shadow-md border-b border-[#1a237e]">
       {/* Prototype Top Bar */}
@@ -11,7 +14,7 @@ export function PublicHeader() {
         <div className="flex items-center gap-2">
           <ShieldCheck className="w-3.5 h-3.5 text-blue-300" aria-hidden="true" />
           <span className="font-medium">MapanSetu</span>
-          <span className="text-blue-400" aria-hidden="true">•</span>
+          <span className="text-blue-400" aria-hidden="true">|</span>
           <span>Online Verification &amp; Instrument Lifecycle</span>
         </div>
         <div className="flex items-center gap-3">
@@ -20,12 +23,12 @@ export function PublicHeader() {
           </span>
           <button
             type="button"
+            onClick={() => setLanguage(language === 'en' ? 'hi' : 'en')}
             className="flex items-center gap-1 hover:text-white transition-colors cursor-pointer bg-blue-900/60 hover:bg-blue-800 px-2 py-0.5 rounded"
-            title="Switch language / भाषा बदलें"
             aria-label="Switch language"
           >
             <Globe className="w-3.5 h-3.5" aria-hidden="true" />
-            <span>हिंदी</span>
+            <span>{language === 'en' ? 'हिंदी' : 'English'}</span>
           </button>
         </div>
       </div>
@@ -46,7 +49,7 @@ export function PublicHeader() {
               MapanSetu
             </div>
             <span className="text-[11px] text-blue-200 block -mt-0.5 font-medium tracking-wide">
-              National Metrology Gateway
+              {t('home.title')}
             </span>
           </div>
         </Link>
@@ -57,19 +60,13 @@ export function PublicHeader() {
             href="/"
             className="px-3 py-1.5 rounded-md text-blue-100 hover:bg-blue-900/50 hover:text-white transition-colors"
           >
-            Verify Certificate
+            {t('nav.home')}
           </Link>
           <Link
-            href="/app"
+            href="/verify"
             className="px-3 py-1.5 rounded-md text-blue-100 hover:bg-blue-900/50 hover:text-white transition-colors"
           >
-            Business Portal
-          </Link>
-          <Link
-            href="/admin"
-            className="px-3 py-1.5 rounded-md text-blue-100 hover:bg-blue-900/50 hover:text-white transition-colors"
-          >
-            Admin Portal
+            {t('nav.verify')}
           </Link>
         </nav>
 
@@ -79,7 +76,7 @@ export function PublicHeader() {
             href="/login"
             className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm font-semibold border border-white/20 transition-colors"
           >
-            Sign In
+            {t('nav.login')}
           </Link>
         </div>
       </div>

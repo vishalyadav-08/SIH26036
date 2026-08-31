@@ -30,17 +30,15 @@ export default function AdminDashboardPage() {
 
     Promise.resolve().then(async () => {
       try {
-        const [dash, apps, offs, audits] = await Promise.all([
+        const [dash, apps, offs] = await Promise.all([
           getAdminDashboardData(),
           getApplications(),
           getOfficers(),
-          getAuditLogs(),
         ]);
         if (isMounted) {
           setData(dash);
           setRecentApps(apps.slice(0, 5));
           setOfficers(offs);
-          setRecentAudit(audits.slice(0, 4));
         }
       } finally {
         if (isMounted) setLoading(false);

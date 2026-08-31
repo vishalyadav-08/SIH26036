@@ -6,30 +6,15 @@ import {
   Search,
   ExternalLink,
 } from "lucide-react";
-import { getInstruments } from "@/services/instruments/instruments.service";
+import { useInstrumentList } from "@/hooks/useInstruments";
+import { InstrumentStatusBadge } from "@/components/instruments/InstrumentStatusBadge";
 import { Instrument } from "@/types/instrument";
 
 export default function AdminInstrumentsPage() {
-  const [instruments, setInstruments] = useState<Instrument[]>([]);
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    Promise.resolve().then(async () => {
-      try {
-        const list = await getInstruments();
-        if (isMounted) setInstruments(list);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  // Cached across route changes; no refetch when returning to this page.
+  const { instruments, isPending: loading } = useInstrumentList();
 
   const filtered = instruments.filter((ins) => {
     const q = search.toLowerCase();
@@ -118,15 +103,7 @@ export default function AdminInstrumentsPage() {
                       0 – {ins.capacity} {ins.capacityUnit || "kg"}
                     </td>
                     <td className="py-3.5 px-4">
-                      <span
-                        className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                          ins.status === "ACTIVE"
-                            ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
-                            : "bg-amber-50 text-amber-800 border border-amber-200"
-                        }`}
-                      >
-                        {ins.status}
-                      </span>
+                      <InstrumentStatusBadge status={ins.status} />
                     </td>
                     <td className="py-3.5 px-4 font-mono text-slate-600">
                       {ins.nextVerificationDue

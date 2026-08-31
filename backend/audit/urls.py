@@ -1,5 +1,10 @@
-"""Routes for the audit module, mounted under /api/v1/ by root/urls.py."""
+"""Audit routes, mounted at /api/v1/audit/ by root/urls.py."""
 
-from django.urls import path  # noqa: F401
+from django.urls import path
 
-urlpatterns = []
+from .views import AuditListView, AuditVerifyView
+
+urlpatterns = [
+    path("", AuditListView.as_view(), name="audit-list"),
+    path("verify/", AuditVerifyView.as_view(), name="audit-verify"),
+]

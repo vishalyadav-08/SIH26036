@@ -1,5 +1,9 @@
-"""Routes for the common module, mounted under /api/v1/ by root/urls.py."""
+"""Cross-cutting routes mounted at /api/v1/ by root/urls.py."""
 
-from django.urls import path  # noqa: F401
+from django.urls import path
 
-urlpatterns = []
+from .views import AdminDashboardView
+
+urlpatterns = [
+    path("dashboards/admin", AdminDashboardView.as_view(), name="admin-dashboard"),
+]

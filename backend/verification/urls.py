@@ -1,5 +1,9 @@
-"""Routes for the verification module, mounted under /api/v1/ by root/urls.py."""
+"""Public verification route, mounted at /api/v1/ by root/urls.py."""
 
-from django.urls import path  # noqa: F401
+from django.urls import path
 
-urlpatterns = []
+from .views import PublicVerifyView
+
+urlpatterns = [
+    path("certificates/verify", PublicVerifyView.as_view(), name="public-verify"),
+]

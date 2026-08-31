@@ -204,7 +204,13 @@ class RoleTests(AuthTestCase):
             make_user("DUPE@example.test")
 
 
+@override_settings(
+    PASSWORD_HASHERS=["django.contrib.auth.hashers.Argon2PasswordHasher"]
+)
 class PasswordHashingTests(AuthTestCase):
+    """Pins the real hasher: the suite runs on a fast one for speed, but the
+    ADR-009 guarantee must be tested against what production actually uses."""
+
     def test_password_is_hashed_with_argon2(self):
         user = make_user("hash@example.test")
 
@@ -393,3 +399,105 @@ class GoogleDisabledTests(AuthTestCase):
         response = self.client.post(reverse("auth-google"), {"idToken": "fake"})
 
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+
+class SignupTests(AuthTestCase):
+    """Self-registration always produces a BUSINESS account."""
+
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("auth-signup")
+        self.payload = {
+            "email": "shop@example.test",
+            "password": "synthetic-password-123",
+            "displayName": "Shop Owner",
+            "legalName": "Shop Ltd",
+            "contactName": "Owner",
+            "address": "Synthetic address",
+        }
+
+    def test_signup_creates_a_business_account_and_signs_in(self):
+        response = self.client.post(self.url, self.payload)
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["user"]["role"], "BUSINESS")
+        self.assertIsNotNone(response.data["user"]["businessId"])
+        self.assertTrue(response.data["accessToken"])
+
+    def test_signup_cannot_choose_a_privileged_role(self):
+        """The whole authorization model rests on this."""
+        for role in ["ADMIN", "OFFICER"]:
+            with self.subTest(role=role):
+                response = self.client.post(
+                    self.url,
+                    {**self.payload, "email": f"{role.lower()}@example.test", "role": role},
+                )
+
+                self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+                self.assertEqual(response.data["user"]["role"], "BUSINESS")
+
+    def test_duplicate_email_is_rejected(self):
+        self.client.post(self.url, self.payload)
+
+        response = self.client.post(self.url, self.payload)
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_password_is_never_echoed(self):
+        response = self.client.post(self.url, self.payload)
+
+        self.assertNotIn("synthetic-password-123", str(response.data))
+
+    def test_business_details_are_required(self):
+        response = self.client.post(
+            self.url,
+            {
+                "email": "x@example.test",
+                "password": "synthetic-password-123",
+                "displayName": "X",
+            },
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+
+@override_settings(GOOGLE_OAUTH_CLIENT_ID="test-client-id.apps.googleusercontent.com")
+class GoogleSignupTests(AuthTestCase):
+    def setUp(self):
+        super().setUp()
+        self.url = reverse("auth-google-signup")
+        self.business = {
+            "legalName": "Google Shop Ltd",
+            "contactName": "Owner",
+            "address": "Synthetic address",
+        }
+
+    def _verify_returns(self, claims):
+        return patch(
+            "authentication.services.google_id_token.verify_oauth2_token",
+            return_value=claims,
+        )
+
+    def test_google_signup_creates_a_business_account(self):
+        with self._verify_returns({**GOOGLE_CLAIMS, "email": "new@gmail.test"}):
+            response = self.client.post(self.url, {"idToken": "fake", **self.business})
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["user"]["role"], "BUSINESS")
+        self.assertIsNotNone(response.data["user"]["businessId"])
+
+    def test_google_signup_is_refused_when_the_account_exists(self):
+        make_user("owner@example.test")
+
+        with self._verify_returns(GOOGLE_CLAIMS):
+            response = self.client.post(self.url, {"idToken": "fake", **self.business})
+
+        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+
+    def test_plain_google_sign_in_still_never_provisions(self):
+        """Sign-in must stay link-only, or the role rule is bypassable."""
+        with self._verify_returns({**GOOGLE_CLAIMS, "email": "stranger@gmail.test"}):
+            response = self.client.post(reverse("auth-google"), {"idToken": "fake"})
+
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertFalse(User.objects.filter(email="stranger@gmail.test").exists())

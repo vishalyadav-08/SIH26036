@@ -14,6 +14,14 @@ from rest_framework.exceptions import APIException
 from rest_framework.views import exception_handler as drf_exception_handler
 
 
+class Conflict(APIException):
+    """409 — the request conflicts with existing state, e.g. duplicate identity."""
+
+    status_code = status.HTTP_409_CONFLICT
+    default_detail = "The request conflicts with the current state."
+    default_code = "CONFLICT"
+
+
 class InvalidCredentials(APIException):
     """Login failed — for any reason.
 

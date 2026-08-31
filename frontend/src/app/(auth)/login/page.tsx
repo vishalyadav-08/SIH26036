@@ -19,6 +19,8 @@ import {
   UserCheck,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
+import { readApiError } from "@/lib/api-error";
 import { GuestGuard } from "@/components/auth/GuestGuard";
 import { loginSchema, LoginFormData } from "@/schemas/auth/auth.schema";
 
@@ -27,7 +29,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const redirectParam = searchParams?.get("redirect");
 
-  const { login } = useAuth();
+  const { login, loginWithGoogle } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -96,10 +98,27 @@ function LoginForm() {
     }
   };
 
-  const fillDemoCredentials = (email: string) => {
-    setValue("email", email, { shouldValidate: true });
-    setValue("password", "synthetic-password", { shouldValidate: true });
+  /**
+   * Google hands back an ID token; the API decides whether it maps to an
+   * account. A Google identity with no MapanSetu account is refused here —
+   * signing in must never create one.
+   */
+  const handleGoogleCredential = async (idToken: string) => {
     setAuthError(null);
+
+    try {
+      const signedIn = await loginWithGoogle(idToken);
+
+      router.push(
+        signedIn.role === "BUSINESS"
+          ? "/app"
+          : signedIn.role === "OFFICER"
+          ? "/field"
+          : "/admin"
+      );
+    } catch (err) {
+      setAuthError(readApiError(err, "Google sign-in failed."));
+    }
   };
 
   return (
@@ -253,67 +272,42 @@ function LoginForm() {
               </button>
             </form>
 
-            {/* Prototype Demo Credentials Section */}
-            <div className="pt-4 border-t border-slate-100 space-y-2.5">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                Quick 1-Click Demo Fill (SIH Prototype Evaluation):
-              </span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => fillDemoCredentials("business@example.test")}
-                  className="flex items-center gap-2 p-2 rounded-lg bg-blue-50/60 hover:bg-blue-100 border border-blue-200 text-left transition-colors cursor-pointer"
-                >
-                  <Building2 className="w-4 h-4 text-blue-600 shrink-0" />
-                  <div className="overflow-hidden">
-                    <div className="text-xs font-bold text-slate-900 truncate">
-                      Business
-                    </div>
-                    <div className="text-[10px] text-slate-500 font-mono truncate">
-                      business@...
-                    </div>
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => fillDemoCredentials("admin@example.test")}
-                  className="flex items-center gap-2 p-2 rounded-lg bg-indigo-50/60 hover:bg-indigo-100 border border-indigo-200 text-left transition-colors cursor-pointer"
-                >
-                  <Shield className="w-4 h-4 text-indigo-600 shrink-0" />
-                  <div className="overflow-hidden">
-                    <div className="text-xs font-bold text-slate-900 truncate">
-                      Admin
-                    </div>
-                    <div className="text-[10px] text-slate-500 font-mono truncate">
-                      admin@...
-                    </div>
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => fillDemoCredentials("officer@example.test")}
-                  className="flex items-center gap-2 p-2 rounded-lg bg-emerald-50/60 hover:bg-emerald-100 border border-emerald-200 text-left transition-colors cursor-pointer"
-                >
-                  <UserCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <div className="overflow-hidden">
-                    <div className="text-xs font-bold text-slate-900 truncate">
-                      Field Officer
-                    </div>
-                    <div className="text-[10px] text-slate-500 font-mono truncate">
-                      officer@...
-                    </div>
-                  </div>
-                </button>
-              </div>
-
-              <div className="text-[11px] text-slate-500 text-center pt-1">
-                Password:{" "}
-                <span className="font-mono font-semibold">
-                  synthetic-password
+            {/* Google sign-in */}
+            <div className="pt-4 border-t border-slate-100 space-y-3">
+              <div className="flex items-center gap-3">
+                <span className="h-px flex-1 bg-slate-200" />
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                  or
                 </span>
+                <span className="h-px flex-1 bg-slate-200" />
               </div>
+
+              <GoogleAuthButton
+                text="signin_with"
+                disabled={isSubmitting}
+                onCredential={handleGoogleCredential}
+              />
+
+              <p className="text-center text-[11px] text-slate-500">
+                Google sign-in works for an account that already exists.{" "}
+                <Link
+                  href="/signup"
+                  className="font-semibold text-blue-600 hover:text-blue-800"
+                >
+                  Create one
+                </Link>{" "}
+                if you are new.
+              </p>
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 text-center text-xs text-slate-600">
+              New shop owner?{" "}
+              <Link
+                href="/signup"
+                className="font-semibold text-blue-600 hover:text-blue-800"
+              >
+                Register your business
+              </Link>
             </div>
           </div>
 

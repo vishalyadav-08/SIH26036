@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
+  Pencil,
   Gauge,
   Plus,
   Search,
@@ -13,39 +14,27 @@ import {
   ArrowRight,
   FileCheck2,
 } from "lucide-react";
-import { getInstruments } from "@/services/instruments/instruments.service";
+import { InstrumentStatusBadge } from "@/components/instruments/InstrumentStatusBadge";
+import { useInstrumentList } from "@/hooks/useInstruments";
 import { Instrument } from "@/types/instrument";
 
 const STATUS_FILTERS: { label: string; value: string }[] = [
   { label: "All Instruments", value: "ALL" },
-  { label: "Active & Verified", value: "ACTIVE" },
+  { label: "Not yet verified", value: "REGISTERED" },
+  { label: "Verified", value: "ACTIVE" },
   { label: "Pending Verification", value: "PENDING_VERIFICATION" },
   { label: "Expired", value: "EXPIRED" },
   { label: "Rejected", value: "REJECTED" },
+  { label: "Retired", value: "INACTIVE" },
 ];
 
 export default function BusinessInstrumentsPage() {
-  const [instruments, setInstruments] = useState<Instrument[]>([]);
   const [selectedFilter, setSelectedFilter] = useState("ALL");
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    Promise.resolve().then(async () => {
-      try {
-        const list = await getInstruments();
-        if (isMounted) setInstruments(list);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  // Cached by TanStack Query: returning to this route reuses the rows instead
+  // of refetching, so navigation is instant.
+  const { instruments, isPending: loading } = useInstrumentList();
 
   const filtered = instruments.filter((ins) => {
     if (selectedFilter !== "ALL" && ins.status !== selectedFilter) {
@@ -179,24 +168,7 @@ export default function BusinessInstrumentsPage() {
                       0 – {ins.capacity} {ins.capacityUnit}
                     </td>
                     <td className="py-3.5 px-4">
-                      <span
-                        className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                          ins.status === "ACTIVE"
-                            ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
-                            : ins.status === "PENDING_VERIFICATION"
-                            ? "bg-amber-50 text-amber-800 border border-amber-200"
-                            : "bg-rose-50 text-rose-800 border border-rose-200"
-                        }`}
-                      >
-                        {ins.status === "ACTIVE" ? (
-                          <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                        ) : ins.status === "PENDING_VERIFICATION" ? (
-                          <Clock className="w-3 h-3 text-amber-600" />
-                        ) : (
-                          <AlertTriangle className="w-3 h-3 text-rose-600" />
-                        )}
-                        <span>{ins.status.replace(/_/g, " ")}</span>
-                      </span>
+                      <InstrumentStatusBadge status={ins.status} />
                     </td>
                     <td className="py-3.5 px-4 font-mono text-slate-600">
                       {ins.nextVerificationDue
@@ -231,6 +203,13 @@ export default function BusinessInstrumentsPage() {
                             <span>Apply</span>
                           </Link>
                         )}
+                        <Link
+                          href={`/app/instruments/${ins.id}/edit`}
+                          className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 rounded-lg transition-colors"
+                        >
+                          <Pencil className="w-3 h-3" />
+                          <span>Edit</span>
+                        </Link>
                         <Link
                           href={`/app/instruments/${ins.id}`}
                           className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg transition-colors"

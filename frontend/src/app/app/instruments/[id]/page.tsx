@@ -13,7 +13,11 @@ import {
   FileCheck2,
   ShieldCheck,
 } from "lucide-react";
-import { getInstrumentById } from "@/services/instruments/instruments.service";
+import { Pencil, Archive } from "lucide-react";
+
+import { readApiError } from "@/lib/api-error";
+import { useInstrument, useRetireInstrument } from "@/hooks/useInstruments";
+import { InstrumentStatusBadge } from "@/components/instruments/InstrumentStatusBadge";
 import { Instrument } from "@/types/instrument";
 
 export default function InstrumentPassportPage({
@@ -22,25 +26,13 @@ export default function InstrumentPassportPage({
   params: Promise<{ id: string }>;
 }) {
   const resolvedParams = use(params);
-  const [instrument, setInstrument] = useState<Instrument | null>(null);
-  const [loading, setLoading] = useState(true);
+  // Cached: arriving here from the registry renders instantly, and the
+  // retire mutation writes straight into this cache entry.
+  const { data: instrument, isPending: loading } = useInstrument(resolvedParams.id);
+  const retire = useRetireInstrument(resolvedParams.id);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    Promise.resolve().then(async () => {
-      try {
-        const found = await getInstrumentById(resolvedParams.id);
-        if (isMounted) setInstrument(found);
-      } finally {
-        if (isMounted) setLoading(false);
-      }
-    });
-
-    return () => {
-      isMounted = false;
-    };
-  }, [resolvedParams.id]);
+  const [confirmRetire, setConfirmRetire] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   if (loading) {
     return (
@@ -82,27 +74,10 @@ export default function InstrumentPassportPage({
             <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight font-mono">
               {instrument.instrumentNumber}
             </h1>
-            <span
-              className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-bold uppercase ${
-                instrument.status === "ACTIVE"
-                  ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
-                  : instrument.status === "PENDING_VERIFICATION"
-                  ? "bg-amber-50 text-amber-800 border border-amber-200"
-                  : "bg-rose-50 text-rose-800 border border-rose-200"
-              }`}
-            >
-              {instrument.status === "ACTIVE" ? (
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
-              ) : instrument.status === "PENDING_VERIFICATION" ? (
-                <Clock className="w-3.5 h-3.5 text-amber-600" />
-              ) : (
-                <AlertTriangle className="w-3.5 h-3.5 text-rose-600" />
-              )}
-              <span>{instrument.status.replace(/_/g, " ")}</span>
-            </span>
+            <InstrumentStatusBadge status={instrument.status} />
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <Link
               href={`/app/applications/new?instrumentId=${encodeURIComponent(
                 instrument.id
@@ -112,9 +87,83 @@ export default function InstrumentPassportPage({
               <FileCheck2 className="w-4 h-4" />
               <span>Apply for Verification</span>
             </Link>
+
+            <Link
+              href={`/app/instruments/${instrument.id}/edit`}
+              className="inline-flex items-center gap-1.5 px-4 py-2 border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold rounded-xl transition-colors"
+            >
+              <Pencil className="w-4 h-4" />
+              <span>Edit Details</span>
+            </Link>
+
+            {instrument.status !== "INACTIVE" && (
+              <button
+                type="button"
+                onClick={() => setConfirmRetire(true)}
+                className="inline-flex items-center gap-1.5 px-4 py-2 border border-rose-300 hover:bg-rose-50 text-rose-700 text-xs font-bold rounded-xl transition-colors"
+              >
+                <Archive className="w-4 h-4" />
+                <span>Retire Instrument</span>
+              </button>
+            )}
           </div>
         </div>
       </div>
+
+      {actionError && (
+        <div
+          role="alert"
+          className="flex items-start gap-2 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-800"
+        >
+          <AlertTriangle className="mt-0.5 w-4 h-4 shrink-0" />
+          <span>{actionError}</span>
+        </div>
+      )}
+
+      {confirmRetire && (
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-5 space-y-3">
+          <div className="flex items-start gap-2">
+            <Archive className="mt-0.5 w-4 h-4 text-rose-700 shrink-0" />
+            <div className="space-y-1">
+              <p className="text-sm font-bold text-rose-900">
+                Retire {instrument.instrumentNumber}?
+              </p>
+              <p className="text-xs text-rose-800">
+                The instrument is marked inactive and stops appearing as active
+                in your registry. Nothing is deleted — its inspections and
+                certificates remain part of the verification record, and any
+                issued certificate stays independently verifiable.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={retire.isPending}
+              onClick={() => {
+                setActionError(null);
+
+                retire.mutate(undefined, {
+                  onSuccess: () => setConfirmRetire(false),
+                  onError: (err) => setActionError(readApiError(err)),
+                });
+              }}
+              className="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-xl disabled:opacity-50"
+            >
+              {retire.isPending ? "Retiring…" : "Yes, retire it"}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setConfirmRetire(false)}
+              className="px-4 py-2 border border-slate-300 bg-white text-slate-700 text-xs font-bold rounded-xl"
+            >
+              Keep it active
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Grid: Specifications & Verification Status */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

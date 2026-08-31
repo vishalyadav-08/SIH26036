@@ -91,14 +91,14 @@ export default function BusinessCertificateDetailPage({
             </h1>
             <span
               className={`inline-flex items-center gap-1 px-3 py-0.5 rounded-full text-xs font-bold uppercase ${
-                cert.status === "VALID"
+                cert.status === "ACTIVE"
                   ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
                   : cert.status === "EXPIRED"
                   ? "bg-amber-50 text-amber-800 border border-amber-200"
                   : "bg-rose-50 text-rose-800 border border-rose-200"
               }`}
             >
-              {cert.status === "VALID" ? (
+              {cert.status === "ACTIVE" ? (
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
               ) : cert.status === "EXPIRED" ? (
                 <Clock className="w-3.5 h-3.5 text-amber-600" />

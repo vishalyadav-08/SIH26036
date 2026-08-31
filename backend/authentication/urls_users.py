@@ -6,8 +6,10 @@ Separate from urls.py because the API contract puts the profile under
 
 from django.urls import path
 
-from .views import MeView
+from .views import MeView, UserDetailView, UserListView
 
 urlpatterns = [
+    path("", UserListView.as_view(), name="user-list"),
     path("me/", MeView.as_view(), name="users-me"),
+    path("<uuid:user_id>/", UserDetailView.as_view(), name="user-detail"),
 ]

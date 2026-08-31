@@ -22,10 +22,13 @@ urlpatterns = [
     path(f"{API}schedules/", include("scheduling.urls")),
     path(f"{API}inspections/", include("inspections.urls")),
     path(f"{API}evidence/", include("evidence.urls")),
-    path(f"{API}certificates/", include("certificates.urls")),
+    # Public verification first: it must stay unauthenticated even though
+    # it lives under the /certificates/ prefix.
     path(f"{API}", include("verification.urls")),
+    path(f"{API}certificates/", include("certificates.urls")),
     path(f"{API}notifications/", include("notifications.urls")),
     path(f"{API}audit/", include("audit.urls")),
+    path(f"{API}", include("common.urls")),
     path(f"{API}sync/", include("sync.urls")),
 
     path(f"{API}schema/", SpectacularAPIView.as_view(), name="schema"),

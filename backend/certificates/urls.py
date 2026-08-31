@@ -1,5 +1,21 @@
-"""Routes for the certificates module, mounted under /api/v1/ by root/urls.py."""
+"""Certificate routes, mounted at /api/v1/certificates/ by root/urls.py.
 
-from django.urls import path  # noqa: F401
+The public /certificates/verify route is owned by the verification module and
+mounted ahead of these, so it stays unauthenticated.
+"""
 
-urlpatterns = []
+from django.urls import path
+
+from .views import (
+    CertificateDetailView,
+    CertificateListCreateView,
+    CertificateQrView,
+    CertificateRevokeView,
+)
+
+urlpatterns = [
+    path("", CertificateListCreateView.as_view(), name="certificate-list-create"),
+    path("<uuid:certificate_id>/", CertificateDetailView.as_view(), name="certificate-detail"),
+    path("<uuid:certificate_id>/qr/", CertificateQrView.as_view(), name="certificate-qr"),
+    path("<uuid:certificate_id>/revoke/", CertificateRevokeView.as_view(), name="certificate-revoke"),
+]

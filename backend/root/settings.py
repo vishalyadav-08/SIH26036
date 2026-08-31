@@ -39,6 +39,14 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
 
+# Certificate signing (ADR-011, CRYPTOGRAPHY.md section 6) --------------------
+# Prototype key material, injected through environment configuration and
+# labelled non-production. The private key is never committed or logged.
+# Production requires a managed key store / HSM.
+
+CERTIFICATE_PRIVATE_KEY = os.getenv("CERTIFICATE_PRIVATE_KEY", "").replace("\\n", "\n")
+CERTIFICATE_PUBLIC_KEY = os.getenv("CERTIFICATE_PUBLIC_KEY", "").replace("\\n", "\n")
+
 # Core ----------------------------------------------------------------------
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-change-me-before-any-deployment")
@@ -199,11 +207,19 @@ REST_FRAMEWORK = {
         "public_verify": "30/min",
         "login": "10/min",
         "google_login": "10/min",
+        "signup": "5/min",
     },
 }
 
+# There is no refresh endpoint yet (ARCHITECTURE.md leaves refresh/logout
+# policy open), so a 15-minute access token would silently strand anyone who
+# left a tab open — including mid-demo. The prototype uses a long-lived token
+# and makes that an explicit, configurable choice rather than a hidden one.
+# Production must shorten this and add refresh before any real deployment.
+ACCESS_TOKEN_MINUTES = int(os.getenv("ACCESS_TOKEN_MINUTES", 480))
+
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=ACCESS_TOKEN_MINUTES),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,

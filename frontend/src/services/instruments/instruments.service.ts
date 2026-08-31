@@ -1,133 +1,74 @@
 import { api } from "@/lib/api";
-import { Instrument, RegisterInstrumentDto } from "@/types/instrument";
+import {
+  Instrument,
+  Paginated,
+  RegisterInstrumentDto,
+} from "@/types/instrument";
 
-const INSTRUMENTS_STORAGE_KEY = "mapansetu_instruments_store";
+export interface InstrumentQuery {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  status?: string;
+  instrumentType?: string;
+  businessId?: string;
+}
 
-export const INITIAL_DEMO_INSTRUMENTS: Instrument[] = [
-  {
-    id: "ins-uuid-001",
-    instrumentNumber: "INS-DEMO-001",
-    serialNumber: "SN-SML-500-8891",
-    instrumentType: "ELECTRONIC_SCALE",
-    manufacturer: "Synthetic Metrology Labs",
-    model: "SML-Series 500",
-    capacity: 100,
-    capacityUnit: "kg",
-    location: "Main Warehouse, Bay 3",
-    status: "ACTIVE",
-    businessId: "biz-demo-001",
-    lastVerifiedAt: "2026-08-15T09:30:00Z",
-    nextVerificationDue: "2027-08-15T23:59:59Z",
-    activeCertificateNo: "CERT-DEMO-001",
-    createdAt: "2026-08-01T10:00:00Z",
-    updatedAt: "2026-08-15T09:30:00Z",
+/**
+ * Instrument registry. The server decides what the caller may see — a business
+ * user is scoped to their own instruments regardless of what is asked for here.
+ */
+export const instrumentsService = {
+  async list(query: InstrumentQuery = {}): Promise<Paginated<Instrument>> {
+    const { data } = await api.get<Paginated<Instrument>>("/instruments/", {
+      params: query,
+    });
+
+    return data;
   },
-  {
-    id: "ins-uuid-002",
-    instrumentNumber: "INS-DEMO-002",
-    serialNumber: "SN-PSC-1000-4421",
-    instrumentType: "PLATFORM_SCALE",
-    manufacturer: "Synthetic Standard Corp",
-    model: "PSC-Industrial 1000",
-    capacity: 500,
-    capacityUnit: "kg",
-    location: "Dispatch Area, Gate 1",
-    status: "PENDING_VERIFICATION",
-    businessId: "biz-demo-001",
-    lastVerifiedAt: "2025-08-15T09:30:00Z",
-    nextVerificationDue: "2026-08-15T23:59:59Z",
-    activeCertificateNo: "CERT-EXPIRED-001",
-    createdAt: "2025-08-01T10:00:00Z",
-    updatedAt: "2025-08-15T09:30:00Z",
+
+  async get(id: string): Promise<Instrument> {
+    const { data } = await api.get<Instrument>(`/instruments/${id}/`);
+
+    return data;
   },
-  {
-    id: "ins-uuid-003",
-    instrumentNumber: "INS-DEMO-003",
-    serialNumber: "SN-PWS-25-1099",
-    instrumentType: "COUNTER_SCALE",
-    manufacturer: "Precision Weights Synthetic",
-    model: "PWS-Retail 25",
-    capacity: 25,
-    capacityUnit: "kg",
-    location: "Counter 2, Retail Shop",
-    status: "ACTIVE",
-    businessId: "biz-demo-001",
-    lastVerifiedAt: "2026-01-10T10:00:00Z",
-    nextVerificationDue: "2027-01-10T23:59:59Z",
-    createdAt: "2026-01-05T09:00:00Z",
-    updatedAt: "2026-01-10T10:00:00Z",
+
+  async register(payload: RegisterInstrumentDto): Promise<Instrument> {
+    const { data } = await api.post<Instrument>("/instruments/", payload);
+
+    return data;
   },
-];
 
-function getStoredInstruments(): Instrument[] {
-  if (typeof window === "undefined") return INITIAL_DEMO_INSTRUMENTS;
-  const raw = localStorage.getItem(INSTRUMENTS_STORAGE_KEY);
-  if (!raw) {
-    localStorage.setItem(
-      INSTRUMENTS_STORAGE_KEY,
-      JSON.stringify(INITIAL_DEMO_INSTRUMENTS)
-    );
-    return INITIAL_DEMO_INSTRUMENTS;
-  }
-  try {
-    return JSON.parse(raw) as Instrument[];
-  } catch {
-    return INITIAL_DEMO_INSTRUMENTS;
-  }
+  async update(id: string, payload: Partial<RegisterInstrumentDto>): Promise<Instrument> {
+    const { data } = await api.patch<Instrument>(`/instruments/${id}/`, payload);
+
+    return data;
+  },
+
+  /**
+   * Retires an instrument rather than deleting it — it may already be
+   * referenced by an inspection or certificate, so the server marks it
+   * INACTIVE and returns the updated record.
+   */
+  async deactivate(id: string): Promise<Instrument> {
+    const { data } = await api.delete<Instrument>(`/instruments/${id}/`);
+
+    return data;
+  },
+};
+
+export default instrumentsService;
+
+/* Named exports kept for the existing pages; the envelope is unwrapped here. */
+
+export async function getInstruments(query: InstrumentQuery = {}) {
+  return (await instrumentsService.list(query)).items;
 }
 
-function saveStoredInstruments(instruments: Instrument[]): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(INSTRUMENTS_STORAGE_KEY, JSON.stringify(instruments));
+export async function getInstrumentById(id: string) {
+  return instrumentsService.get(id);
 }
 
-export async function getInstruments(): Promise<Instrument[]> {
-  try {
-    const res = await api.get<Instrument[]>("/instruments");
-    return res.data;
-  } catch {
-    return getStoredInstruments();
-  }
-}
-
-export async function getInstrumentById(id: string): Promise<Instrument | null> {
-  try {
-    const res = await api.get<Instrument>(`/instruments/${id}`);
-    return res.data;
-  } catch {
-    const list = getStoredInstruments();
-    const found = list.find(
-      (ins) => ins.id === id || ins.instrumentNumber.toLowerCase() === id.toLowerCase()
-    );
-    return found || null;
-  }
-}
-
-export async function registerInstrument(
-  data: RegisterInstrumentDto
-): Promise<Instrument> {
-  try {
-    const res = await api.post<Instrument>("/instruments", data);
-    return res.data;
-  } catch {
-    const instruments = getStoredInstruments();
-    const newInstrument: Instrument = {
-      id: `ins-uuid-${Date.now()}`,
-      instrumentNumber: data.instrumentNumber.trim().toUpperCase(),
-      serialNumber: data.serialNumber?.trim() || undefined,
-      instrumentType: data.instrumentType,
-      manufacturer: data.manufacturer.trim(),
-      model: data.model.trim(),
-      capacity: Number(data.capacity),
-      capacityUnit: data.capacityUnit || "kg",
-      location: data.location?.trim() || "Registered Business Premises",
-      status: "PENDING_VERIFICATION",
-      businessId: "biz-demo-001",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    instruments.unshift(newInstrument);
-    saveStoredInstruments(instruments);
-    return newInstrument;
-  }
+export async function registerInstrument(payload: RegisterInstrumentDto) {
+  return instrumentsService.register(payload);
 }

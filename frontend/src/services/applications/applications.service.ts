@@ -1,203 +1,118 @@
 import { api } from "@/lib/api";
-import { Application, CreateApplicationDto } from "@/types/application";
-import { saveCachedApplication } from "@/lib/offline-storage";
+import { Application, ApplicationState } from "@/types/application";
+import { Paginated } from "@/types/instrument";
 
-const APPLICATIONS_STORAGE_KEY = "mapansetu_applications_store";
+export type { Application, ApplicationState };
 
-export const INITIAL_DEMO_APPLICATIONS: Application[] = [
-  {
-    id: "app-uuid-001",
-    applicationNumber: "APP-2026-0001",
-    instrumentId: "ins-uuid-001",
-    instrumentNumber: "INS-DEMO-001",
-    instrumentType: "ELECTRONIC_SCALE",
-    businessId: "biz-demo-001",
-    businessName: "Demo Business Owner",
-    state: "COMPLETED",
-    reason: "Initial verification of newly acquired electronic scale.",
-    assignedOfficerId: "usr-demo-off-001",
-    assignedOfficerName: "Inspector Sharma (LMO)",
-    certificateId: "cert-uuid-001",
-    certificateNumber: "CERT-DEMO-001",
-    createdAt: "2026-08-10T11:00:00Z",
-    updatedAt: "2026-08-15T09:30:00Z",
+export interface Assignment {
+  id: string;
+  officerUserId: string;
+  officerName: string;
+  assignedAt: string;
+  unassignedAt: string | null;
+  assignmentNote: string;
+}
+
+
+export const applicationsService = {
+  async list(params: { state?: string; instrumentId?: string; page?: number } = {}) {
+    const { data } = await api.get<Paginated<Application>>("/applications/", { params });
+
+    return data;
   },
-  {
-    id: "app-uuid-002",
-    applicationNumber: "APP-2026-0002",
-    instrumentId: "ins-uuid-002",
-    instrumentNumber: "INS-DEMO-002",
-    instrumentType: "PLATFORM_SCALE",
-    businessId: "biz-demo-001",
-    businessName: "Demo Business Owner",
-    state: "SUBMITTED",
-    reason: "Re-verification following certificate expiry.",
-    createdAt: "2026-08-28T14:20:00Z",
-    updatedAt: "2026-08-28T14:20:00Z",
+
+  async get(id: string): Promise<Application> {
+    const { data } = await api.get<Application>(`/applications/${id}/`);
+
+    return data;
   },
-  {
-    id: "app-uuid-003",
-    applicationNumber: "APP-2026-0003",
-    instrumentId: "ins-uuid-003",
-    instrumentNumber: "INS-DEMO-003",
-    instrumentType: "COUNTER_SCALE",
-    businessId: "biz-demo-001",
-    businessName: "Demo Business Owner",
-    state: "SCHEDULED",
-    reason: "Periodic annual statutory verification.",
-    assignedOfficerId: "usr-demo-off-001",
-    assignedOfficerName: "Inspector Sharma (LMO)",
-    scheduledDate: "2026-09-05T10:00:00Z",
-    createdAt: "2026-08-20T09:15:00Z",
-    updatedAt: "2026-08-22T16:00:00Z",
+
+  async create(payload: { instrumentId: string; reason?: string; submit?: boolean }) {
+    const { data } = await api.post<Application>("/applications/", payload);
+
+    return data;
   },
-];
 
-function getStoredApplications(): Application[] {
-  if (typeof window === "undefined") return INITIAL_DEMO_APPLICATIONS;
-  const raw = localStorage.getItem(APPLICATIONS_STORAGE_KEY);
-  if (!raw) {
-    localStorage.setItem(
-      APPLICATIONS_STORAGE_KEY,
-      JSON.stringify(INITIAL_DEMO_APPLICATIONS)
-    );
-    return INITIAL_DEMO_APPLICATIONS;
-  }
-  try {
-    return JSON.parse(raw) as Application[];
-  } catch {
-    return INITIAL_DEMO_APPLICATIONS;
-  }
-}
+  async submit(id: string) {
+    const { data } = await api.post<Application>(`/applications/${id}/submit/`);
 
-function saveStoredApplications(apps: Application[]): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(APPLICATIONS_STORAGE_KEY, JSON.stringify(apps));
-}
+    return data;
+  },
 
-export async function getApplications(): Promise<Application[]> {
-  try {
-    const res = await api.get<Application[]>("/applications");
-    return res.data;
-  } catch {
-    return getStoredApplications();
-  }
-}
-
-export async function getApplicationById(id: string): Promise<Application | null> {
-  const apps = await getApplications();
-  const found = apps.find(
-    (app) => app.id === id || app.applicationNumber.toLowerCase() === id.toLowerCase()
-  );
-  return found || null;
-}
-
-export async function createApplication(
-  data: CreateApplicationDto
-): Promise<Application> {
-  try {
-    const res = await api.post<Application>("/applications", data);
-    return res.data;
-  } catch {
-    const apps = getStoredApplications();
-    let instrumentNum = data.instrumentId;
-    let instrumentType = "ELECTRONIC_SCALE";
-
-    if (typeof window !== "undefined") {
-      const rawIns = localStorage.getItem("mapansetu_instruments_store");
-      if (rawIns) {
-        try {
-          const list = JSON.parse(rawIns);
-          const found = list.find(
-            (i: { id: string; instrumentNumber: string; instrumentType: string }) =>
-              i.id === data.instrumentId ||
-              i.instrumentNumber.toLowerCase() === data.instrumentId.toLowerCase()
-          );
-          if (found) {
-            instrumentNum = found.instrumentNumber;
-            instrumentType = found.instrumentType;
-          }
-        } catch {
-          // ignore
-        }
-      }
-    }
-
-    const newApp: Application = {
-      id: `app-uuid-${Date.now()}`,
-      applicationNumber: `APP-2026-${String(apps.length + 1).padStart(4, "0")}`,
-      instrumentId: data.instrumentId,
-      instrumentNumber: instrumentNum,
-      instrumentType: instrumentType,
-      businessId: "biz-demo-001",
-      businessName: "Demo Business Owner",
-      state: "SUBMITTED",
-      reason: data.reason,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    apps.unshift(newApp);
-    saveStoredApplications(apps);
-    return newApp;
-  }
-}
-
-export async function assignOfficerToApplication(
-  applicationId: string,
-  officerUserId: string,
-  officerName: string,
-  note?: string
-): Promise<Application> {
-  try {
-    const res = await api.post<Application>(`/applications/${applicationId}/assign`, {
+  async assign(id: string, officerUserId: string, assignmentNote = "") {
+    const { data } = await api.post<Application>(`/applications/${id}/assign/`, {
       officerUserId,
-      assignmentNote: note || "Assigned by Admin Supervisor",
+      assignmentNote,
     });
-    return res.data;
-  } catch {
-    const apps = getStoredApplications();
-    const index = apps.findIndex(
-      (a) => a.id === applicationId || a.applicationNumber.toLowerCase() === applicationId.toLowerCase()
-    );
-    if (index >= 0) {
-      apps[index].state = "ASSIGNED";
-      apps[index].assignedOfficerId = officerUserId;
-      apps[index].assignedOfficerName = officerName;
-      apps[index].updatedAt = new Date().toISOString();
-      saveStoredApplications(apps);
-      // Also cache in offline storage for the field officer!
-      saveCachedApplication(apps[index]);
-      return apps[index];
-    }
-    throw new Error("Application not found");
-  }
+
+    return data;
+  },
+
+  async schedule(id: string, scheduledAt: string) {
+    const { data } = await api.post<Application>(`/applications/${id}/schedule/`, {
+      scheduledAt,
+    });
+
+    return data;
+  },
+
+  async reject(id: string, reason: string) {
+    const { data } = await api.post<Application>(`/applications/${id}/reject/`, { reason });
+
+    return data;
+  },
+
+  async cancel(id: string, reason: string) {
+    const { data } = await api.post<Application>(`/applications/${id}/cancel/`, { reason });
+
+    return data;
+  },
+};
+
+export default applicationsService;
+
+/* ---------------------------------------------------------------------------
+ * Named exports kept for the existing pages.
+ *
+ * The API returns the paginated envelope {items, page, ...}; these unwrap it to
+ * the plain array the screens were written against, so the integration did not
+ * require rewriting every page.
+ * ------------------------------------------------------------------------- */
+
+export async function getApplications(params: { state?: string } = {}) {
+  return (await applicationsService.list(params)).items;
+}
+
+export async function getApplicationById(id: string) {
+  return applicationsService.get(id);
+}
+
+export async function createApplication(payload: {
+  instrumentId: string;
+  reason?: string;
+  submit?: boolean;
+}) {
+  return applicationsService.create(payload);
+}
+
+/**
+ * `officerName` is accepted and ignored: the screen passes it for its own
+ * confirmation message, but the server resolves the officer from the id. It is
+ * not something the client gets to assert.
+ */
+export async function assignOfficerToApplication(
+  id: string,
+  officerUserId: string,
+  _officerName?: string,
+  assignmentNote = ""
+) {
+  return applicationsService.assign(id, officerUserId, assignmentNote);
 }
 
 export async function scheduleApplicationVisit(
-  applicationId: string,
+  id: string,
   scheduledAt: string,
-  note?: string
-): Promise<Application> {
-  try {
-    const res = await api.post<Application>(`/applications/${applicationId}/schedule`, {
-      scheduledAt,
-      scheduleNote: note || "Scheduled appointment",
-    });
-    return res.data;
-  } catch {
-    const apps = getStoredApplications();
-    const index = apps.findIndex(
-      (a) => a.id === applicationId || a.applicationNumber.toLowerCase() === applicationId.toLowerCase()
-    );
-    if (index >= 0) {
-      apps[index].state = "SCHEDULED";
-      apps[index].scheduledDate = scheduledAt;
-      apps[index].updatedAt = new Date().toISOString();
-      saveStoredApplications(apps);
-      // Ensure cached for field officer
-      saveCachedApplication(apps[index]);
-      return apps[index];
-    }
-    throw new Error("Application not found");
-  }
+  _note?: string
+) {
+  return applicationsService.schedule(id, scheduledAt);
 }

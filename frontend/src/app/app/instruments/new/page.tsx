@@ -10,7 +10,8 @@ import {
   CheckCircle2,
   AlertCircle,
 } from "lucide-react";
-import { registerInstrument } from "@/services/instruments/instruments.service";
+import { readApiError } from "@/lib/api-error";
+import { useRegisterInstrument } from "@/hooks/useInstruments";
 import { InstrumentType, RegisterInstrumentDto } from "@/types/instrument";
 
 const INSTRUMENT_TYPES: { label: string; value: InstrumentType }[] = [
@@ -35,9 +36,14 @@ export default function RegisterInstrumentPage() {
     location: "Main Business Premises",
   });
 
+  // Registering invalidates the cached registry list, so the new instrument
+  // is there the moment the redirect lands — no manual refetch.
+  const register = useRegisterInstrument();
+
   const [error, setError] = useState<string | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  const isSubmitting = register.isPending;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,18 +66,17 @@ export default function RegisterInstrumentPage() {
       return;
     }
 
-    setIsSubmitting(true);
-    try {
-      await registerInstrument(formData);
-      setSuccessMsg(`Instrument ${formData.instrumentNumber} registered successfully! Redirecting...`);
-      setTimeout(() => {
-        router.push("/app/instruments");
-      }, 1200);
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "Failed to register instrument.";
-      setError(msg);
-      setIsSubmitting(false);
-    }
+    register.mutate(formData, {
+      onSuccess: () => {
+        setSuccessMsg(
+          `Instrument ${formData.instrumentNumber} registered successfully! Redirecting...`
+        );
+        setTimeout(() => router.push("/app/instruments"), 1200);
+      },
+      // A duplicate instrument number or serial comes back as 409 with a
+      // usable message; surface that rather than "Failed to register".
+      onError: (err) => setError(readApiError(err)),
+    });
   };
 
   return (

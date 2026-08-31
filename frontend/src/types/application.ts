@@ -3,12 +3,13 @@ export type ApplicationState =
   | "SUBMITTED"
   | "ASSIGNED"
   | "SCHEDULED"
-  | "INSPECTED"
+  | "INSPECTION_IN_PROGRESS"
   | "COMPLETED"
   | "REJECTED"
   | "CANCELLED";
 
 export interface Application {
+  /** Workflow state only. NOT the inspection result — a FAIL still COMPLETEs. */
   id: string;
   applicationNumber: string;
   instrumentId: string;

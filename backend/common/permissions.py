@@ -40,3 +40,9 @@ class IsBusiness(HasRole):
 
 class IsAdminOrOfficer(HasRole):
     allowed_roles = (User.Role.ADMIN, User.Role.OFFICER)
+
+
+class IsBusinessOrAdmin(HasRole):
+    """Registry and request actions: the owner acts, an admin may act for them."""
+
+    allowed_roles = (User.Role.BUSINESS, User.Role.ADMIN)

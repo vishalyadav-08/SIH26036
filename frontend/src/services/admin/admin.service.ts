@@ -16,13 +16,13 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
     submitted: apps.filter((a) => a.state === "SUBMITTED").length,
     assigned: apps.filter((a) => a.state === "ASSIGNED").length,
     scheduled: apps.filter((a) => a.state === "SCHEDULED").length,
-    inspected: apps.filter((a) => a.state === "INSPECTED").length,
+    inspected: apps.filter((a) => a.state === "INSPECTION_IN_PROGRESS").length,
     completed: apps.filter((a) => a.state === "COMPLETED").length,
     total: apps.length,
   };
 
   const certCounts = {
-    valid: certs.filter((c) => c.status === "VALID").length,
+    valid: certs.filter((c) => c.status === "ACTIVE").length,
     expired: certs.filter((c) => c.status === "EXPIRED").length,
     revoked: certs.filter((c) => c.status === "REVOKED").length,
     total: certs.length,

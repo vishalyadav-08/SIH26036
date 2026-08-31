@@ -1,8 +1,106 @@
+/**
+ * Two layers live here on purpose.
+ *
+ * The offline draft functions below are the field PWA's local Dexie-backed
+ * workflow: an officer must be able to work with no server reachable, so those
+ * keep operating on a local draft and are unchanged.
+ *
+ * `inspectionsService` is the online layer that talks to the API. The field app
+ * uses it when a connection exists; the offline queue reaches the same
+ * endpoints later through the sync path.
+ */
 import { api } from "@/lib/api";
+import { Paginated } from "@/types/instrument";
+
+export type InspectionResult = "PASS" | "FAIL" | "REQUIRES_CORRECTION";
+
+export interface Measurement {
+  id: string;
+  label: string;
+  nominalValue: string;
+  observedValue: string;
+  unit: string;
+  withinTolerance: boolean;
+}
+
+export interface ServerInspection {
+  id: string;
+  applicationId: string;
+  officerUserId: string;
+  startedAt: string;
+  completedAt: string | null;
+  /** Separate from the application's state. Empty until the officer decides. */
+  result: InspectionResult | "";
+  notes: string;
+  /** Null means GPS was genuinely unavailable — never render it as 0,0. */
+  gpsLatitude: string | null;
+  gpsLongitude: string | null;
+  gpsAccuracyMeters: number | null;
+  capturedAt: string | null;
+  version: number;
+  measurements: Measurement[];
+}
+
+export interface GpsCapture {
+  latitude?: number;
+  longitude?: number;
+  accuracyMeters?: number;
+  capturedAt?: string;
+}
+
+export const inspectionsService = {
+  async list(params: { page?: number } = {}) {
+    const { data } = await api.get<Paginated<ServerInspection>>("/inspections/", { params });
+
+    return data;
+  },
+
+  async get(id: string): Promise<ServerInspection> {
+    const { data } = await api.get<ServerInspection>(`/inspections/${id}/`);
+
+    return data;
+  },
+
+  /** Moves the application SCHEDULED -> INSPECTION_IN_PROGRESS. */
+  async start(applicationId: string): Promise<ServerInspection> {
+    const { data } = await api.post<ServerInspection>("/inspections/", { applicationId });
+
+    return data;
+  },
+
+  async addMeasurement(
+    inspectionId: string,
+    reading: { label: string; nominalValue: number | string; observedValue: number | string; unit: string }
+  ): Promise<Measurement> {
+    const { data } = await api.post<Measurement>(
+      `/inspections/${inspectionId}/measurements/`,
+      reading
+    );
+
+    return data;
+  },
+
+  async complete(
+    inspectionId: string,
+    payload: { result: InspectionResult; notes?: string; gps?: GpsCapture }
+  ): Promise<ServerInspection> {
+    const { data } = await api.post<ServerInspection>(
+      `/inspections/${inspectionId}/complete/`,
+      payload
+    );
+
+    return data;
+  },
+};
+
+export default inspectionsService;
+
+
+/* --- Offline draft layer (unchanged, field PWA) --- */
+
 import {
   InspectionDraft,
   ChecklistItem,
-  InspectionResult,
 } from "@/types/inspection";
 import {
   getInspectionDraft,

@@ -1,123 +1,140 @@
-import { api } from "@/lib/api";
+import { api, TOKEN_KEY } from "@/lib/api";
 import { LoginCredentials, LoginResponse, User } from "@/types/auth";
 
-const TOKEN_KEY = "mapansetu_access_token";
 const USER_KEY = "mapansetu_user";
 
-// Documented Synthetic Prototype Demo Accounts (docs/DEMO_PLAN.md)
-export const DEMO_ACCOUNTS: Record<
-  string,
-  { password: string; response: LoginResponse }
-> = {
-  "business@example.test": {
-    password: "synthetic-password",
-    response: {
-      accessToken: "demo-jwt-business-token-sih26036",
-      tokenType: "Bearer",
-      expiresAt: "2026-08-30T12:00:00Z",
-      user: {
-        id: "usr-demo-biz-001",
-        email: "business@example.test",
-        displayName: "Demo Business Owner",
-        role: "BUSINESS",
-        businessId: "biz-demo-001",
-        active: true,
-      },
-    },
+/**
+ * Talks to the real API. The token is persisted in localStorage because the
+ * backend issues a bearer token rather than a cookie session, so the client is
+ * responsible for holding it and attaching it (see lib/api.ts).
+ */
+export const authService = {
+  async login(credentials: LoginCredentials): Promise<LoginResponse> {
+    const { data } = await api.post<LoginResponse>("/auth/login/", credentials);
+
+    authService.persist(data.accessToken, data.user);
+
+    return data;
   },
-  "admin@example.test": {
-    password: "synthetic-password",
-    response: {
-      accessToken: "demo-jwt-admin-token-sih26036",
-      tokenType: "Bearer",
-      expiresAt: "2026-08-30T12:00:00Z",
-      user: {
-        id: "usr-demo-adm-001",
-        email: "admin@example.test",
-        displayName: "Supervisor Admin",
-        role: "ADMIN",
-        active: true,
-      },
-    },
+
+  /** Google Identity Services hands us an ID token; the API links it to an account. */
+  async loginWithGoogle(idToken: string): Promise<LoginResponse> {
+    const { data } = await api.post<LoginResponse>("/auth/google/", { idToken });
+
+    authService.persist(data.accessToken, data.user);
+
+    return data;
   },
-  "officer@example.test": {
-    password: "synthetic-password",
-    response: {
-      accessToken: "demo-jwt-officer-token-sih26036",
-      tokenType: "Bearer",
-      expiresAt: "2026-08-30T12:00:00Z",
-      user: {
-        id: "usr-demo-off-001",
-        email: "officer@example.test",
-        displayName: "Inspector Sharma (LMO)",
-        role: "OFFICER",
-        active: true,
-      },
-    },
+
+  async me(): Promise<User> {
+    const { data } = await api.get<User>("/users/me/");
+
+    return data;
+  },
+
+  logout() {
+    if (typeof window === "undefined") return;
+
+    window.localStorage.removeItem(TOKEN_KEY);
+    window.localStorage.removeItem(USER_KEY);
+  },
+
+  persist(token: string, user: User) {
+    if (typeof window === "undefined") return;
+
+    window.localStorage.setItem(TOKEN_KEY, token);
+    window.localStorage.setItem(USER_KEY, JSON.stringify(user));
+  },
+
+  getToken(): string | null {
+    if (typeof window === "undefined") return null;
+
+    return window.localStorage.getItem(TOKEN_KEY);
+  },
+
+  /**
+   * The cached user, used only to render immediately on reload. The server is
+   * still asked via me(); this just avoids a blank frame while that resolves.
+   */
+  getCachedUser(): User | null {
+    if (typeof window === "undefined") return null;
+
+    const raw = window.localStorage.getItem(USER_KEY);
+
+    if (!raw) return null;
+
+    try {
+      return JSON.parse(raw) as User;
+    } catch {
+      return null;
+    }
   },
 };
 
-export async function loginUser(
-  credentials: LoginCredentials
-): Promise<LoginResponse> {
-  const normalizedEmail = credentials.email.trim().toLowerCase();
 
-  try {
-    const res = await api.post<LoginResponse>("/auth/login", {
-      email: normalizedEmail,
-      password: credentials.password,
-    });
-    return res.data;
-  } catch (error: unknown) {
-    // If backend is offline or in prototype demo environment, fall back to synthetic demo accounts
-    const demoAccount = DEMO_ACCOUNTS[normalizedEmail];
-    if (demoAccount && demoAccount.password === credentials.password) {
-      return demoAccount.response;
-    }
+/* ---------------------------------------------------------------------------
+ * Named exports kept for AuthProvider, which was written against these.
+ * ------------------------------------------------------------------------- */
 
-    // Pass through or raise generic invalid credentials error
-    throw error;
-  }
+export async function loginUser(credentials: LoginCredentials) {
+  return authService.login(credentials);
 }
 
-export async function fetchCurrentUser(): Promise<User> {
-  try {
-    const res = await api.get<User>("/users/me");
-    return res.data;
-  } catch (error: unknown) {
-    // If backend is unavailable or during offline prototype testing, fallback to stored user session
-    const storedUser = getStoredUser();
-    if (storedUser) {
-      return storedUser;
-    }
-    throw error;
-  }
+export function getStoredToken() {
+  return authService.getToken();
 }
 
-export function getStoredToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem(TOKEN_KEY);
+export function getStoredUser() {
+  return authService.getCachedUser();
 }
 
-export function getStoredUser(): User | null {
-  if (typeof window === "undefined") return null;
-  const raw = localStorage.getItem(USER_KEY);
-  if (!raw) return null;
-  try {
-    return JSON.parse(raw) as User;
-  } catch {
-    return null;
-  }
+export function setStoredSession(token: string, user: User) {
+  authService.persist(token, user);
 }
 
-export function setStoredSession(token: string, user: User): void {
-  if (typeof window === "undefined") return;
-  localStorage.setItem(TOKEN_KEY, token);
-  localStorage.setItem(USER_KEY, JSON.stringify(user));
+export function clearStoredSession() {
+  authService.logout();
 }
 
-export function clearStoredSession(): void {
-  if (typeof window === "undefined") return;
-  localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem(USER_KEY);
+/** Asks the server who the caller is. The cached user is only a render hint. */
+export async function fetchCurrentUser() {
+  return authService.me();
+}
+
+export async function loginWithGoogleRequest(idToken: string) {
+  return authService.loginWithGoogle(idToken);
+}
+
+/** Self-registration with email and password. Always creates a BUSINESS account. */
+export async function signupWithPassword(payload: {
+  email: string;
+  password: string;
+  displayName: string;
+  phone?: string;
+  legalName: string;
+  contactName: string;
+  address: string;
+  tradeName?: string;
+}) {
+  const { data } = await api.post<LoginResponse>("/auth/signup/", payload);
+
+  authService.persist(data.accessToken, data.user);
+
+  return data;
+}
+
+/** Self-registration with a Google identity. Also BUSINESS only. */
+export async function signupWithGoogle(payload: {
+  idToken: string;
+  legalName: string;
+  contactName: string;
+  address: string;
+  tradeName?: string;
+  phone?: string;
+}) {
+  const { data } = await api.post<LoginResponse>("/auth/google/signup/", payload);
+
+  authService.persist(data.accessToken, data.user);
+
+  return data;
 }

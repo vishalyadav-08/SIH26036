@@ -1,4 +1,11 @@
-export type CertificateStatus = "VALID" | "EXPIRED" | "REVOKED" | "INVALID";
+/**
+ * The certificate's own status (DATA_MODEL.md: "exactly one of ACTIVE,
+ * EXPIRED, or REVOKED"). Distinct from VerificationStatus, which is the
+ * *answer* a public lookup gives and may be INVALID.
+ */
+export type CertificateStatus = "ACTIVE" | "EXPIRED" | "REVOKED";
+
+export type VerificationStatus = "VALID" | "EXPIRED" | "REVOKED" | "INVALID";
 
 export interface Certificate {
   id: string;
@@ -37,7 +44,7 @@ export interface InstrumentPublicSummary {
 
 export interface PublicVerificationResponse {
   certificateNumber: string;
-  verificationStatus: "VALID" | "EXPIRED" | "REVOKED" | "INVALID";
+  verificationStatus: VerificationStatus;
   certificateStatus: CertificateStatus | null;
   signatureValid: boolean;
   payloadHash: string | null;

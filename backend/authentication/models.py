@@ -30,6 +30,16 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     role = models.CharField(max_length=10, choices=Role.choices)
 
+    # Required for BUSINESS users, absent for ADMIN/OFFICER (DATA_MODEL.md).
+    # PROTECT: deleting a Business must not silently orphan its users.
+    business = models.ForeignKey(
+        "businesses.Business",
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        related_name="users",
+    )
+
     # `is_active` is the data model's `active`. An inactive user cannot
     # authenticate, but their historical references stay intact — deactivation
     # is not deletion.
@@ -56,15 +66,3 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.email} ({self.role})"
-
-    @property
-    def business_id(self):
-        """The Business this user owns, once the businesses module exists.
-
-        The data model gives BUSINESS users a `businessId` and leaves it absent
-        for ADMIN/OFFICER. The Business entity is REG-001, so this resolves to
-        None for now and the API contract's field shape stays stable either way.
-        """
-        business = getattr(self, "business", None)
-
-        return business.id if business else None

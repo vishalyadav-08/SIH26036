@@ -8,6 +8,7 @@ from datetime import datetime, timezone
 
 from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
+from django.db import transaction
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token as google_id_token
 from rest_framework_simplejwt.tokens import AccessToken
@@ -108,3 +109,152 @@ def authenticate_google_user(raw_token):
         raise GoogleAuthError("Account is not active.")
 
     return user
+
+
+class UserAdminError(Exception):
+    """The requested account change is not permitted."""
+
+
+def create_user_account(*, actor, validated_data):
+    """Provision an account. Administrators only (enforced by the view)."""
+    from businesses.models import Business
+
+    from audit.services import record_event
+
+    from .models import User
+
+    business = None
+    business_id = validated_data.get("businessId")
+
+    if business_id:
+        business = Business.objects.filter(id=business_id).first()
+
+        if business is None:
+            raise UserAdminError("Unknown business.")
+
+    user = User.objects.create_user(
+        email=validated_data["email"],
+        password=validated_data["password"],
+        display_name=validated_data["displayName"],
+        phone=validated_data.get("phone", ""),
+        role=validated_data["role"],
+        business=business,
+    )
+
+    record_event(
+        actor=actor, action="USER_CREATED", entity_type="USER", entity_id=user.id,
+        # Never the password, and never the hash.
+        metadata={"email": user.email, "role": user.role},
+    )
+
+    return user
+
+
+def update_user_account(*, actor, user, validated_data):
+    from audit.services import record_event
+
+    if "displayName" in validated_data:
+        user.display_name = validated_data["displayName"]
+
+    if "phone" in validated_data:
+        user.phone = validated_data["phone"]
+
+    if "role" in validated_data:
+        # An administrator must not be able to strip their own privileges and
+        # lock the prototype out of its only admin path.
+        if user.id == actor.id and validated_data["role"] != user.role:
+            raise UserAdminError("You cannot change your own role.")
+
+        user.role = validated_data["role"]
+
+    if "active" in validated_data:
+        if user.id == actor.id and not validated_data["active"]:
+            raise UserAdminError("You cannot deactivate your own account.")
+
+        user.is_active = validated_data["active"]
+
+    user.save()
+
+    record_event(
+        actor=actor, action="USER_UPDATED", entity_type="USER", entity_id=user.id,
+        metadata={"fields": sorted(validated_data.keys())},
+    )
+
+    return user
+
+
+class SignupError(Exception):
+    """Self-registration could not be completed."""
+
+
+@transaction.atomic
+def register_business_account(*, validated_data, google_sub=None, email=None):
+    """Create a BUSINESS user and their business profile together.
+
+    Atomic on purpose: a user row without its business would be an account that
+    can sign in but cannot register anything, and the owner would have no way
+    to fix it themselves.
+
+    `role` is hard-coded, never taken from input. This function is the only
+    self-service account path in the system and it can produce exactly one role.
+    """
+    from businesses.models import Business
+
+    from audit.services import record_event
+
+    from .models import User
+
+    business = Business.objects.create(
+        legal_name=validated_data["legalName"],
+        trade_name=validated_data.get("tradeName", ""),
+        contact_name=validated_data["contactName"],
+        email=email or validated_data["email"],
+        phone=validated_data.get("phone", ""),
+        address=validated_data["address"],
+    )
+
+    user = User.objects.create_user(
+        email=email or validated_data["email"],
+        password=validated_data.get("password"),
+        display_name=validated_data["displayName"],
+        phone=validated_data.get("phone", ""),
+        role=User.Role.BUSINESS,
+        business=business,
+    )
+
+    if google_sub:
+        user.google_sub = google_sub
+        user.save(update_fields=["google_sub", "updated_at"])
+
+    record_event(
+        actor=user, action="ACCOUNT_SELF_REGISTERED", entity_type="USER",
+        entity_id=user.id,
+        metadata={"email": user.email, "role": user.role,
+                  "method": "google" if google_sub else "password"},
+    )
+
+    return user
+
+
+def google_signup(*, raw_token, validated_data):
+    """Provision a BUSINESS account from a verified Google identity.
+
+    Separate from authenticate_google_user, which stays link-only: plain
+    sign-in must never create an account, or the OFFICER/ADMIN provisioning
+    rule would be bypassable by anyone with a Google account.
+    """
+    from .models import User
+
+    claims = verify_google_id_token(raw_token)
+
+    sub = claims["sub"]
+    email = claims["email"].strip().lower()
+
+    if User.objects.filter(google_sub=sub).exists() or User.objects.filter(email=email).exists():
+        raise SignupError("An account already exists for this Google identity.")
+
+    return register_business_account(
+        validated_data={**validated_data, "displayName": claims.get("name") or email},
+        google_sub=sub,
+        email=email,
+    )

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>About MapanSetu - Department of Legal Metrology</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container": "#e7eeff",
+                      "surface": "#FFFFFF",
+                      "tertiary-fixed-dim": "#ffb77a",
+                      "error-container": "#ffdad6",
+                      "inverse-on-surface": "#ecf1ff",
+                      "secondary-fixed": "#d5e3ff",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed-variant": "#00458e",
+                      "surface-container-lowest": "#ffffff",
+                      "outline-variant": "#c1c6d5",
+                      "warning": "#B45309",
+                      "border-subtle": "#CBD5E1",
+                      "secondary-container": "#9fc2fe",
+                      "surface-dim": "#cfdaf2",
+                      "primary": "#004e9f",
+                      "error": "#B91C1C",
+                      "surface-container-high": "#dee8ff",
+                      "success": "#15803D",
+                      "on-secondary-fixed-variant": "#1f477b",
+                      "tertiary": "#7a4200",
+                      "inverse-surface": "#263143",
+                      "inverse-primary": "#aac7ff",
+                      "primary-fixed": "#d7e3ff",
+                      "primary-container": "#0066cc",
+                      "primary-fixed-dim": "#aac7ff",
+                      "surface-container-low": "#f0f3ff",
+                      "on-primary-fixed": "#001b3e",
+                      "background": "#f9f9ff",
+                      "tertiary-container": "#9d5600",
+                      "on-surface": "#111c2d",
+                      "on-error-container": "#93000a",
+                      "on-secondary-fixed": "#001b3c",
+                      "on-tertiary-fixed": "#2e1500",
+                      "on-primary": "#ffffff",
+                      "surface-variant": "#d8e3fb",
+                      "on-error": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "page-bg": "#F8FAFC",
+                      "surface-bright": "#f9f9ff",
+                      "on-background": "#111c2d",
+                      "secondary-fixed-dim": "#a7c8ff",
+                      "on-tertiary-fixed-variant": "#6d3a00",
+                      "secondary": "#3a5f94",
+                      "tertiary-fixed": "#ffdcc2",
+                      "on-secondary-container": "#294f83",
+                      "on-primary-container": "#dfe8ff",
+                      "surface-tint": "#005cba",
+                      "surface-container-highest": "#d8e3fb",
+                      "outline": "#727784",
+                      "on-surface-variant": "#414753",
+                      "on-tertiary-container": "#ffe3cf"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "compact": "8px",
+                      "exceptional": "80px",
+                      "component": "24px",
+                      "major": "48px",
+                      "section": "32px",
+                      "large": "40px",
+                      "standard": "16px",
+                      "hero": "64px",
+                      "micro": "4px"
+              },
+              "fontFamily": {
+                      "h3": ["Noto Sans"],
+                      "h4": ["Noto Sans"],
+                      "h1": ["Noto Sans"],
+                      "body-sm": ["Noto Sans"],
+                      "caption": ["Noto Sans"],
+                      "h2": ["Noto Sans"],
+                      "h2-mobile": ["Noto Sans"],
+                      "body-lg": ["Noto Sans"],
+                      "label": ["Noto Sans"],
+                      "display-heading-mobile": ["Noto Sans"],
+                      "display-heading": ["Noto Sans"],
+                      "h1-mobile": ["Noto Sans"],
+                      "body": ["Noto Sans"]
+              },
+              "fontSize": {
+                      "h3": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "h4": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "h1": ["36px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "caption": ["12px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                      "h2": ["28px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "h2-mobile": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "display-heading-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "display-heading": ["48px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "h1-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                      "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1;
+        }
+    </style>
+</head>
+<body class="bg-page-bg text-on-surface font-body font-body text-body min-h-screen flex flex-col">
+<!-- Global Utility Bar -->
+<div class="bg-surface-container-lowest border-b border-subtle w-full py-compact px-major hidden md:flex justify-end items-center gap-standard text-sm text-on-surface-variant font-caption text-caption">
+<a class="hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" href="#main-content">Skip to Main Content</a>
+<span class="w-px h-4 bg-border-subtle"></span>
+<button aria-label="Text Size Decrease" class="flex items-center gap-1 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">A-</button>
+<button aria-label="Text Size Normal" class="flex items-center gap-1 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 font-bold">A</button>
+<button aria-label="Text Size Increase" class="flex items-center gap-1 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">A+</button>
+<span class="w-px h-4 bg-border-subtle"></span>
+<button aria-label="High Contrast Toggle" class="flex items-center gap-1 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+<span class="material-symbols-outlined text-[16px]" data-icon="contrast">contrast</span>
+</button>
+<span class="w-px h-4 bg-border-subtle"></span>
+<select aria-label="Select Language" class="bg-transparent border-none text-caption font-caption focus:ring-0 cursor-pointer hover:text-primary">
+<option value="en">English</option>
+<option value="hi">हिंदी</option>
+</select>
+</div>
+<!-- TopNavBar (Web) -->
+<header class="bg-surface border-b border-subtle sticky top-0 z-50 hidden md:block">
+<div class="flex flex-col w-full max-w-7xl mx-auto px-major">
+<div class="flex items-center justify-between py-standard">
+<!-- Brand Logo -->
+<a class="font-h3 text-h3 font-bold text-primary flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" href="#">
+<img alt="State Emblem of India" class="h-12 w-auto object-contain" data-alt="The official State Emblem of India, the Lion Capital of Ashoka, rendered in a clean, professional vector style suitable for a modern government portal header. The emblem is highly detailed yet simplified for digital display, set against a pristine white background. High contrast, formal mood, corporate light-mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIISeTIo9OBDPF-o0xGKzM8Hj3R3wP_ZuqWxk0hd_0kmWF80elEwNwnJzxj-iqVAfysfe82BFRBYbokl8c79oA-98vyHnJRQxP1kUtTVW5bjtpijTz8zW1K0gz2E2mnqhZj8hLzHU5H1WP59iGhKTF4FrSMdNRVHJFiKv2EB2Iy7xoKHZjYlid-wyJKFxlY1v-1KaW7Xckgyu1A1d190IBtSTdQrRbWDyGOyCFEN6ozmLdFHWorIKJ7A"/>
+                    MapanSetu
+                </a>
+<!-- Navigation & Actions -->
+<div class="flex items-center gap-section">
+<nav class="flex items-center gap-standard font-body text-body">
+<a class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1" href="#">Home</a>
+<a aria-current="page" class="text-primary font-bold border-b-2 border-primary pb-1 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2" href="#">About</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1" href="#">Services</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1" href="#">Verify Certificate</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1" href="#">Help</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1" href="#">Contact</a>
+</nav>
+<button class="bg-primary text-on-primary px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 font-label text-label hover:bg-primary-container hover:text-on-primary-container transition-colors">
+                        Login
+                    </button>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar (Mobile) -->
+<div class="md:hidden flex flex-col h-full bg-surface fixed left-0 top-0 w-64 border-r border-subtle shadow-md z-50 transform -translate-x-full transition-transform duration-300" id="mobile-menu">
+<div class="p-standard border-b border-subtle flex items-center justify-between">
+<div class="flex items-center gap-2">
+<img alt="State Emblem of India" class="h-8 w-auto object-contain" data-alt="The official State Emblem of India, the Lion Capital of Ashoka, clean professional vector style for mobile header, white background, high contrast, formal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB-LHpB8nuHi1EpAywnVdZcYgFqT3_zCeQM6bw5U9zVLboiq2U01EA40jStsLPSBm2T6COF4CVDGNRxcitWnhaVHu7tZjiKgrUouSPY0buXb4D577LIo1FHhtph3c2cfXC-JlILthzeIs6X2hqSRiuWsrLBjJHYaJsSUPPVvm8CdYEOB6DVq-4TeEf3oiX79bk4hoiPvuWz3YUtzFPHvuP8CPNHgdwxmGeib8RHAWgfNbETCCLd52alJA"/>
+<div>
+<div class="font-h4 text-h4 font-bold text-on-surface">MapanSetu</div>
+<div class="font-caption text-caption text-on-surface-variant">Department of Legal Metrology</div>
+</div>
+</div>
+<button class="text-on-surface p-1 focus:outline-none focus:ring-2 focus:ring-primary" id="close-menu">
+<span class="material-symbols-outlined" data-icon="close">close</span>
+</button>
+</div>
+<nav class="flex-1 overflow-y-auto py-standard font-label text-label">
+<a class="flex items-center gap-3 px-standard py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span> Home
+            </a>
+<a aria-current="page" class="flex items-center gap-3 px-standard py-3 bg-primary-container text-on-primary-container font-bold scale-95 transition-transform origin-left rounded-r-full mr-2" href="#">
+<span class="material-symbols-outlined icon-fill" data-icon="info">info</span> About
+            </a>
+<a class="flex items-center gap-3 px-standard py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="settings_suggest">settings_suggest</span> Services
+            </a>
+<a class="flex items-center gap-3 px-standard py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span> Verify Certificate
+            </a>
+<a class="flex items-center gap-3 px-standard py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span> Help
+            </a>
+<a class="flex items-center gap-3 px-standard py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span> Contact
+            </a>
+<a class="flex items-center gap-3 px-standard py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors border-t border-subtle mt-2 pt-4" href="#">
+<span class="material-symbols-outlined" data-icon="login">login</span> Login
+            </a>
+</nav>
+<div class="p-standard border-t border-subtle">
+<button class="w-full bg-primary text-on-primary py-2 rounded focus:outline-none focus:ring-2 focus:ring-primary font-label text-label hover:bg-primary-container hover:text-on-primary-container transition-colors">
+                Verify Certificate
+            </button>
+</div>
+</div>
+<!-- Mobile Header Bar -->
+<div class="md:hidden flex items-center justify-between p-standard bg-surface border-b border-subtle sticky top-0 z-40">
+<button class="text-on-surface focus:outline-none focus:ring-2 focus:ring-primary p-1 rounded" id="open-menu">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<div class="font-h4 text-h4 font-bold text-primary flex items-center gap-2">
+<img alt="State Emblem of India" class="h-8 w-auto object-contain" data-alt="The official State Emblem of India, the Lion Capital of Ashoka, clean professional vector style for mobile header, white background, high contrast, formal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1CU1KLial0wbnDVuDqrnlsyS6-ebRjH7mHMxDFa-evArLCHSCdSAj2FBA0Qryg1vtfWHvIlsxGnDrahLGhpwfeu64FMhkfAV0E2TgxCtVV1Z3Ajhe26Cgv4mLAIKXvfuvikHG6TAKLVdDdpFXCPO2slRgmf1pks51eCVSnD295GsvCKeSghSWYC1Mg5HxJWYeA_5E9uTYXdP4XfU8W_mKKKIWG39LGoEIy6utJqvNWGmY9a3yKnb6fw"/>
+            MapanSetu
+        </div>
+<div class="w-8"></div> <!-- Spacer for balance -->
+</div>
+<!-- Main Content -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-standard md:px-major py-major focus:outline-none" id="main-content" tabindex="-1">
+<!-- Breadcrumbs -->
+<nav aria-label="Breadcrumb" class="mb-section font-body-sm text-body-sm text-on-surface-variant">
+<ol class="flex items-center gap-2">
+<li><a class="hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary rounded px-1" href="#">Home</a></li>
+<li><span class="material-symbols-outlined text-[16px] mt-0.5" data-icon="chevron_right">chevron_right</span></li>
+<li aria-current="page" class="text-on-surface font-semibold">About</li>
+</ol>
+</nav>
+<!-- Page Header -->
+<header class="mb-major border-b border-subtle pb-section">
+<h1 class="font-h1-mobile text-h1-mobile md:font-h1 md:text-h1 text-primary mb-compact">About MapanSetu</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl">Comprehensive coordination platform for Legal Metrology standardization and compliance.</p>
+</header>
+<!-- Institutional Layout (Bento Grid approach for documents) -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-section">
+<!-- Left Column: Main Narrative -->
+<div class="md:col-span-8 flex flex-col gap-section">
+<!-- About the Platform -->
+<section aria-labelledby="about-platform" class="bg-surface p-component border border-subtle rounded-xl">
+<h2 class="font-h3 text-h3 text-on-surface mb-standard flex items-center gap-2 border-b border-surface-container-high pb-2" id="about-platform">
+<span class="material-symbols-outlined text-primary" data-icon="account_balance">account_balance</span>
+                        About the Platform
+                    </h2>
+<p class="font-body text-body text-on-surface-variant mb-4">
+                        MapanSetu is an integrated digital ecosystem designed to streamline and transparentize the operations of the Department of Legal Metrology. It acts as the central hub connecting businesses, inspectors, and administrative bodies to ensure standard weights and measures compliance across the state.
+                    </p>
+<p class="font-body text-body text-on-surface-variant">
+                        By digitizing legacy processes, MapanSetu aims to reduce bureaucratic friction, enhance accountability, and provide a single source of truth for all metrological certifications and compliance records.
+                    </p>
+</section>
+<!-- What MapanSetu Coordinates -->
+<section aria-labelledby="coordinates" class="bg-surface p-component border border-subtle rounded-xl">
+<h2 class="font-h3 text-h3 text-on-surface mb-standard flex items-center gap-2 border-b border-surface-container-high pb-2" id="coordinates">
+<span class="material-symbols-outlined text-primary" data-icon="hub">hub</span>
+                        What MapanSetu Coordinates
+                    </h2>
+<p class="font-body text-body text-on-surface-variant mb-standard">The platform orchestrates a multitude of critical functions essential for maintaining metrological integrity:</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+<div class="flex items-start gap-3 bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+<span class="material-symbols-outlined text-secondary mt-0.5" data-icon="storefront">storefront</span>
+<div>
+<h3 class="font-label text-label text-on-surface">Business Registration</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Onboarding and profiling of manufacturers, dealers, and repairers.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+<span class="material-symbols-outlined text-secondary mt-0.5" data-icon="scale">scale</span>
+<div>
+<h3 class="font-label text-label text-on-surface">Instrument Records</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Centralized database of all registered weights, measures, and instruments.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+<span class="material-symbols-outlined text-secondary mt-0.5" data-icon="app_registration">app_registration</span>
+<div>
+<h3 class="font-label text-label text-on-surface">Applications</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Processing requests for new licenses, renewals, and model approvals.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+<span class="material-symbols-outlined text-secondary mt-0.5" data-icon="assignment_ind">assignment_ind</span>
+<div>
+<h3 class="font-label text-label text-on-surface">Inspector Assignment</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Algorithmic and manual routing of inspections to authorized personnel.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+<span class="material-symbols-outlined text-secondary mt-0.5" data-icon="calendar_month">calendar_month</span>
+<div>
+<h3 class="font-label text-label text-on-surface">Scheduling</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Calendar management for verification camps and routine inspections.</p>
+</div>
+</div>
+<div class="flex items-start gap-3 bg-surface-container-lowest p-3 rounded border border-surface-container-high">
+<span class="material-symbols-outlined text-secondary mt-0.5" data-icon="fact_check">fact_check</span>
+<div>
+<h3 class="font-label text-label text-on-surface">Evidence &amp; Certificates</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Digital issuance and verification of compliance certificates.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Problem Being Addressed -->
+<section aria-labelledby="problem-statement" class="bg-surface p-component border border-subtle rounded-xl">
+<h2 class="font-h3 text-h3 text-on-surface mb-standard flex items-center gap-2 border-b border-surface-container-high pb-2" id="problem-statement">
+<span class="material-symbols-outlined text-warning" data-icon="warning">warning</span>
+                        Problem Being Addressed
+                    </h2>
+<p class="font-body text-body text-on-surface-variant mb-4">
+                        Prior to MapanSetu, the coordination of legal metrology activities relied heavily on manual record-keeping, decentralized databases, and physical document routing. This led to systemic inefficiencies:
+                    </p>
+<ul class="list-disc pl-5 font-body text-body text-on-surface-variant space-y-2 mb-4">
+<li>Prolonged turnaround times for certificate issuance and renewals.</li>
+<li>Difficulty in tracking the lifecycle of specific measuring instruments.</li>
+<li>Lack of real-time visibility into inspection schedules and outcomes for administrators.</li>
+<li>Challenges for businesses in accessing their compliance status and historical records.</li>
+</ul>
+<p class="font-body text-body text-on-surface-variant">
+                        MapanSetu resolves these issues by replacing siloed operations with a unified, transparent digital workflow.
+                    </p>
+</section>
+</div>
+<!-- Right Column: Sidebar Information -->
+<div class="md:col-span-4 flex flex-col gap-section">
+<!-- Vision -->
+<div class="bg-primary-container text-on-primary-container p-component rounded-xl shadow-sm">
+<h3 class="font-h4 text-h4 mb-standard flex items-center gap-2">
+<span class="material-symbols-outlined icon-fill" data-icon="visibility">visibility</span>
+                        Vision
+                    </h3>
+<p class="font-body text-body">
+                        To establish a transparent, efficient, and technologically advanced Legal Metrology administration that ensures consumer protection and promotes fair trade practices through seamless digital governance.
+                    </p>
+</div>
+<!-- Platform Limitations -->
+<div class="bg-surface p-component border border-error-container rounded-xl">
+<h3 class="font-h4 text-h4 text-error mb-standard flex items-center gap-2 border-b border-error-container pb-2">
+<span class="material-symbols-outlined" data-icon="block">block</span>
+                        Platform Limitations
+                    </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-3 font-semibold">What MapanSetu Does NOT Do:</p>
+<ul class="space-y-3 font-body-sm text-body-sm text-on-surface-variant">
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-error text-[18px] mt-0.5" data-icon="cancel">cancel</span>
+<span>Does not conduct automated remote calibration of physical instruments.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-error text-[18px] mt-0.5" data-icon="cancel">cancel</span>
+<span>Does not replace the statutory requirement for physical verification by authorized inspectors.</span>
+</li>
+<li class="flex items-start gap-2">
+<span class="material-symbols-outlined text-error text-[18px] mt-0.5" data-icon="cancel">cancel</span>
+<span>Does not handle consumer grievance redressal outside the scope of weights and measures violations.</span>
+</li>
+</ul>
+</div>
+<!-- Department Information -->
+<div class="bg-surface-container-low p-component border border-subtle rounded-xl">
+<h3 class="font-h4 text-h4 text-on-surface mb-standard flex items-center gap-2 border-b border-surface-container-high pb-2">
+<span class="material-symbols-outlined text-primary" data-icon="domain">domain</span>
+                        Department Information
+                    </h3>
+<div class="space-y-4 font-body-sm text-body-sm text-on-surface-variant">
+<div>
+<p class="font-semibold text-on-surface">Department of Legal Metrology</p>
+<p>Government of India</p>
+</div>
+<div class="flex items-start gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]" data-icon="location_on">location_on</span>
+<p>Krishi Bhawan, Dr. Rajendra Prasad Road, New Delhi - 110001</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]" data-icon="mail">mail</span>
+<a class="text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary rounded" href="mailto:dirwm-ca@nic.in">dirwm-ca@nic.in</a>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]" data-icon="call">call</span>
+<p>011-23389489</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-subtle w-full py-major px-major mt-auto">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-section">
+<div class="md:col-span-1">
+<div class="font-h4 text-h4 font-bold text-on-surface mb-4">MapanSetu</div>
+<p class="font-body text-body text-on-surface-variant">
+                    © 2024 Department of Legal Metrology, Government of India. All rights reserved.
+                </p>
+</div>
+<div class="md:col-span-3 grid grid-cols-2 md:grid-cols-3 gap-standard font-caption text-caption">
+<div class="flex flex-col gap-2">
+<a class="text-on-surface-variant hover:text-primary transition-all focus:outline-none focus:ring-2 focus:ring-primary rounded w-fit" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant hover:text-primary transition-all focus:outline-none focus:ring-2 focus:ring-primary rounded w-fit" href="#">Terms of Service</a>
+</div>
+<div class="flex flex-col gap-2">
+<a class="text-on-surface-variant hover:text-primary transition-all focus:outline-none focus:ring-2 focus:ring-primary rounded w-fit" href="#">Sitemap</a>
+<a class="text-on-surface-variant hover:text-primary transition-all focus:outline-none focus:ring-2 focus:ring-primary rounded w-fit" href="#">Help Desk</a>
+</div>
+<div class="flex flex-col gap-2 col-span-2 md:col-span-1">
+<a class="text-on-surface-variant hover:text-primary transition-all focus:outline-none focus:ring-2 focus:ring-primary rounded w-fit" href="#">Contact Us</a>
+<a class="text-on-surface-variant hover:text-primary transition-all focus:outline-none focus:ring-2 focus:ring-primary rounded w-fit" href="#">GIGW Compliance</a>
+</div>
+</div>
+</div>
+</footer>
+<script>
+        // Simple mobile menu toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const openBtn = document.getElementById('open-menu');
+            const closeBtn = document.getElementById('close-menu');
+
+            if(openBtn && closeBtn && mobileMenu) {
+                openBtn.addEventListener('click', () => {
+                    mobileMenu.classList.remove('-translate-x-full');
+                });
+                closeBtn.addEventListener('click', () => {
+                    mobileMenu.classList.add('-translate-x-full');
+                });
+            }
+        });
+    </script>
+</body></html>

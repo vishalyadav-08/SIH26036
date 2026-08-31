@@ -1,0 +1,6 @@
+{
+  "name": "MapanSetu",
+  "description": "National Legal Metrology Verification and Instrument Passport Portal (SIH 2026 Prototype)",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

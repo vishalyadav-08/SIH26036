@@ -1,4 +1,4 @@
-import { api } from "@/lib/api";
+import { USE_MOCK_API, api } from "@/lib/api";
 import {
   Certificate,
   RevokeCertificateDto,
@@ -88,32 +88,38 @@ function saveStoredCertificates(certs: Certificate[]): void {
   localStorage.setItem(CERTS_STORAGE_KEY, JSON.stringify(certs));
 }
 
+// ----------------------------------------------------------------------------
+// PRIMARY EXPORTS (Switching logic)
+// ----------------------------------------------------------------------------
+
 export async function getCertificates(): Promise<Certificate[]> {
-  try {
-    const res = await api.get<Certificate[]>("/certificates");
-    return res.data;
-  } catch {
-    return getStoredCertificates();
-  }
+  if (USE_MOCK_API) return getStoredCertificates();
+  
+  const res = await api.get<{ items: Certificate[] }>("/certificates");
+  return res.items || res as unknown as Certificate[];
 }
 
 export async function getCertificateById(id: string): Promise<Certificate | null> {
-  const certs = await getCertificates();
-  return (
-    certs.find(
+  if (USE_MOCK_API) {
+    const certs = getStoredCertificates();
+    return certs.find(
       (c) => c.id === id || c.certificateNumber.toLowerCase() === id.toLowerCase()
-    ) || null
-  );
+    ) || null;
+  }
+
+  try {
+    const res = await api.get<Certificate>(`/certificates/${id}`);
+    return res as unknown as Certificate;
+  } catch {
+    return null;
+  }
 }
 
 export async function revokeCertificate(
   id: string,
   dto: RevokeCertificateDto
 ): Promise<Certificate> {
-  try {
-    const res = await api.post<Certificate>(`/certificates/${id}/revoke`, dto);
-    return res.data;
-  } catch {
+  if (USE_MOCK_API) {
     const current = getStoredCertificates();
     const index = current.findIndex(
       (c) => c.id === id || c.certificateNumber.toLowerCase() === id.toLowerCase()
@@ -127,17 +133,18 @@ export async function revokeCertificate(
     }
     throw new Error("Certificate not found");
   }
+
+  const res = await api.post<Certificate>(`/certificates/${id}/revoke`, {
+    reason: dto.reason,
+    clientOperationId: `op-${Date.now()}`
+  });
+  return res as unknown as Certificate;
 }
 
 export async function verifyPublicCertificate(
   certNo: string
 ): Promise<PublicVerificationResponse> {
-  try {
-    const res = await api.get<PublicVerificationResponse>(
-      `/certificates/verify?certNo=${encodeURIComponent(certNo)}`
-    );
-    return res.data;
-  } catch {
+  if (USE_MOCK_API) {
     const certs = getStoredCertificates();
     const found = certs.find(
       (c) => c.certificateNumber.toLowerCase() === certNo.trim().toLowerCase()
@@ -244,4 +251,10 @@ export async function verifyPublicCertificate(
       verificationMessage: "Certificate is invalid.",
     };
   }
+
+  // Real API
+  const res = await api.get<PublicVerificationResponse>(
+    `/certificates/verify?certNo=${encodeURIComponent(certNo)}`
+  );
+  return res as unknown as PublicVerificationResponse;
 }

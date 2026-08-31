@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MapanSetu - Officer Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-primary-fixed": "#000767",
+                        "inverse-on-surface": "#f2eff8",
+                        "on-primary-container": "#8690ee",
+                        "on-secondary-fixed-variant": "#42465a",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "tertiary": "#76546d",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "on-surface-variant": "#454652",
+                        "surface-container-high": "#eae7ef",
+                        "primary-container": "#1a237e",
+                        "surface-container": "#eeeeef",
+                        "outline": "#767683",
+                        "surface-container-highest": "#e4e1ea",
+                        "secondary": "#5a5d72",
+                        "on-secondary-fixed": "#171a2c",
+                        "on-primary-fixed-variant": "#343d96",
+                        "secondary-fixed-dim": "#c3c5dd",
+                        "on-background": "#1b1b21",
+                        "background": "#fbf8ff",
+                        "error-container": "#ffdad6",
+                        "surface-container-low": "#f5f2fb",
+                        "on-tertiary": "#ffffff",
+                        "primary-fixed": "#e0e0ff",
+                        "surface-dim": "#dbd9e1",
+                        "on-surface": "#1b1b21",
+                        "surface-tint": "#4c56af",
+                        "on-primary": "#ffffff",
+                        "inverse-surface": "#303036",
+                        "surface-container-lowest": "#ffffff",
+                        "surface": "#f8f9fa",
+                        "on-error": "#ffffff",
+                        "outline-variant": "#c6c5d4",
+                        "warning": "#f9a825",
+                        "on-tertiary-fixed": "#390c00",
+                        "surface-bright": "#fbf8ff",
+                        "on-tertiary-container": "#e17c5a",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed": "#dfe1fa",
+                        "tertiary-container": "#5c1800",
+                        "inverse-primary": "#bdc2ff",
+                        "on-error-container": "#93000a",
+                        "success": "#2e7d32",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "on-secondary-container": "#5e6177",
+                        "surface-variant": "#e4e1ea",
+                        "secondary-container": "#dcdef7",
+                        "error": "#ba1a1a",
+                        "primary": "#000666"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "card": "24px",
+                        "standard": "16px",
+                        "major": "48px",
+                        "micro": "4px",
+                        "compact": "8px",
+                        "gap": "12px",
+                        "section": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Inter"],
+                        "title-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "label-lg": ["Inter"],
+                        "display-md": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "title-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["28px", { "lineHeight": "36px", "fontWeight": "400" }],
+                        "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500" }],
+                        "body-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.4px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "400" }],
+                        "display-lg": ["57px", { "lineHeight": "64px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400" }],
+                        "display-sm": ["36px", { "lineHeight": "44px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "400" }],
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500" }],
+                        "display-md": ["45px", { "lineHeight": "52px", "fontWeight": "400" }],
+                        "title-lg": ["22px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500" }],
+                        "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500" }],
+                        "title-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background h-full font-sans antialiased overflow-x-hidden flex flex-col">
+<!-- TopAppBar -->
+<header class="bg-surface dark:bg-surface-dim w-full top-0 sticky z-40 transition-colors duration-200">
+<div class="flex justify-between items-center px-standard h-16 w-full max-w-7xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-surface-container-highest transition-colors active:scale-95 text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-title-lg text-title-lg text-primary font-bold">Profile</h1>
+</div>
+<div class="flex items-center">
+<div class="w-8 h-8 rounded-full overflow-hidden border-2 border-outline-variant">
+<img alt="Officer Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a legal metrology officer in uniform, brightly lit against a neutral gray background, conveying trust and authority in a corporate or government setting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA7avJciiWWqwOeZMIeq8XcY_63RthgD0MOYvZ89CpADi72tMOcuyYcWmMYPDEW3zdvBi3Bz3lqY465nUqLZfiauGEVKNJ2eUNz8IMw0dQ-7UZGX2Ct2ZM-bCHwO9oYVuH_9SHCyvQ5u-ZR_KaygL3FYBkG2HfAsTh29eqDwTzfYPh1UutbYUNwp_Ag-h5VSlLnl06DZcfukMd16rhPMlueXQK9bAyIjrklBkGVZuygIls4SI_wc3Zomw"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow w-full max-w-3xl mx-auto px-standard py-standard md:py-section flex flex-col gap-gap md:gap-section pb-24 md:pb-section">
+<!-- Officer Details Section (Glassmorphism/Card) -->
+<section class="bg-surface-container-lowest rounded-xl p-card shadow-sm border border-outline-variant flex flex-col sm:flex-row items-center sm:items-start gap-standard">
+<div class="relative w-24 h-24 sm:w-32 sm:h-32 rounded-full overflow-hidden border-4 border-surface-container-highest shrink-0">
+<img alt="Officer Demo" class="w-full h-full object-cover" data-alt="A high-quality professional portrait of a legal metrology officer, wearing a crisp uniform, looking confident. The background is a subtle, modern gradient. Clean lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAw38FrXivn3Fbgy8piuAm3zYIuOV7T_6GnGaJ6uWTHngWBgemsNKwkg-rImBGo2Yn1qrrZGry5PufN6Irpbg2e9jj31aSEw9PUodsGP5oCDJBYNZMIthcQQWSW6uyqUI2qj-x-k1pXIImo1xzcAbmHLXSD0lGNYulyGpd8mBJG0dm3nluK24qu43Bh0X8gqLuUMOuvBECFuN_2HqeDAR5v8tD-YLtdl0VfZT1a7QXflRw89pqfXG52aQ"/>
+</div>
+<div class="flex flex-col items-center sm:items-start text-center sm:text-left flex-grow">
+<h2 class="font-headline-md text-headline-md text-on-surface">Officer Demo</h2>
+<p class="font-body-lg text-body-lg text-secondary mt-1">Legal Metrology Officer</p>
+<div class="mt-4 bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-lg text-label-lg inline-flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">badge</span>
+                    LMO-2024-088
+                </div>
+</div>
+</section>
+<!-- Bento Grid for Stats and Quick Actions -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-gap">
+<!-- Operational Stats -->
+<div class="bg-surface-container-lowest rounded-xl p-card shadow-sm border border-outline-variant flex flex-col gap-compact">
+<h3 class="font-title-md text-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">analytics</span>
+                    Operational Stats
+                </h3>
+<div class="flex justify-between items-center py-2 border-b border-surface-container-highest">
+<span class="font-body-md text-body-md text-on-surface-variant">Last Sync</span>
+<span class="font-label-lg text-label-lg text-on-surface font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-success">cloud_done</span> 10:42 AM
+                    </span>
+</div>
+<div class="flex flex-col gap-1 py-2">
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md text-on-surface-variant">Local Storage</span>
+<span class="font-label-lg text-label-lg text-on-surface font-medium">124MB / 500MB</span>
+</div>
+<div class="w-full bg-surface-variant rounded-full h-2 mt-1 overflow-hidden">
+<div class="bg-primary h-2 rounded-full" style="width: 25%"></div>
+</div>
+</div>
+</div>
+<!-- Account Security -->
+<div class="bg-surface-container-lowest rounded-xl p-card shadow-sm border border-outline-variant flex flex-col gap-compact">
+<h3 class="font-title-md text-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">security</span>
+                    Account Security
+                </h3>
+<button class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">password</span>
+</div>
+<span class="font-body-lg text-body-lg text-on-surface">Change Password</span>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+<button class="w-full flex items-center justify-between p-3 rounded-lg hover:bg-surface-container-low transition-colors group">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant group-hover:bg-primary-container group-hover:text-on-primary-container transition-colors">
+<span class="material-symbols-outlined">devices</span>
+</div>
+<div class="flex flex-col items-start">
+<span class="font-body-lg text-body-lg text-on-surface">Active Sessions</span>
+<span class="font-body-sm text-body-sm text-secondary">2 devices connected</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</button>
+</div>
+</section>
+<!-- Settings List -->
+<section class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant overflow-hidden">
+<div class="p-4 border-b border-surface-container-highest bg-surface-container-low/50">
+<h3 class="font-title-md text-title-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">settings</span>
+                    App Settings
+                </h3>
+</div>
+<div class="flex flex-col">
+<!-- Language Setting -->
+<button class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors border-b border-surface-container-highest">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">translate</span>
+<div class="flex flex-col items-start">
+<span class="font-body-lg text-body-lg text-on-surface">Language</span>
+<span class="font-body-sm text-body-sm text-secondary">English</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">expand_more</span>
+</button>
+<!-- Offline Mode -->
+<div class="w-full flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-on-surface-variant">wifi_off</span>
+<div class="flex flex-col items-start">
+<span class="font-body-lg text-body-lg text-on-surface">Offline Mode Settings</span>
+<span class="font-body-sm text-body-sm text-secondary">Manage downloaded regions</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Log Out Action -->
+<div class="mt-4 flex justify-center">
+<button class="flex items-center gap-2 px-6 py-3 rounded-full border border-error text-error hover:bg-error-container hover:text-on-error-container transition-colors active:scale-95" onclick="document.getElementById('logout-dialog').classList.remove('hidden')">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-lg text-label-lg font-medium">Log Out</span>
+</button>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden bg-surface-container-low dark:bg-surface-container-high fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 px-compact pb-safe shadow-[0_-1px_3px_rgba(0,0,0,0.1)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-highest transition-colors active:scale-90 duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-highest transition-colors active:scale-90 duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-label-md text-label-md mt-1">Inspections</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-highest transition-colors active:scale-90 duration-200 rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="sync">sync</span>
+<span class="font-label-md text-label-md mt-1">Sync</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1 active:scale-90 transition-transform duration-200 shadow-sm" href="#">
+<span class="material-symbols-outlined filled" data-icon="person">person</span>
+<span class="font-label-md text-label-md mt-1 font-bold">Profile</span>
+</a>
+</nav>
+<!-- Logout Confirmation Dialog -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center bg-on-background/40 backdrop-blur-sm p-4" id="logout-dialog">
+<div class="bg-surface-container-lowest rounded-xl shadow-lg w-full max-w-sm overflow-hidden transform transition-all border border-outline-variant flex flex-col">
+<div class="p-6 pb-4">
+<div class="w-12 h-12 rounded-full bg-error-container text-on-error-container flex items-center justify-center mb-4 mx-auto">
+<span class="material-symbols-outlined text-[28px]">warning</span>
+</div>
+<h2 class="font-headline-sm text-headline-sm text-on-surface text-center mb-2">Unsynced Work</h2>
+<p class="font-body-md text-body-md text-on-surface-variant text-center">
+                    You have 3 unsynced inspections. Logging out will keep them on this device, but they won't be available on the server until you log back in and sync. Are you sure you want to log out?
+                </p>
+</div>
+<div class="p-4 bg-surface-container-low flex justify-end gap-2 border-t border-surface-container-highest">
+<button class="px-4 py-2 rounded-lg font-label-lg text-label-lg text-primary hover:bg-primary/10 transition-colors" onclick="document.getElementById('logout-dialog').classList.add('hidden')">
+                    Cancel
+                </button>
+<button class="px-4 py-2 rounded-lg font-label-lg text-label-lg bg-error text-on-error hover:bg-error/90 shadow-sm transition-colors">
+                    Log Out Anyway
+                </button>
+</div>
+</div>
+</div>
+</body></html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>MapanSetu - Evidence Capture</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-primary-fixed": "#000767",
+                    "inverse-on-surface": "#f2eff8",
+                    "on-primary-container": "#8690ee",
+                    "on-secondary-fixed-variant": "#42465a",
+                    "primary-fixed-dim": "#bdc2ff",
+                    "tertiary": "#76546d",
+                    "on-tertiary-fixed-variant": "#7b2e12",
+                    "on-surface-variant": "#454652",
+                    "surface-container-high": "#eae7ef",
+                    "primary-container": "#1a237e",
+                    "surface-container": "#eeeeef",
+                    "outline": "#767683",
+                    "surface-container-highest": "#e4e1ea",
+                    "secondary": "#5a5d72",
+                    "on-secondary-fixed": "#171a2c",
+                    "on-primary-fixed-variant": "#343d96",
+                    "secondary-fixed-dim": "#c3c5dd",
+                    "on-background": "#1b1b21",
+                    "background": "#fbf8ff",
+                    "error-container": "#ffdad6",
+                    "surface-container-low": "#f5f2fb",
+                    "on-tertiary": "#ffffff",
+                    "primary-fixed": "#e0e0ff",
+                    "surface-dim": "#dbd9e1",
+                    "on-surface": "#1b1b21",
+                    "surface-tint": "#4c56af",
+                    "on-primary": "#ffffff",
+                    "inverse-surface": "#303036",
+                    "surface-container-lowest": "#ffffff",
+                    "surface": "#f8f9fa",
+                    "on-error": "#ffffff",
+                    "outline-variant": "#c6c5d4",
+                    "warning": "#f9a825",
+                    "on-tertiary-fixed": "#390c00",
+                    "surface-bright": "#fbf8ff",
+                    "on-tertiary-container": "#e17c5a",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#dfe1fa",
+                    "tertiary-container": "#5c1800",
+                    "inverse-primary": "#bdc2ff",
+                    "on-error-container": "#93000a",
+                    "success": "#2e7d32",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "on-secondary-container": "#5e6177",
+                    "surface-variant": "#e4e1ea",
+                    "secondary-container": "#dcdef7",
+                    "error": "#ba1a1a",
+                    "primary": "#000666"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "card": "24px",
+                    "standard": "16px",
+                    "major": "48px",
+                    "micro": "4px",
+                    "compact": "8px",
+                    "gap": "12px",
+                    "section": "32px"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "title-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "label-lg": ["Inter"],
+                    "display-md": ["Inter"],
+                    "title-lg": ["Inter"],
+                    "label-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "title-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                    "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                    "body-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.4px", "fontWeight": "400"}],
+                    "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                    "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                    "display-lg": ["57px", {"lineHeight": "64px", "fontWeight": "400"}],
+                    "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                    "display-sm": ["36px", {"lineHeight": "44px", "fontWeight": "400"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                    "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                    "display-md": ["45px", {"lineHeight": "52px", "fontWeight": "400"}],
+                    "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                    "title-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-sans antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top App Bar -->
+<header class="bg-surface w-full top-0 sticky flex justify-between items-center px-standard h-16 z-40 transition-shadow duration-300" id="topAppBar">
+<div class="flex items-center">
+<button class="p-2 rounded-full hover:bg-surface-container-highest transition-colors flex items-center justify-center mr-2 active:scale-95 duration-150 text-on-surface">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="font-title-lg text-title-lg font-bold text-primary">MapanSetu</h1>
+</div>
+<div class="flex items-center">
+<button class="w-8 h-8 rounded-full overflow-hidden border-2 border-outline-variant hover:border-primary transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-surface">
+<img alt="Officer Profile" class="w-full h-full object-cover" data-alt="A professional close-up headshot of a female field officer wearing a safety vest and hard hat, set against a bright, modern industrial background in a clean light-mode aesthetic, exhibiting confidence and competence." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXxZ9YwZkfcYBTKZz-oxSCVkDT9R9J_scRGD21xcr2ZZJqSPjXcPdwHY32nXmG2dVzpZGkn6KnWW4-Fr11EhJbTA9ZevPckgw2GreZnJffrRSijvFNL1XxYkUvyrx27HGxtdimmvt6lvmAG92AToSGdICUOodShBKZqHRXLvGjBIDB02SujRyi6ogd3cVniUnDXJrrCyEPGJlUz5rl08LMoO88U5GWeQkOh-_dB1tujk3YRJkUar-6UA"/>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col px-standard py-standard max-w-2xl mx-auto w-full pb-32">
+<!-- Header & Stepper -->
+<section class="mb-section flex flex-col gap-standard">
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface">Inspection Task #4092</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Pump Station Alpha</p>
+</div>
+<!-- Stepper Component -->
+<div class="w-full flex items-center justify-between mt-compact relative">
+<!-- Background Line -->
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-surface-container-highest -z-10 rounded-full"></div>
+<!-- Active Progress Line -->
+<div class="absolute left-0 top-1/2 -translate-y-1/2 w-[66%] h-1 bg-primary -z-10 rounded-full"></div>
+<!-- Step 1: Checklist -->
+<div class="flex flex-col items-center gap-micro">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Checklist</span>
+</div>
+<!-- Step 2: Readings -->
+<div class="flex flex-col items-center gap-micro">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[18px]">check</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Readings</span>
+</div>
+<!-- Step 3: Evidence (Active) -->
+<div class="flex flex-col items-center gap-micro">
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center shadow-sm border-2 border-primary">
+<span class="font-title-sm text-title-sm">3</span>
+</div>
+<span class="font-label-sm text-label-sm text-primary font-bold">Evidence</span>
+</div>
+<!-- Step 4: Review -->
+<div class="flex flex-col items-center gap-micro">
+<div class="w-8 h-8 rounded-full bg-surface-container-high text-on-surface-variant flex items-center justify-center border-2 border-outline-variant">
+<span class="font-title-sm text-title-sm">4</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Review</span>
+</div>
+</div>
+</section>
+<!-- Instruction Text -->
+<div class="mb-standard">
+<h3 class="font-title-md text-title-md text-on-surface mb-micro">Required Evidence</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Please capture or upload photos of the machine nameplate, general condition, and any identified defects.</p>
+</div>
+<!-- Action Buttons -->
+<section class="grid grid-cols-1 md:grid-cols-2 gap-gap mb-section">
+<button class="bg-primary text-on-primary h-14 rounded-full flex items-center justify-center gap-gap px-6 font-title-sm text-title-sm hover:bg-on-primary-fixed-variant transition-colors shadow-sm active:scale-95 duration-200">
+<span class="material-symbols-outlined filled text-[24px]">photo_camera</span>
+                Capture Photo
+            </button>
+<button class="bg-surface-container-low text-on-surface border border-outline h-14 rounded-full flex items-center justify-center gap-gap px-6 font-title-sm text-title-sm hover:bg-surface-container transition-colors active:scale-95 duration-200">
+<span class="material-symbols-outlined text-[24px]">upload_file</span>
+                Upload Document
+            </button>
+</section>
+<!-- Captured Evidence List (Bento-style Cards) -->
+<section class="flex flex-col gap-standard">
+<h3 class="font-title-md text-title-md text-on-surface">Captured Items (1)</h3>
+<!-- Evidence Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm flex flex-col group">
+<!-- Preview Area -->
+<div class="relative w-full h-48 bg-surface-container">
+<img alt="Machine Nameplate" class="w-full h-full object-cover" data-alt="A highly detailed close-up macro photograph of a brushed steel industrial machine nameplate. The nameplate is slightly weathered, showing engraved serial numbers, voltage specifications, and a manufacturer logo. Bright, clear outdoor daylight illuminates the metal surface, creating sharp contrast and high legibility suitable for field inspection documentation. Light-mode industrial aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDPvBDl9BttpFau7sghgxobQatgilGy4s-kWDAvQrkDPfO3x2NEM6I_3SfFYiMXKn0Y1Z0q807mvVHXVoKQTqlbVVUEkZBI-jWXhWmWV27JwcscRgLar3pT7cQ5AoYiZGQpgzQgKRvJJ7nVx7mA9q4mUN6DrKLXkyPadKHjpzQ4HL82RTE4Xgh9qzWH7Ch5IPdE6Jlwydsn1ltT2YJ7haESPO3cc6iKyGw3a7h6m_N0io_CCFyZw1hdBA"/>
+<!-- Status Badge -->
+<div class="absolute top-standard right-standard bg-warning/90 backdrop-blur-sm text-on-surface px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">cloud_off</span>
+<span class="font-label-sm text-label-sm font-bold tracking-wider">LOCAL ONLY</span>
+</div>
+<!-- Type Label -->
+<div class="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent p-standard pt-8">
+<h4 class="font-title-md text-title-md text-white font-medium">Machine Nameplate</h4>
+</div>
+</div>
+<!-- Card Footer / Metadata & Actions -->
+<div class="p-standard flex flex-col md:flex-row justify-between items-start md:items-center gap-standard bg-surface-container-lowest">
+<!-- Metadata -->
+<div class="flex flex-col gap-micro w-full md:w-auto">
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px]">schedule</span>
+<span>Captured 10:45 AM</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+<span>Location: Captured</span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[16px]">sd_card</span>
+<span>Size: 2.1 MB</span>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex gap-gap w-full md:w-auto justify-end">
+<button aria-label="Retake Photo" class="text-primary hover:bg-primary-fixed rounded-full p-2 flex items-center justify-center transition-colors tooltip">
+<span class="material-symbols-outlined">replay</span>
+</button>
+<button aria-label="Delete Photo" class="text-error hover:bg-error-container rounded-full p-2 flex items-center justify-center transition-colors">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom Action Bar (Contextual) -->
+<div class="fixed bottom-0 left-0 w-full bg-surface/90 backdrop-blur-md border-t border-surface-container-highest p-standard z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+<div class="max-w-2xl mx-auto flex justify-between items-center gap-standard">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant">Step 3 of 4</span>
+<span class="font-title-sm text-title-sm text-on-surface font-semibold">Evidence Captured (1/3)</span>
+</div>
+<button class="bg-primary text-on-primary h-12 rounded-full px-8 font-title-sm text-title-sm font-medium hover:bg-on-primary-fixed-variant transition-colors shadow-md active:scale-95 duration-200 flex items-center gap-2">
+                Save &amp; Continue
+                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Scroll behavior script for App Bar -->
+<script>
+        const topAppBar = document.getElementById('topAppBar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 10) {
+                topAppBar.classList.add('shadow-md');
+            } else {
+                topAppBar.classList.remove('shadow-md');
+            }
+        });
+    </script>
+</body></html>

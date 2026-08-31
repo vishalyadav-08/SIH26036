@@ -1,0 +1,222 @@
+# Architecture Decision Records
+
+Active authority follows this file, then PRD, data model, API contract, stack, and specialist documents. Historical decisions remain visible when they explain migration context, but a superseded ADR is not an implementation instruction.
+
+---
+
+## ADR-001 — Modular monolith
+
+- **Context:** The prototype has related domains, one delivery team, and strong transactional relationships.
+- **Decision:** Keep one modular monolith with explicit domain-app boundaries.
+- **Consequence:** Modules share one deployment/database boundary but must not bypass service and authorization boundaries.
+- **Status:** Accepted.
+
+---
+
+## ADR-002 — Java/Spring backend *(SUPERSEDED)*
+
+- **Context:** This was the original documentation architecture.
+- **Decision:** Use Java/Spring/Maven.
+- **Consequence:** The old package, build, and security assumptions no longer describe this repository.
+- **Status:** **Superseded by ADR-021.** Retained only as historical context. Java/Spring/Maven must not appear in active architecture.
+
+---
+
+## ADR-003 — React web
+
+- **Context:** Business, admin, and public verification need responsive browser workflows.
+- **Decision:** Use React and TypeScript in the current Next.js App Router application. Use the dependencies actually present: Next.js 16.3.3, React 19.2.8, TanStack Query 5, Axios, React Hook Form, Zod 4, Tailwind CSS 4, shadcn/Radix UI primitives, and Vitest/Testing Library support.
+- **Status:** Accepted and confirmed by repository evidence.
+
+---
+
+## ADR-004 — React PWA field path — Testing/Prototype Client
+
+- **Context:** Field workflow testing needs browser-installable offline behavior for prototype validation.
+- **Decision:** Keep the current field routes inside `frontend/src/app/field/` as a React/TypeScript PWA using the existing service worker, Dexie/IndexedDB, browser file input, and browser Geolocation API as a **testing and prototype client**.
+- **Consequence:** The React PWA is a testing/prototype client only. It is **not** the final field application. Flutter/Dart is the official field application (ADR-023).
+- **Status:** Accepted as testing/prototype path; ADR-023 finalizes the field client decision.
+
+---
+
+## ADR-005 — PostgreSQL target with SQLite fallback
+
+- **Context:** Ownership, lifecycle, history, and audit require relational persistence.
+- **Decision:** PostgreSQL is the target system of record. Django settings use SQLite only when `DATABASE_URI` is absent so a fresh clone can run.
+- **Status:** Accepted.
+
+---
+
+## ADR-006 — Flyway migrations *(SUPERSEDED)*
+
+- **Context:** The old documentation chose a migration tool from the old backend ecosystem.
+- **Decision:** Use Flyway.
+- **Status:** **Superseded by ADR-021.** Django migrations are the active schema migration mechanism.
+
+---
+
+## ADR-007 — MinIO/S3-compatible object storage
+
+- **Context:** Evidence images and certificate PDFs are binary artifacts.
+- **Decision:** Use `django-storages` + `boto3` against MinIO/S3-compatible storage when `MINIO_ENDPOINT` is configured; retain local filesystem behavior until object storage is configured.
+- **Status:** Accepted; implementation of domain uploads pending.
+
+---
+
+## ADR-008 — Spring Security authentication *(SUPERSEDED)*
+
+- **Context:** The old backend used a framework-specific security boundary.
+- **Decision:** Use Spring Security.
+- **Status:** **Superseded by ADR-021.** SimpleJWT + Django/DRF permissions are the active authentication and authorization mechanism.
+
+---
+
+## ADR-009 — Argon2id passwords
+
+- **Context:** Passwords must be protected with a memory-hard one-way hash.
+- **Decision:** Use Argon2id through Django's `Argon2PasswordHasher`, first in the configured hasher list.
+- **Status:** Accepted.
+
+---
+
+## ADR-010 — SHA-256 integrity hashing
+
+- **Decision:** Hash canonical UTF-8 certificate/audit material with SHA-256. Canonical serialization is mandatory.
+- **Status:** Accepted.
+
+---
+
+## ADR-011 — RSA-2048/RSA-PSS/SHA-256 certificate signing
+
+- **Decision:** Preserve RSA-2048 with RSA-PSS and SHA-256. The private key stays backend-only; implementation library details require deterministic fixtures.
+- **Status:** Accepted; signing implementation pending.
+
+---
+
+## ADR-012 — Tamper-evident audit chain
+
+- **Decision:** Audit events carry canonical event data, `previousHash`, and `currentHash`; verification detects altered content or links. This is tamper evidence, not absolute immutability.
+- **Status:** Accepted.
+
+---
+
+## ADR-013 — No blockchain for MVP
+
+- **Decision:** Do not add blockchain or a distributed ledger to the prototype.
+- **Status:** Accepted.
+
+---
+
+## ADR-014 — No microservices for MVP
+
+- **Decision:** Do not split the Django modular monolith into separately deployed services for the prototype.
+- **Status:** Accepted.
+
+---
+
+## ADR-015 — AI advisory only
+
+- **Decision:** Optional AI may extract or suggest information, but humans and backend rules retain final legal/workflow decisions.
+- **Status:** Accepted.
+
+---
+
+## ADR-016 — Synthetic demo data
+
+- **Decision:** Prototype fixtures use synthetic identities, businesses, instruments, certificates, and evidence.
+- **Status:** Accepted.
+
+---
+
+## ADR-017 — Public verification without authentication
+
+- **Decision:** Public certificate lookup is unauthenticated, rate-limited, and minimized. Protected certificate management remains authenticated.
+- **Status:** Accepted.
+
+---
+
+## ADR-018 — Shared contracts, no duplicated domain logic
+
+- **Decision:** React Web, React PWA, and Flutter all use the same API and logical data contracts. Clients may validate for usability, but backend validation is authoritative. Business logic and domain state remain backend/data-model concerns; they must not be duplicated per client.
+- **Status:** Accepted.
+
+---
+
+## ADR-019 — npm workspaces plus Maven *(SUPERSEDED)*
+
+- **Context:** The old repository plan assumed a Java backend and a different frontend layout.
+- **Decision:** Use npm workspaces and Maven.
+- **Status:** **Superseded by ADR-021.** The current repository uses standalone `frontend/` pnpm and `backend/requirements.txt`.
+
+---
+
+## ADR-020 — PWA instead of Flutter *(SUPERSEDED)*
+
+- **Context:** The PWA was previously treated as the mandatory final field client.
+- **Decision:** Use only the PWA.
+- **Status:** **Superseded by ADR-023.** Flutter/Dart is the official field application. The PWA is retained as testing/prototype client only.
+
+---
+
+## ADR-021 — Backend technology migration to Django
+
+- **Context:** The repository contains `backend/manage.py`, Django 6.1, Django REST Framework 3.18, Django app modules, SimpleJWT configuration, Django ORM settings, and `requirements.txt`. It contains no Java source, Maven project, or Spring runtime.
+- **Previous architecture:** Java/Spring/Maven modular monolith — **RETIRED**.
+- **New architecture:** Python + Django 6.1 + Django REST Framework 3.18 modular monolith under `backend/`, with Django ORM/migrations, SimpleJWT configuration, drf-spectacular, PostgreSQL target, SQLite fallback, and MinIO/S3-compatible storage configuration.
+- **Decision:** Treat the repository-confirmed Django stack as the only active backend architecture. API paths, domain boundaries, client independence, sync semantics, and security primitives remain stable unless separately decided.
+- **Why:** It matches the current source tree and manifests, avoids invented technology, and preserves the prototype's transactional domain boundaries.
+- **Consequences:** Backend work uses Python/Django commands and app-local migrations; old package/build/security references must not be copied into new tasks. Several Django modules are still scaffolds, so implementation status must be explicit.
+- **Status:** Accepted; active implementation baseline.
+
+---
+
+## ADR-022 — Conditional Flutter/native field-client strategy *(SUPERSEDED)*
+
+- **Context:** This ADR previously created a readiness gate before committing to Flutter.
+- **Decision:** Keep PWA as primary; Flutter conditional.
+- **Status:** **Superseded by ADR-023.** The Flutter field app exists in the repository (`flutter_field_app/`). There is no readiness gate. Flutter is the official field application.
+
+---
+
+## ADR-023 — Flutter/Dart is the official field application *(FINAL)*
+
+- **Context:** The `flutter_field_app/` project exists in the repository (Dart SDK ^3.13.2, `cupertino_icons`). ADR-022 previously created a conditional gate; that gate is now resolved. The Flutter field app is present and is the intended production client for field officers.
+- **Decision:** Flutter/Dart (`flutter_field_app/`) is the **official field application**. There is no "if ready" condition. The React field PWA is retained only as a testing/prototype client for field workflow validation.
+- **Why:** The repository evidence confirms Flutter is present. Conditional language creates confusion about architecture authority and leads agents to treat PWA as a production client.
+- **Consequences:**
+  - All documentation must state Flutter as the official field application without conditional language.
+  - The React field PWA must be clearly labelled "testing / prototype client."
+  - The PWA must not be positioned as the primary demo field application.
+  - Flutter packages (local DB, state management, camera, location, secure storage, background sync) remain open implementation decisions and require separate ADRs before adoption.
+  - Flutter and PWA must use the same `/api/v1/` API contract with no client-specific server states.
+  - Task board and execution plan must not contain a "Flutter readiness gate."
+- **Status:** Accepted; **FINAL**.
+
+---
+
+## ADR-024 — React PWA is testing/prototype client
+
+- **Context:** ADR-023 finalizes Flutter as the official field application. The React field PWA's role must be explicitly documented.
+- **Decision:** The React field PWA at `frontend/src/app/field/` is retained **only** as a testing and prototype validation client. It is used to test field workflow logic, API contract integration, offline behavior, and sync mechanics before or during Flutter development. It must not be described as the final field architecture, the primary mobile application, or the production field client.
+- **Consequences:**
+  - The PWA continues to serve field workflow testing. It must not be removed while Flutter development is in progress.
+  - IndexedDB/Dexie and Service Worker are PWA-specific implementation details. They are not the canonical offline storage mechanism — that is a Flutter implementation decision (ADR-023 open items).
+  - The demo plan uses Flutter unless Flutter is unavailable for a specific technical test, in which case the PWA may be used as an explicitly-labelled fallback.
+  - Agents must label PWA tasks as `FIELD_PWA_TESTING` not as a production client designation.
+- **Status:** Accepted; **FINAL**.
+
+---
+
+## ADR-025 — Shared API contract for all clients
+
+- **Context:** Three clients exist: React Web, Flutter Field App, React Field PWA. The API must serve all three without per-client business logic.
+- **Decision:** All clients consume the same `/api/v1/` API contract. The backend exposes no `/flutter/*`, `/pwa/*`, or `/react-field/*` namespaces unless there is an explicit technical requirement. Common paths, payloads, error codes, auth mechanism, and idempotency semantics apply to all clients equally.
+- **Status:** Accepted.
+
+---
+
+## ADR-026 — Client-independent domain model
+
+- **Context:** Business logic must remain backend/data-model concerns to prevent drift.
+- **Decision:** Business logic, state machines, permission rules, ownership, assignment, and certificate semantics are implemented in the backend and expressed through the API contract and logical data model. No client (Flutter, React PWA, or React Web) becomes a canonical data authority. Client models are representations of the API/data contract, not independent domain definitions.
+- **Status:** Accepted.

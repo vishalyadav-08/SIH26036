@@ -5,25 +5,14 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   Scale,
-  LayoutDashboard,
-  Gauge,
-  FileCheck2,
-  Award,
-  Bell,
   LogOut,
   Menu,
   X,
   Building2,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-
-const NAV_ITEMS = [
-  { label: "Dashboard", href: "/app", icon: LayoutDashboard },
-  { label: "Instruments", href: "/app/instruments", icon: Gauge },
-  { label: "Applications", href: "/app/applications", icon: FileCheck2 },
-  { label: "Certificates", href: "/app/certificates", icon: Award },
-  { label: "Notifications", href: "/app/notifications", icon: Bell },
-];
+import { BUSINESS_NAV_ITEMS } from "./BusinessSidebar";
+import { Button } from "@/components/ui/button";
 
 export function BusinessHeader() {
   const pathname = usePathname();
@@ -44,113 +33,90 @@ export function BusinessHeader() {
   };
 
   return (
-    <header className="bg-white border-b border-slate-200 sticky top-0 z-40">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="bg-background border-b border-border sticky top-0 z-40">
+      <div className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Brand Logo & Tag */}
           <div className="flex items-center gap-8">
             <Link
               href="/app"
-              className="flex items-center gap-2.5 group focus:outline-hidden"
+              className="flex items-center gap-2.5 group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg"
             >
-              <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shadow-2xs group-hover:bg-blue-700 transition-colors">
+              <div className="w-9 h-9 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shadow-2xs group-hover:bg-primary/90 transition-colors">
                 <Scale className="w-5 h-5" />
               </div>
               <div className="flex flex-col">
-                <span className="font-extrabold text-base text-slate-900 tracking-tight leading-none">
+                <span className="font-extrabold text-base tracking-tight leading-none">
                   MapanSetu
                 </span>
-                <span className="text-[10px] font-semibold text-blue-600 uppercase tracking-wider mt-0.5">
+                <span className="text-[10px] font-semibold text-primary uppercase tracking-wider mt-0.5">
                   Business Portal
                 </span>
               </div>
             </Link>
-
-            {/* Desktop Navigation Links */}
-            <nav
-              aria-label="Business workspace navigation"
-              className="hidden md:flex items-center gap-1"
-            >
-              {NAV_ITEMS.map((item) => {
-                const Icon = item.icon;
-                const active = isActive(item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${
-                      active
-                        ? "bg-blue-50 text-blue-700"
-                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
-            </nav>
           </div>
 
           {/* Right Area: User Profile & Logout */}
           <div className="hidden md:flex items-center gap-3">
-            <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200">
-              <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
+            <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-muted/50 border border-border">
+              <div className="w-7 h-7 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
                 <Building2 className="w-3.5 h-3.5" />
               </div>
               <div className="text-left leading-none">
-                <div className="text-xs font-bold text-slate-900 truncate max-w-[140px]">
+                <div className="text-xs font-bold text-foreground truncate max-w-[140px]">
                   {user?.displayName || "Business User"}
                 </div>
-                <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                <div className="text-[10px] text-muted-foreground font-mono mt-0.5">
                   {user?.businessId || "BUSINESS"}
                 </div>
               </div>
             </div>
 
-            <button
-              type="button"
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleLogout}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-rose-700 bg-white hover:bg-rose-50 border border-slate-200 hover:border-rose-200 rounded-xl transition-colors cursor-pointer"
+              className="gap-1.5 text-xs text-destructive hover:text-destructive border-border hover:bg-destructive/10"
               title="Sign out of current account"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Sign Out</span>
-            </button>
+            </Button>
           </div>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden flex items-center gap-2">
-            <button
-              type="button"
+            <Button
+              variant="ghost"
+              size="icon"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
-              className="p-2 rounded-lg text-slate-600 hover:bg-slate-100 focus:outline-hidden"
+              className="text-muted-foreground hover:bg-muted"
             >
               {mobileMenuOpen ? (
                 <X className="w-5 h-5" />
               ) : (
                 <Menu className="w-5 h-5" />
               )}
-            </button>
+            </Button>
           </div>
         </div>
       </div>
 
       {/* Mobile Navigation Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden border-t border-slate-200 bg-white px-4 pt-3 pb-5 space-y-3">
+        <div className="md:hidden border-t border-border bg-background px-4 pt-3 pb-5 space-y-4 shadow-lg absolute w-full h-[calc(100vh-4rem)] overflow-y-auto">
           {/* User info in mobile view */}
-          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-200">
-            <div className="w-9 h-9 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/50 border border-border">
+            <div className="w-9 h-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
               <Building2 className="w-4 h-4" />
             </div>
             <div>
-              <div className="text-xs font-bold text-slate-900">
+              <div className="text-xs font-bold text-foreground">
                 {user?.displayName || "Business User"}
               </div>
-              <div className="text-[10px] text-slate-500 font-mono">
-                {user?.email} • {user?.role}
+              <div className="text-[10px] text-muted-foreground font-mono">
+                {user?.email} &bull; {user?.role}
               </div>
             </div>
           </div>
@@ -159,36 +125,36 @@ export function BusinessHeader() {
             aria-label="Mobile workspace navigation"
             className="space-y-1 pt-1"
           >
-            {NAV_ITEMS.map((item) => {
+            {BUSINESS_NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.href);
               return (
-                <Link
+                <Button
                   key={item.href}
-                  href={item.href}
+                  variant={active ? "secondary" : "ghost"}
+                  className="w-full justify-start gap-3 h-10 font-medium"
+                  asChild
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-semibold transition-colors ${
-                    active
-                      ? "bg-blue-50 text-blue-700"
-                      : "text-slate-700 hover:bg-slate-50"
-                  }`}
                 >
-                  <Icon className="w-4 h-4" />
-                  <span>{item.label}</span>
-                </Link>
+                  <Link href={item.href} aria-current={active ? "page" : undefined}>
+                    <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
+                    {item.label}
+                  </Link>
+                </Button>
               );
             })}
           </nav>
 
-          <div className="pt-2 border-t border-slate-100">
-            <button
-              type="button"
+
+          <div className="pt-2 border-t border-border">
+            <Button
+              variant="destructive"
+              className="w-full justify-center gap-2 font-semibold"
               onClick={handleLogout}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200 rounded-xl transition-colors cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
               <span>Sign Out</span>
-            </button>
+            </Button>
           </div>
         </div>
       )}

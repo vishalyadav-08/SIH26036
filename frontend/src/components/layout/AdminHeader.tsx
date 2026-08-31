@@ -24,10 +24,9 @@ const ADMIN_NAV_ITEMS = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Applications", href: "/admin/applications", icon: ClipboardList },
   { label: "Officers", href: "/admin/officers", icon: Users },
-  { label: "Schedules", href: "/admin/schedules", icon: Calendar },
-  { label: "Certificates", href: "/admin/certificates", icon: Award },
   { label: "Instruments", href: "/admin/instruments", icon: Gauge },
-  { label: "Audit Trail", href: "/admin/audit", icon: History },
+  { label: "Certificates", href: "/admin/certificates", icon: Award },
+  { label: "Audit Log", href: "/admin/audit", icon: History },
 ];
 
 export function AdminHeader() {

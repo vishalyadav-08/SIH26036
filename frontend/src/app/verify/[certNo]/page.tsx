@@ -32,7 +32,6 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PublicHeader } from "@/components/layout/PublicHeader";
-import { useLanguage } from "@/components/providers/LanguageProvider";
 
 export default function PublicCertificateVerificationPage({
   params,

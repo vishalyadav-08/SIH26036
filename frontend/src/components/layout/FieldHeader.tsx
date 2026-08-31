@@ -122,7 +122,7 @@ export function FieldHeader() {
               </div>
               <div className="text-left leading-none">
                 <div className="text-xs font-bold text-slate-900 truncate max-w-[140px]">
-                  {user?.displayName || "Inspector Sharma"}
+                  {user?.displayName || "Field Officer"}
                 </div>
                 <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                   OFFICER (LMO)
@@ -168,10 +168,10 @@ export function FieldHeader() {
             </div>
             <div>
               <div className="text-xs font-bold text-slate-900">
-                {user?.displayName || "Inspector Sharma"}
+                {user?.displayName || "Field Officer"}
               </div>
               <div className="text-[10px] text-slate-500 font-mono">
-                {user?.email} • Legal Metrology Officer
+                {user?.email} &bull; Legal Metrology Officer
               </div>
             </div>
           </div>

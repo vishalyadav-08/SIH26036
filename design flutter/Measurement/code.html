@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MapanSetu - Measurement Readings</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#bdc2ff",
+                        "surface-container-highest": "#e4e1ea",
+                        "primary-container": "#1a237e",
+                        "warning": "#f9a825",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#343d96",
+                        "outline-variant": "#c6c5d4",
+                        "surface-container-low": "#f5f2fb",
+                        "inverse-on-surface": "#f2eff8",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "on-secondary-fixed-variant": "#42465a",
+                        "secondary-fixed": "#dfe1fa",
+                        "on-secondary-fixed": "#171a2c",
+                        "on-surface-variant": "#454652",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "surface-container": "#efecf5",
+                        "background": "#fbf8ff",
+                        "inverse-surface": "#303036",
+                        "surface-dim": "#dbd9e1",
+                        "success": "#2e7d32",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#390c00",
+                        "surface-bright": "#fbf8ff",
+                        "secondary": "#5a5d72",
+                        "surface-variant": "#e4e1ea",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#e17c5a",
+                        "on-primary": "#ffffff",
+                        "on-background": "#1b1b21",
+                        "on-secondary": "#ffffff",
+                        "on-primary-container": "#8690ee",
+                        "outline": "#767683",
+                        "primary-fixed": "#e0e0ff",
+                        "primary": "#000666",
+                        "surface": "#f8f9fa",
+                        "on-surface": "#1b1b21",
+                        "tertiary": "#76546d",
+                        "tertiary-container": "#5c1800",
+                        "secondary-container": "#dcdef7",
+                        "secondary-fixed-dim": "#c3c5dd",
+                        "on-secondary-container": "#5e6177",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#000767",
+                        "tertiary-fixed": "#ffdbd0",
+                        "surface-tint": "#4c56af",
+                        "surface-container-high": "#eae7ef"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "major": "48px",
+                        "standard": "16px",
+                        "micro": "4px",
+                        "section": "32px",
+                        "compact": "8px",
+                        "gap": "12px",
+                        "card": "24px"
+                    },
+                    "fontFamily": {
+                        "label-lg": ["Inter"],
+                        "label-md": ["Inter"],
+                        "display-md": ["Inter"],
+                        "headline-sm": ["Inter"],
+                        "headline-lg": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-sm": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "title-sm": ["Inter"],
+                        "title-lg": ["Inter"],
+                        "title-md": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500" }],
+                        "label-md": ["12px", { "lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500" }],
+                        "display-md": ["45px", { "lineHeight": "52px", "fontWeight": "400" }],
+                        "headline-sm": ["24px", { "lineHeight": "32px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400" }],
+                        "display-sm": ["36px", { "lineHeight": "44px", "fontWeight": "400" }],
+                        "display-lg": ["57px", { "lineHeight": "64px", "fontWeight": "400" }],
+                        "headline-md": ["28px", { "lineHeight": "36px", "fontWeight": "400" }],
+                        "body-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.4px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400" }],
+                        "title-sm": ["14px", { "lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500" }],
+                        "title-lg": ["22px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "title-md": ["16px", { "lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500" }],
+                        "label-sm": ["11px", { "lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom Stepper Styles */
+        .stepper-line {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            transform: translateY(-50%);
+            z-index: -1;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen pb-[80px]">
+<!-- Top App Bar -->
+<header class="bg-surface sticky top-0 z-40 px-standard h-16 w-full flex justify-between items-center shadow-sm">
+<div class="flex items-center gap-gap">
+<button class="text-on-surface hover:bg-surface-container-low transition-colors rounded-full p-2 active:scale-95 duration-150 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<div>
+<h1 class="font-title-lg text-title-lg text-on-surface">Counter Scale</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">APP-DEMO-001</p>
+</div>
+</div>
+<div>
+<button class="text-primary hover:bg-surface-container-low transition-colors rounded-full p-2 active:scale-95 duration-150 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="more_vert">more_vert</span>
+</button>
+</div>
+</header>
+<main class="max-w-3xl mx-auto p-standard space-y-section pt-section">
+<!-- Stepper -->
+<section aria-label="Progress">
+<div class="flex justify-between items-center relative z-10 w-full px-4">
+<!-- Step 1: Completed -->
+<div class="flex flex-col items-center flex-1 relative">
+<div class="stepper-line bg-primary right-[-50%]"></div>
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-label-md mb-2 shadow-sm">
+<span class="material-symbols-outlined text-[16px]" data-icon="check">check</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-center">Checklist</span>
+</div>
+<!-- Step 2: Active -->
+<div class="flex flex-col items-center flex-1 relative">
+<div class="stepper-line bg-surface-variant right-[-50%]"></div>
+<div class="stepper-line bg-primary left-[-50%]"></div>
+<div class="w-8 h-8 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-label-md text-label-md mb-2 ring-2 ring-primary-container ring-offset-2 ring-offset-surface">
+                        2
+                    </div>
+<span class="font-label-sm text-label-sm text-primary font-bold text-center">READINGS</span>
+</div>
+<!-- Step 3: Incomplete -->
+<div class="flex flex-col items-center flex-1 relative">
+<div class="stepper-line bg-surface-variant right-[-50%]"></div>
+<div class="stepper-line bg-surface-variant left-[-50%]"></div>
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-label-md text-label-md mb-2">
+                        3
+                    </div>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-center">Evidence</span>
+</div>
+<!-- Step 4: Incomplete -->
+<div class="flex flex-col items-center flex-1 relative">
+<div class="stepper-line bg-surface-variant left-[-50%]"></div>
+<div class="w-8 h-8 rounded-full bg-surface-variant text-on-surface-variant flex items-center justify-center font-label-md text-label-md mb-2">
+                        4
+                    </div>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-center">Review</span>
+</div>
+</div>
+</section>
+<!-- Measurement Cards Area -->
+<section class="space-y-gap">
+<h2 class="font-title-md text-title-md text-on-surface mb-compact">Load Tests</h2>
+<!-- Card 1: 5kg Test -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-standard shadow-sm">
+<div class="flex justify-between items-start mb-gap">
+<div>
+<h3 class="font-title-sm text-title-sm text-on-surface">5kg Load Test</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="error_outline">error_outline</span> Required
+                        </span>
+</div>
+<div class="bg-surface-container rounded-md px-2 py-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Ref: 5.000 kg</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-gap items-end">
+<div class="space-y-1">
+<label class="font-label-md text-label-md text-on-surface-variant" for="input-5kg">Indicated (kg)</label>
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-outline rounded-md px-3 py-2 font-body-md text-body-md text-on-surface focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all h-[40px]" id="input-5kg" placeholder="0.000" step="0.001" type="number"/>
+</div>
+</div>
+<div class="space-y-1">
+<label class="font-label-md text-label-md text-on-surface-variant">Error</label>
+<div class="w-full bg-surface-container border border-dashed border-outline-variant rounded-md px-3 py-2 font-body-md text-body-md text-on-surface-variant flex items-center h-[40px]">
+                            --
+                         </div>
+</div>
+</div>
+</div>
+<!-- Card 2: 10kg Test (Warning State) -->
+<div class="bg-surface-container-lowest rounded-xl border border-error p-standard shadow-sm relative overflow-hidden">
+<div class="absolute top-0 left-0 w-1 h-full bg-error"></div>
+<div class="flex justify-between items-start mb-gap pl-2">
+<div>
+<h3 class="font-title-sm text-title-sm text-on-surface">10kg Load Test</h3>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="error_outline">error_outline</span> Required
+                        </span>
+</div>
+<div class="bg-surface-container rounded-md px-2 py-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Ref: 10.000 kg</span>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-gap items-end pl-2">
+<div class="space-y-1">
+<label class="font-label-md text-label-md text-error" for="input-10kg">Indicated (kg)</label>
+<div class="relative">
+<input class="w-full bg-error-container border border-error rounded-md px-3 py-2 font-body-md text-body-md text-on-error-container focus:border-error focus:ring-1 focus:ring-error outline-none transition-all h-[40px]" id="input-10kg" step="0.001" type="number" value="10.055"/>
+</div>
+</div>
+<div class="space-y-1">
+<label class="font-label-md text-label-md text-error">Error</label>
+<div class="w-full bg-error-container border border-error rounded-md px-3 py-2 font-body-md text-body-md text-on-error-container flex items-center h-[40px] font-medium">
+                            +0.055 kg
+                         </div>
+</div>
+</div>
+<div class="pl-2 mt-compact flex items-start gap-2">
+<span class="material-symbols-outlined text-error text-[16px] mt-0.5" data-icon="warning">warning</span>
+<p class="font-body-sm text-body-sm text-error">Value exceeds maximum permissible error (+0.050kg).</p>
+</div>
+</div>
+<!-- Add Reading Action (demonstrating empty state/action) -->
+<button class="w-full py-3 border-2 border-dashed border-outline-variant rounded-xl text-on-surface-variant font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-surface-container-low hover:border-primary transition-colors hover:text-primary">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                Add Extra Reading
+            </button>
+</section>
+</main>
+<!-- Sticky Bottom Bar -->
+<div class="fixed bottom-0 w-full z-50 bg-surface border-t border-outline-variant shadow-md px-standard py-compact flex justify-between items-center safe-area-pb">
+<button class="px-4 py-2 rounded-lg font-title-sm text-title-sm text-primary hover:bg-primary-container hover:text-on-primary-container transition-colors h-[40px] flex items-center justify-center">
+            Back
+        </button>
+<button class="px-4 py-2 rounded-lg bg-primary text-on-primary font-title-sm text-title-sm hover:bg-primary-fixed-dim transition-colors shadow-sm h-[40px] flex items-center justify-center gap-2">
+            Save &amp; Continue
+            <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</body></html>

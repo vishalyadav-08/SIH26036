@@ -1,0 +1,192 @@
+import { api } from "@/lib/api";
+import {
+  InspectionDraft,
+  ChecklistItem,
+  InspectionResult,
+} from "@/types/inspection";
+import {
+  getInspectionDraft,
+  saveInspectionDraft,
+  enqueueSyncOperation,
+  isOfflineSimulated,
+} from "@/lib/offline-storage";
+
+export const DEFAULT_CHECKLIST_TEMPLATE: ChecklistItem[] = [
+  {
+    id: "chk-01",
+    category: "Physical Security",
+    label: "Lead/wire verification seal is intact and shows no evidence of tampering.",
+    passed: true,
+    required: true,
+  },
+  {
+    id: "chk-02",
+    category: "Physical Security",
+    label: "Previous year statutory verification stamping mark is legible on the main housing.",
+    passed: true,
+    required: true,
+  },
+  {
+    id: "chk-03",
+    category: "Operational Setup",
+    label: "Spirit level bubble is centered and instrument leveling feet are firmly seated.",
+    passed: true,
+    required: true,
+  },
+  {
+    id: "chk-04",
+    category: "Operational Setup",
+    label: "Instrument is placed on a rigid, vibration-free platform away from excessive air drafts.",
+    passed: true,
+    required: true,
+  },
+  {
+    id: "chk-05",
+    category: "Identification",
+    label: "Manufacturer model plate and serial number match the registered instrument identity.",
+    passed: true,
+    required: true,
+  },
+];
+
+export function initializeInspectionDraft(
+  applicationId: string,
+  officerUserId: string
+): InspectionDraft {
+  const existing = getInspectionDraft(applicationId);
+  if (existing) return existing;
+
+  const newDraft: InspectionDraft = {
+    id: `ins-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`,
+    applicationId,
+    officerUserId,
+    status: "LOCAL_DRAFT",
+    checklist: DEFAULT_CHECKLIST_TEMPLATE,
+    measurements: [
+      {
+        id: "meas-01",
+        testPoint: "ZERO",
+        referenceValue: 0.0,
+        indicatedValue: 0.0,
+        unit: "kg",
+        errorValue: 0.0,
+        sequence: 1,
+        capturedAt: new Date().toISOString(),
+        notes: "Initial zero balance check",
+      },
+      {
+        id: "meas-02",
+        testPoint: "HALF_CAPACITY",
+        referenceValue: 12.5,
+        indicatedValue: 12.5,
+        unit: "kg",
+        errorValue: 0.0,
+        sequence: 2,
+        capturedAt: new Date().toISOString(),
+        notes: "Standard reference weights applied",
+      },
+      {
+        id: "meas-03",
+        testPoint: "MAX_CAPACITY",
+        referenceValue: 25.0,
+        indicatedValue: 25.0,
+        unit: "kg",
+        errorValue: 0.0,
+        sequence: 3,
+        capturedAt: new Date().toISOString(),
+        notes: "Full range tolerance check",
+      },
+    ],
+    evidence: [],
+    startedAt: new Date().toISOString(),
+    version: 1,
+  };
+
+  saveInspectionDraft(newDraft);
+  return newDraft;
+}
+
+export async function submitFinalInspectionDecision(
+  draft: InspectionDraft,
+  result: InspectionResult,
+  notes?: string,
+  summaryMetadata?: { applicationNumber: string; instrumentNumber: string }
+): Promise<{ success: boolean; queuedOffline: boolean }> {
+  draft.result = result;
+  draft.notes = notes;
+  draft.completedAt = new Date().toISOString();
+
+  const isOffline = typeof navigator !== "undefined" ? !navigator.onLine || isOfflineSimulated() : false;
+
+  if (isOffline) {
+    draft.status = "READY_TO_SYNC";
+    saveInspectionDraft(draft);
+
+    enqueueSyncOperation({
+      clientOperationId: `op-${draft.id}-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      entityType: "INSPECTION",
+      entityId: draft.id,
+      operationType: "RECORD_DECISION",
+      payload: {
+        applicationId: draft.applicationId,
+        inspectionId: draft.id,
+        checklist: draft.checklist,
+        measurements: draft.measurements,
+        evidence: draft.evidence,
+        result: draft.result,
+        notes: draft.notes,
+        completedAt: draft.completedAt,
+      },
+      attemptCount: 0,
+      status: "READY_TO_SYNC",
+      expectedServerVersion: draft.version,
+      inspectionSummary: {
+        applicationNumber: summaryMetadata?.applicationNumber || "APP-CASE",
+        instrumentNumber: summaryMetadata?.instrumentNumber || "INS-CASE",
+        result,
+      },
+    });
+
+    return { success: true, queuedOffline: true };
+  }
+
+  try {
+    await api.post(`/inspections/${draft.id}/decision`, {
+      applicationId: draft.applicationId,
+      result,
+      notes,
+      completedAt: draft.completedAt,
+    });
+    draft.status = "SYNCED";
+    saveInspectionDraft(draft);
+    return { success: true, queuedOffline: false };
+  } catch {
+    // Graceful offline queue fallback on network failure
+    draft.status = "READY_TO_SYNC";
+    saveInspectionDraft(draft);
+
+    enqueueSyncOperation({
+      clientOperationId: `op-${draft.id}-${Date.now()}`,
+      createdAt: new Date().toISOString(),
+      entityType: "INSPECTION",
+      entityId: draft.id,
+      operationType: "RECORD_DECISION",
+      payload: {
+        applicationId: draft.applicationId,
+        inspectionId: draft.id,
+        result: draft.result,
+        notes: draft.notes,
+      },
+      attemptCount: 1,
+      status: "READY_TO_SYNC",
+      inspectionSummary: {
+        applicationNumber: summaryMetadata?.applicationNumber || "APP-CASE",
+        instrumentNumber: summaryMetadata?.instrumentNumber || "INS-CASE",
+        result,
+      },
+    });
+
+    return { success: true, queuedOffline: true };
+  }
+}

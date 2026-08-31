@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MapanSetu - Field Dashboard</title>
+<!-- Google Fonts & Material Symbols -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration (Injected from Design System) -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-error-container": "#93000a",
+                      "inverse-primary": "#bdc2ff",
+                      "surface-container-highest": "#e4e1ea",
+                      "primary-container": "#1a237e",
+                      "warning": "#f9a825",
+                      "on-error": "#ffffff",
+                      "primary-fixed-dim": "#bdc2ff",
+                      "error-container": "#ffdad6",
+                      "on-primary-fixed-variant": "#343d96",
+                      "outline-variant": "#c6c5d4",
+                      "surface-container-low": "#f5f2fb",
+                      "inverse-on-surface": "#f2eff8",
+                      "on-tertiary-fixed-variant": "#7b2e12",
+                      "on-secondary-fixed-variant": "#42465a",
+                      "secondary-fixed": "#dfe1fa",
+                      "on-secondary-fixed": "#171a2c",
+                      "on-surface-variant": "#454652",
+                      "tertiary-fixed-dim": "#ffb59d",
+                      "surface-container": "#efecf5",
+                      "background": "#fbf8ff",
+                      "inverse-surface": "#303036",
+                      "surface-dim": "#dbd9e1",
+                      "success": "#2e7d32",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-fixed": "#390c00",
+                      "surface-bright": "#fbf8ff",
+                      "secondary": "#5a5d72",
+                      "surface-variant": "#e4e1ea",
+                      "error": "#ba1a1a",
+                      "on-tertiary-container": "#e17c5a",
+                      "on-primary": "#ffffff",
+                      "on-background": "#1b1b21",
+                      "on-secondary": "#ffffff",
+                      "on-primary-container": "#8690ee",
+                      "outline": "#767683",
+                      "primary-fixed": "#e0e0ff",
+                      "primary": "#000666",
+                      "surface": "#f8f9fa",
+                      "on-surface": "#1b1b21",
+                      "tertiary": "#76546d",
+                      "tertiary-container": "#5c1800",
+                      "secondary-container": "#dcdef7",
+                      "secondary-fixed-dim": "#c3c5dd",
+                      "on-secondary-container": "#5e6177",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed": "#000767",
+                      "tertiary-fixed": "#ffdbd0",
+                      "surface-tint": "#4c56af",
+                      "surface-container-high": "#eae7ef"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "major": "48px",
+                      "standard": "16px",
+                      "micro": "4px",
+                      "section": "32px",
+                      "compact": "8px",
+                      "gap": "12px",
+                      "card": "24px"
+              },
+              "fontFamily": {
+                      "label-lg": ["Inter"],
+                      "label-md": ["Inter"],
+                      "display-md": ["Inter"],
+                      "headline-sm": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "display-sm": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "title-sm": ["Inter"],
+                      "title-lg": ["Inter"],
+                      "title-md": ["Inter"],
+                      "label-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "label-lg": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}],
+                      "display-md": ["45px", {"lineHeight": "52px", "fontWeight": "400"}],
+                      "headline-sm": ["24px", {"lineHeight": "32px", "fontWeight": "400"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "letterSpacing": "0.5px", "fontWeight": "400"}],
+                      "display-sm": ["36px", {"lineHeight": "44px", "fontWeight": "400"}],
+                      "display-lg": ["57px", {"lineHeight": "64px", "fontWeight": "400"}],
+                      "headline-md": ["28px", {"lineHeight": "36px", "fontWeight": "400"}],
+                      "body-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.4px", "fontWeight": "400"}],
+                      "body-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.25px", "fontWeight": "400"}],
+                      "title-sm": ["14px", {"lineHeight": "20px", "letterSpacing": "0.1px", "fontWeight": "500"}],
+                      "title-lg": ["22px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "title-md": ["16px", {"lineHeight": "24px", "letterSpacing": "0.15px", "fontWeight": "500"}],
+                      "label-sm": ["11px", {"lineHeight": "16px", "letterSpacing": "0.5px", "fontWeight": "500"}]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface flex justify-between items-center px-standard h-16 z-40">
+<div class="flex items-center gap-gap">
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full p-2 active:scale-95 transition-transform duration-150 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="menu">menu</span>
+</button>
+<h1 class="font-headline-sm text-headline-sm font-bold text-primary">MapanSetu</h1>
+</div>
+<div class="flex items-center">
+<button class="hover:bg-surface-container-low transition-colors rounded-full p-1 active:scale-95 transition-transform duration-150">
+<img alt="Officer profile picture" class="w-8 h-8 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot of a female construction inspector wearing a white hard hat and high visibility vest, outdoors on a sunny day. Clear blue sky background. Corporate style, bright lighting, high quality." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCXSeL4vAsJHL0GLEXzg66QwZmbEzAUANVRzGal-zS0utt1mFLKS-_CK_wtbAp1URQbDO6Qb-8bkBTi6WQ2J8ob7aipmK7K2WqMiVInYAiZGt4NqwwsP-N79uaZ2ZADBRMHzYJuDarEea8PtiafM0TMVgx_ewdrzI2gyi0uN1cCuUSez3a-o7JaMSB-1qi1Vb6LnNk2kXv1vq3WuQ9RDBzRRl42WPYY4la73cLYpAuxYDyba4-nAHUX4w"/>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-standard py-section md:px-major pb-32">
+<div class="max-w-7xl mx-auto space-y-major">
+<!-- Dashboard Header & Connectivity -->
+<section class="flex flex-col md:flex-row md:justify-between md:items-end gap-gap">
+<div>
+<h2 class="font-display-sm text-display-sm text-on-background mb-micro">Dashboard</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Welcome back to the field.</p>
+</div>
+<div class="flex items-center bg-surface-container-low rounded-lg p-compact border border-outline-variant/30">
+<div class="flex items-center gap-compact pr-standard border-r border-outline-variant">
+<span class="material-symbols-outlined filled text-success" data-icon="wifi">wifi</span>
+<div>
+<p class="font-label-lg text-label-lg text-on-surface">Online &amp; Synchronized</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Connected to secure network</p>
+</div>
+</div>
+<div class="pl-standard flex items-center gap-compact">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="schedule">schedule</span>
+<div>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Last Sync</p>
+<p class="font-label-md text-label-md text-on-surface">10:42 AM</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Actions -->
+<section class="flex flex-col sm:flex-row gap-gap">
+<button class="flex-1 bg-primary text-on-primary font-title-sm text-title-sm rounded-lg h-10 px-standard flex items-center justify-center gap-compact hover:bg-primary/90 transition-colors shadow-sm">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                    Start New Inspection
+                </button>
+<button class="flex-1 bg-secondary-container text-on-secondary-container font-title-sm text-title-sm rounded-lg h-10 px-standard flex items-center justify-center gap-compact hover:bg-surface-container-highest transition-colors border border-outline-variant/50">
+<span class="material-symbols-outlined" data-icon="sync">sync</span>
+                    Go to Sync Center
+                </button>
+</section>
+<!-- Overview Stats Bento Grid -->
+<section>
+<h3 class="font-title-lg text-title-lg text-on-surface mb-standard">Workload Overview</h3>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-standard">
+<!-- Assigned -->
+<div class="bg-surface-container-lowest rounded-xl p-card border border-outline-variant shadow-sm flex flex-col justify-between">
+<div class="flex justify-between items-start mb-standard">
+<span class="material-symbols-outlined text-primary" data-icon="assignment">assignment</span>
+<span class="font-display-md text-display-md text-primary">4</span>
+</div>
+<p class="font-label-lg text-label-lg text-on-surface">Assigned</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Pending action</p>
+</div>
+<!-- In Progress -->
+<div class="bg-surface-container-lowest rounded-xl p-card border border-outline-variant shadow-sm flex flex-col justify-between">
+<div class="flex justify-between items-start mb-standard">
+<span class="material-symbols-outlined text-warning" data-icon="pending_actions">pending_actions</span>
+<span class="font-display-md text-display-md text-on-surface">1</span>
+</div>
+<p class="font-label-lg text-label-lg text-on-surface">In Progress</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Currently active</p>
+</div>
+<!-- Local Drafts -->
+<div class="bg-surface-container-lowest rounded-xl p-card border border-outline-variant shadow-sm flex flex-col justify-between">
+<div class="flex justify-between items-start mb-standard">
+<span class="material-symbols-outlined text-secondary" data-icon="draft">draft</span>
+<span class="font-display-md text-display-md text-on-surface">2</span>
+</div>
+<p class="font-label-lg text-label-lg text-on-surface">Local Drafts</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Saved on device</p>
+</div>
+<!-- Ready to Sync -->
+<div class="bg-surface-container-lowest rounded-xl p-card border border-outline-variant shadow-sm flex flex-col justify-between relative overflow-hidden">
+<div class="absolute right-0 top-0 w-16 h-16 bg-success/10 rounded-bl-full flex items-start justify-end p-2"></div>
+<div class="flex justify-between items-start mb-standard z-10 relative">
+<span class="material-symbols-outlined text-success" data-icon="cloud_upload">cloud_upload</span>
+<span class="font-display-md text-display-md text-success">3</span>
+</div>
+<div class="z-10 relative">
+<p class="font-label-lg text-label-lg text-on-surface">Ready to Sync</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Requires connection</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Today's Work -->
+<section>
+<div class="flex justify-between items-center mb-standard">
+<h3 class="font-title-lg text-title-lg text-on-surface">Today's Work</h3>
+<button class="font-label-lg text-label-lg text-primary hover:underline">View All</button>
+</div>
+<div class="space-y-gap">
+<!-- Task Card 1: Urgent -->
+<div class="bg-surface-container-lowest rounded-xl p-standard border-l-4 border-error border-y border-r border-y-outline-variant border-r-outline-variant shadow-sm flex flex-col sm:flex-row gap-standard sm:items-center">
+<div class="flex-1">
+<div class="flex items-center gap-compact mb-micro">
+<span class="bg-error-container text-on-error-container font-label-sm text-label-sm px-2 py-1 rounded-full uppercase tracking-wider">Urgent</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined" data-icon="location_on" style="font-size: 14px;">location_on</span> Sector 7G</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface">Site Alpha Structural Check</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Full structural integrity review required following recent seismic activity report.</p>
+</div>
+<div class="flex gap-compact sm:flex-col justify-end w-full sm:w-auto mt-standard sm:mt-0">
+<button class="flex-1 sm:flex-none bg-primary text-on-primary font-label-lg text-label-lg rounded-lg h-10 px-standard flex items-center justify-center hover:bg-primary/90 transition-colors">Begin</button>
+<button class="flex-1 sm:flex-none bg-surface-container-low text-on-surface font-label-lg text-label-lg rounded-lg h-10 px-standard flex items-center justify-center border border-outline-variant hover:bg-surface-container-highest transition-colors">Details</button>
+</div>
+</div>
+<!-- Task Card 2: Scheduled -->
+<div class="bg-surface-container-lowest rounded-xl p-standard border border-outline-variant shadow-sm flex flex-col sm:flex-row gap-standard sm:items-center">
+<div class="flex-1">
+<div class="flex items-center gap-compact mb-micro">
+<span class="bg-secondary-container text-on-secondary-container font-label-sm text-label-sm px-2 py-1 rounded-full uppercase tracking-wider">Scheduled</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant flex items-center gap-1"><span class="material-symbols-outlined" data-icon="schedule" style="font-size: 14px;">schedule</span> 2:00 PM</span>
+</div>
+<h4 class="font-title-md text-title-md text-on-surface">Perimeter Fence Review</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Routine monthly check of northern boundary fencing and security gates.</p>
+</div>
+<div class="flex gap-compact sm:flex-col justify-end w-full sm:w-auto mt-standard sm:mt-0">
+<button class="flex-1 sm:flex-none bg-surface-container text-on-surface font-label-lg text-label-lg rounded-lg h-10 px-standard flex items-center justify-center border border-outline-variant hover:bg-surface-container-highest transition-colors">Start Soon</button>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 px-compact pb-safe bg-surface-container-low border-t-0 shadow-md md:hidden">
+<!-- Dashboard (Active) -->
+<a class="flex flex-col items-center justify-center text-primary active:scale-90 transition-transform duration-200" href="#">
+<div class="bg-secondary-container text-on-secondary-container rounded-xl px-4 py-1 flex items-center justify-center">
+<span class="material-symbols-outlined filled" data-icon="dashboard">dashboard</span>
+</div>
+<span class="font-label-md text-label-md mt-1">Dashboard</span>
+</a>
+<!-- Inspections -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-colors rounded-xl px-4 py-1 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="fact_check">fact_check</span>
+<span class="font-label-md text-label-md mt-1">Inspections</span>
+</a>
+<!-- Sync -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-colors rounded-xl px-4 py-1 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="sync">sync</span>
+<span class="font-label-md text-label-md mt-1">Sync</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-colors rounded-xl px-4 py-1 active:scale-90 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md mt-1">Profile</span>
+</a>
+</nav>
+<!-- Desktop Side Nav Spacer (if implementing full desktop nav later, currently hidden on mobile, using TopApp for desktop as per JSON hint) -->
+<!-- The prompt implies a dashboard layout, but JSON only provides BottomNavBar and TopAppBar. 
+         We implemented TopAppBar for global and BottomNavBar for mobile as instructed by "Responsive Pivot" rule. -->
+</body></html>

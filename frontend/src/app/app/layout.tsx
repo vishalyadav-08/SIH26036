@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { BusinessHeader } from "@/components/layout/BusinessHeader";
 import { BusinessSidebar } from "@/components/layout/BusinessSidebar";
+import { AuthGuard } from "@/components/auth/AuthGuard";
 
 export const metadata = {
   title: "MapanSetu Business Portal",
@@ -9,16 +10,18 @@ export const metadata = {
 
 export default function BusinessLayout({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen flex flex-col bg-background text-foreground">
-      <BusinessHeader />
-      
-      <div className="flex-1 flex max-w-[1600px] w-full mx-auto">
-        <BusinessSidebar />
+    <AuthGuard allowedRoles={["BUSINESS"]}>
+      <div className="min-h-screen flex flex-col bg-background text-foreground">
+        <BusinessHeader />
         
-        <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
-          {children}
-        </main>
+        <div className="flex-1 flex max-w-[1600px] w-full mx-auto">
+          <BusinessSidebar />
+          
+          <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-8">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </AuthGuard>
   );
 }

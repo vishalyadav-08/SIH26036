@@ -8,7 +8,6 @@ import {
   LayoutDashboard,
   ClipboardList,
   Users,
-  Calendar,
   Award,
   Gauge,
   History,

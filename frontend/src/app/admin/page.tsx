@@ -9,26 +9,20 @@ import {
   Award,
   ArrowRight,
   Clock,
-  CheckCircle2,
-  History,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { getAdminDashboardData } from "@/services/admin/admin.service";
 import { getApplications } from "@/services/applications/applications.service";
 import { getOfficers } from "@/services/officers/officers.service";
-import { getAuditLogs } from "@/services/audit/audit.service";
 import { AdminDashboardData } from "@/types/dashboard";
 import { Application } from "@/types/application";
 import { Officer } from "@/types/officer";
-import { AuditLogEntry } from "@/types/audit";
-import { AuditHashBadge } from "@/components/admin/AuditHashBadge";
 
 export default function AdminDashboardPage() {
   const { user } = useAuth();
   const [data, setData] = useState<AdminDashboardData | null>(null);
   const [recentApps, setRecentApps] = useState<Application[]>([]);
   const [officers, setOfficers] = useState<Officer[]>([]);
-  const [recentAudit, setRecentAudit] = useState<AuditLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

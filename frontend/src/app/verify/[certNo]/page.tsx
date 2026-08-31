@@ -13,7 +13,6 @@ import {
   Check,
   Printer,
   Calendar,
-  ArrowRight,
   Shield,
   FileCheck,
   RefreshCw,
@@ -38,7 +37,6 @@ import { useLanguage } from "@/components/providers/LanguageProvider";
 export default function PublicCertificateVerificationPage({
   params,
 }: PageProps) {
-  const { t } = useLanguage();
   const resolvedParams = use(params);
   const rawCertNo = resolvedParams?.certNo || "";
   const decodedCertNo = decodeURIComponent(rawCertNo);

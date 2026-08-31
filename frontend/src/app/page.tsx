@@ -8,7 +8,6 @@ import {
   Search, 
   ShieldCheck, 
   CheckCircle2, 
-  ArrowRight,
   FileCheck2,
   AlertTriangle,
   Info

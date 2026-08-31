@@ -3,10 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_field_app/data/models/models.dart';
+import 'package:flutter_field_app/data/models/user.dart';
 import 'package:flutter_field_app/data/repositories/inspection_repository.dart';
 import 'package:flutter_field_app/data/repositories/auth_repository.dart';
 import 'package:flutter_field_app/data/sync_engine.dart';
 import 'package:flutter_field_app/config/app_config.dart';
+
+final currentUserProvider = StateProvider<User?>((ref) => null);
 
 final localeProvider = StateProvider<Locale>((ref) {
   return const Locale('en');

@@ -33,6 +33,7 @@ class SyncEngine {
         
         if (response.statusCode == 200 || response.statusCode == 201) {
           task.status = 'synced';
+          task.syncedAt = DateTime.now().toIso8601String();
           await _repository.saveInspection(task);
         } else if (response.statusCode == 409) {
           task.status = 'conflict';
@@ -46,6 +47,7 @@ class SyncEngine {
         await _repository.saveInspection(task);
       }
     }
+    await cleanupOldData();
   }
 
   Future<void> fetchInspections() async {
@@ -60,6 +62,19 @@ class SyncEngine {
       }
     } catch (e) {
       // Handle download error
+    }
+  }
+
+  Future<void> cleanupOldData() async {
+    final tasks = _repository.getAllInspections();
+    final now = DateTime.now();
+    for (var task in tasks) {
+      if (task.status == 'synced' && task.syncedAt != null) {
+        final syncedDate = DateTime.tryParse(task.syncedAt!);
+        if (syncedDate != null && now.difference(syncedDate).inDays >= 7) {
+          await _repository.deleteInspection(task.id);
+        }
+      }
     }
   }
 }

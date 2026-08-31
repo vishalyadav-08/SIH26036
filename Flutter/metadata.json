@@ -1,6 +1,0 @@
-{
-  "name": "MapanSetu",
-  "description": "Field Officer Portal for Legal Metrology Officers - Offline-First Inspection & Verification System",
-  "requestFramePermissions": ["geolocation", "camera"],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}

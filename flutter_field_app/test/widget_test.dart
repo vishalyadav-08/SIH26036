@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_field_app/l10n/app_localizations.dart';
-import 'package:flutter_field_app/presentation/screens/login_screen.dart';
-import 'package:flutter_field_app/presentation/screens/dashboard_screen.dart';
-import 'package:flutter_field_app/presentation/screens/inspections_list_screen.dart';
-import 'package:flutter_field_app/presentation/screens/sync_screen.dart';
-import 'package:flutter_field_app/presentation/screens/profile_screen.dart';
-import 'package:flutter_field_app/presentation/screens/conflict_resolution_screen.dart';
-import 'package:flutter_field_app/presentation/shared/top_app_bar.dart';
-import 'package:flutter_field_app/presentation/shared/bottom_nav_bar.dart';
-import 'package:flutter_field_app/presentation/shared/navigation_drawer.dart';
+import 'package:flutter_field_app/features/auth/presentation/login_screen.dart';
+import 'package:flutter_field_app/features/officer/presentation/dashboard_screen.dart';
+import 'package:flutter_field_app/features/officer/presentation/inspections_list_screen.dart';
+import 'package:flutter_field_app/features/officer/presentation/sync_screen.dart';
+import 'package:flutter_field_app/features/officer/presentation/profile_screen.dart';
+import 'package:flutter_field_app/features/officer/presentation/conflict_resolution_screen.dart';
+import 'package:flutter_field_app/shared/top_app_bar.dart';
+import 'package:flutter_field_app/shared/bottom_nav_bar.dart';
+import 'package:flutter_field_app/shared/navigation_drawer.dart';
 
 void main() {
   testWidgets('LoginScreen renders in English', (WidgetTester tester) async {

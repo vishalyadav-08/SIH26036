@@ -9,26 +9,20 @@ import {
   Award,
   ArrowRight,
   Clock,
-  CheckCircle2,
-  History,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { getAdminDashboardData } from "@/services/admin/admin.service";
 import { getApplications } from "@/services/applications/applications.service";
 import { getOfficers } from "@/services/officers/officers.service";
-import { getAuditLogs } from "@/services/audit/audit.service";
 import { AdminDashboardData } from "@/types/dashboard";
 import { Application } from "@/types/application";
 import { Officer } from "@/types/officer";
-import { AuditLogEntry } from "@/types/audit";
-import { AuditHashBadge } from "@/components/admin/AuditHashBadge";
 
 export default function AdminDashboardPage() {
   const { user } = useAuth();
   const [data, setData] = useState<AdminDashboardData | null>(null);
   const [recentApps, setRecentApps] = useState<Application[]>([]);
   const [officers, setOfficers] = useState<Officer[]>([]);
-  const [recentAudit, setRecentAudit] = useState<AuditLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,17 +30,15 @@ export default function AdminDashboardPage() {
 
     Promise.resolve().then(async () => {
       try {
-        const [dash, apps, offs, audits] = await Promise.all([
+        const [dash, apps, offs] = await Promise.all([
           getAdminDashboardData(),
           getApplications(),
           getOfficers(),
-          getAuditLogs(),
         ]);
         if (isMounted) {
           setData(dash);
           setRecentApps(apps.slice(0, 5));
           setOfficers(offs);
-          setRecentAudit(audits.slice(0, 4));
         }
       } finally {
         if (isMounted) setLoading(false);
@@ -319,73 +311,6 @@ export default function AdminDashboardPage() {
               );
             })}
           </div>
-        </div>
-      </div>
-
-      {/* Cryptographic Audit Log Preview */}
-      <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <History className="w-5 h-5 text-indigo-600" />
-            <div>
-              <h2 className="text-base font-bold text-slate-900">
-                Tamper-Evident Audit Trail
-              </h2>
-              <p className="text-xs text-slate-500">
-                Sequential SHA-256 cryptographic hash chain verification
-              </p>
-            </div>
-          </div>
-          <Link
-            href="/admin/audit"
-            className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 inline-flex items-center gap-1"
-          >
-            <span>View full audit chain</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
-            <thead>
-              <tr className="border-b border-slate-200 text-slate-500 font-semibold uppercase tracking-wider">
-                <th className="py-2.5 px-3">Timestamp</th>
-                <th className="py-2.5 px-3">Actor</th>
-                <th className="py-2.5 px-3">Action</th>
-                <th className="py-2.5 px-3">Chain Link (Prev → Current)</th>
-                <th className="py-2.5 px-3 text-right">Integrity</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {recentAudit.map((log) => (
-                <tr key={log.id} className="hover:bg-slate-50">
-                  <td className="py-3 px-3 text-slate-500 font-mono">
-                    {new Date(log.timestamp).toLocaleString()}
-                  </td>
-                  <td className="py-3 px-3">
-                    <span className="font-semibold text-slate-900">{log.actorName}</span>{" "}
-                    <span className="text-[10px] text-slate-500 font-mono">({log.actorRole})</span>
-                  </td>
-                  <td className="py-3 px-3 font-mono font-bold text-indigo-900">
-                    {log.action}
-                  </td>
-                  <td className="py-3 px-3">
-                    <div className="flex items-center gap-1.5">
-                      <AuditHashBadge hash={log.previousHash} />
-                      <span className="text-slate-400">→</span>
-                      <AuditHashBadge hash={log.currentHash} />
-                    </div>
-                  </td>
-                  <td className="py-3 px-3 text-right">
-                    <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700">
-                      <CheckCircle2 className="w-3.5 h-3.5" />
-                      <span>VALID</span>
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         </div>
       </div>
     </div>

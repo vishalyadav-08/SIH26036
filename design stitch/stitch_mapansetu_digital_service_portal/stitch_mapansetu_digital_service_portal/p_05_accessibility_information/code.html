@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MapanSetu - Accessibility Information</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#e7eeff",
+                        "surface": "#FFFFFF",
+                        "tertiary-fixed-dim": "#ffb77a",
+                        "error-container": "#ffdad6",
+                        "inverse-on-surface": "#ecf1ff",
+                        "secondary-fixed": "#d5e3ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#00458e",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c1c6d5",
+                        "warning": "#B45309",
+                        "border-subtle": "#CBD5E1",
+                        "secondary-container": "#9fc2fe",
+                        "surface-dim": "#cfdaf2",
+                        "primary": "#004e9f",
+                        "error": "#B91C1C",
+                        "surface-container-high": "#dee8ff",
+                        "success": "#15803D",
+                        "on-secondary-fixed-variant": "#1f477b",
+                        "tertiary": "#7a4200",
+                        "inverse-surface": "#263143",
+                        "inverse-primary": "#aac7ff",
+                        "primary-fixed": "#d7e3ff",
+                        "primary-container": "#0066cc",
+                        "primary-fixed-dim": "#aac7ff",
+                        "surface-container-low": "#f0f3ff",
+                        "on-primary-fixed": "#001b3e",
+                        "background": "#f9f9ff",
+                        "tertiary-container": "#9d5600",
+                        "on-surface": "#111c2d",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#001b3c",
+                        "on-tertiary-fixed": "#2e1500",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#d8e3fb",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "page-bg": "#F8FAFC",
+                        "surface-bright": "#f9f9ff",
+                        "on-background": "#111c2d",
+                        "secondary-fixed-dim": "#a7c8ff",
+                        "on-tertiary-fixed-variant": "#6d3a00",
+                        "secondary": "#3a5f94",
+                        "tertiary-fixed": "#ffdcc2",
+                        "on-secondary-container": "#294f83",
+                        "on-primary-container": "#dfe8ff",
+                        "surface-tint": "#005cba",
+                        "surface-container-highest": "#d8e3fb",
+                        "outline": "#727784",
+                        "on-surface-variant": "#414753",
+                        "on-tertiary-container": "#ffe3cf"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "compact": "8px",
+                        "exceptional": "80px",
+                        "component": "24px",
+                        "major": "48px",
+                        "section": "32px",
+                        "large": "40px",
+                        "standard": "16px",
+                        "hero": "64px",
+                        "micro": "4px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Noto Sans"],
+                        "h4": ["Noto Sans"],
+                        "h1": ["Noto Sans"],
+                        "body-sm": ["Noto Sans"],
+                        "caption": ["Noto Sans"],
+                        "h2": ["Noto Sans"],
+                        "h2-mobile": ["Noto Sans"],
+                        "body-lg": ["Noto Sans"],
+                        "label": ["Noto Sans"],
+                        "display-heading-mobile": ["Noto Sans"],
+                        "display-heading": ["Noto Sans"],
+                        "h1-mobile": ["Noto Sans"],
+                        "body": ["Noto Sans"]
+                    },
+                    "fontSize": {
+                        "h3": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "h4": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "h1": ["36px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "caption": ["12px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                        "h2": ["28px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "h2-mobile": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label": ["14px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "display-heading-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "display-heading": ["48px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "h1-mobile": ["28px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "body": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-page-bg text-on-background antialiased flex flex-col min-h-screen">
+<!-- Global Utility Bar -->
+<div class="bg-surface-container-lowest border-b border-subtle py-compact px-standard md:px-major flex justify-end items-center gap-standard font-caption text-caption text-on-surface-variant">
+<a class="hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1" href="#main-content">Skip to Main Content</a>
+<div class="h-4 w-px bg-border-subtle"></div>
+<div class="flex items-center gap-2">
+<button aria-label="Decrease text size" class="hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-1">A-</button>
+<button aria-label="Default text size" class="hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-1">A</button>
+<button aria-label="Increase text size" class="hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-1">A+</button>
+</div>
+<div class="h-4 w-px bg-border-subtle"></div>
+<button aria-label="Toggle High Contrast" class="flex items-center gap-1 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1">
+<span class="material-symbols-outlined text-[16px]">contrast</span> Contrast
+        </button>
+<div class="h-4 w-px bg-border-subtle"></div>
+<button aria-label="Switch Language" class="flex items-center gap-1 hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded px-2 py-1">
+<span class="material-symbols-outlined text-[16px]">language</span> English
+        </button>
+</div>
+<!-- Main Header (TopNavBar) -->
+<header class="bg-surface border-b border-subtle docked full-width top-0 sticky z-50">
+<div class="flex flex-col w-full max-w-7xl mx-auto px-standard md:px-major">
+<div class="flex items-center justify-between py-standard">
+<a class="font-h3 text-h3 font-bold text-primary flex items-center gap-2 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" href="#">
+<img alt="State Emblem of India" class="h-10 w-auto object-contain" data-alt="The official State Emblem of India, isolated on a white background. The emblem features the four Asiatic lions standing back to back, mounted on an abacus with a frieze carrying sculptures in high relief of an elephant, a galloping horse, a bull and a lion separated by intervening wheels over a bell-shaped lotus. The motto 'Satyameva Jayate' is inscribed below. The image is rendered with formal institutional clarity, fitting for a government digital interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgzOJnPGMeYW4fwK8-r8c6dw-RHOwYlkCYYH_MpqZ07-F03J3j1_saqSoS5VBWgeqhjU6fSJOBfRcgTfz6jO_AMBwrXMHu7DUUWH1GlvOjhfmevf7wAc1aGCHRkIgINCR2yTPKUhCWFlzTZ8_0-SJ44dsjieU2qIiyPfq1xyrjzYocsOvtbBbjiPhUuyh1OWi4d04qcw8F0j0kJ_-R8P8BsErpxCM_3skGH_Nam1eZKDd1HqUZ7Jqkqw"/>
+<div class="flex flex-col">
+<span>MapanSetu</span>
+<span class="font-caption text-caption text-on-surface-variant font-normal tracking-tight">Department of Legal Metrology</span>
+</div>
+</a>
+<!-- Desktop Nav -->
+<nav aria-label="Main Navigation" class="hidden md:flex items-center gap-component font-body text-body">
+<a class="text-on-surface-variant hover:text-primary transition-colors py-2 focus:outline-none focus:ring-2 focus:ring-primary rounded" href="#">Home</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors py-2 focus:outline-none focus:ring-2 focus:ring-primary rounded" href="#">About</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors py-2 focus:outline-none focus:ring-2 focus:ring-primary rounded" href="#">Services</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors py-2 focus:outline-none focus:ring-2 focus:ring-primary rounded" href="#">Verify Certificate</a>
+<a aria-current="page" class="text-primary font-bold border-b-2 border-primary pb-1 focus:outline-none focus:ring-2 focus:ring-primary rounded" href="#">Help</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors py-2 focus:outline-none focus:ring-2 focus:ring-primary rounded" href="#">Contact</a>
+<a class="ml-standard bg-primary text-on-primary px-4 py-2 rounded font-label text-label hover:bg-primary-container hover:text-on-primary-container transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2" href="#">Login</a>
+</nav>
+<!-- Mobile Menu Button -->
+<button aria-label="Open Menu" class="md:hidden text-on-surface focus:outline-none focus:ring-2 focus:ring-primary rounded p-2">
+<span class="material-symbols-outlined text-[24px]">menu</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="flex-grow w-full max-w-7xl mx-auto px-standard md:px-major py-major flex flex-col gap-major" id="main-content">
+<!-- Page Title -->
+<section class="flex flex-col gap-compact">
+<h1 class="font-display-heading-mobile md:font-display-heading text-display-heading-mobile md:text-display-heading text-on-surface">Accessibility Information</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-3xl">MapanSetu is committed to ensuring digital accessibility for people with disabilities. We are continually improving the user experience for everyone and applying the relevant accessibility standards, aligning with GIGW 3.0 guidelines.</p>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-section">
+<!-- Left Column: Approach -->
+<div class="lg:col-span-2 flex flex-col gap-section">
+<section class="bg-surface rounded-xl border border-subtle p-section shadow-sm">
+<h2 class="font-h2-mobile md:font-h2 text-h2-mobile md:text-h2 text-on-surface mb-component flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-weight="fill" style="font-variation-settings: 'FILL' 1;">accessibility_new</span>
+                        Our Approach to Accessibility
+                    </h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-component">
+<div class="flex flex-col gap-compact border-l-4 border-primary pl-standard py-2 bg-surface-container-low rounded-r">
+<h3 class="font-h4 text-h4 text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">keyboard</span>
+                                Keyboard Navigation
+                            </h3>
+<p class="font-body text-body text-on-surface-variant">All interactive elements are fully operable through a keyboard interface. Visible focus indicators (a distinct blue outline) highlight the currently active element to assist sighted keyboard users.</p>
+</div>
+<div class="flex flex-col gap-compact border-l-4 border-primary pl-standard py-2 bg-surface-container-low rounded-r">
+<h3 class="font-h4 text-h4 text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">record_voice_over</span>
+                                Screen Reader Support
+                            </h3>
+<p class="font-body text-body text-on-surface-variant">The platform utilizes semantic HTML and ARIA landmarks to ensure compatibility with modern screen readers, providing context and structure to assistive technologies.</p>
+</div>
+<div class="flex flex-col gap-compact border-l-4 border-primary pl-standard py-2 bg-surface-container-low rounded-r">
+<h3 class="font-h4 text-h4 text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">text_increase</span>
+                                Text Resize
+                            </h3>
+<p class="font-body text-body text-on-surface-variant">Text can be resized without assistive technology up to 200% without loss of content or functionality. A dedicated tool is provided in the global utility bar.</p>
+</div>
+<div class="flex flex-col gap-compact border-l-4 border-primary pl-standard py-2 bg-surface-container-low rounded-r">
+<h3 class="font-h4 text-h4 text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">contrast</span>
+                                High Contrast
+                            </h3>
+<p class="font-body text-body text-on-surface-variant">A high-contrast mode is available, optimizing the color palette to meet strict WCAG AAA contrast ratios for users with visual impairments.</p>
+</div>
+</div>
+</section>
+<section class="bg-surface rounded-xl border border-subtle p-section shadow-sm">
+<h2 class="font-h3 text-h3 text-on-surface mb-standard">Accessibility Standards</h2>
+<p class="font-body text-body text-on-surface-variant mb-4">We actively work to conform to the Web Content Accessibility Guidelines (WCAG) 2.1 level AA, and the Guidelines for Indian Government Websites (GIGW 3.0). This compliance ensures the platform is robust, perceivable, operable, and understandable.</p>
+<div class="flex flex-wrap gap-2">
+<span class="bg-surface-container-highest text-on-surface-variant px-3 py-1 rounded border border-outline-variant font-label text-label">WCAG 2.1 AA</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-3 py-1 rounded border border-outline-variant font-label text-label">GIGW 3.0 Compliant</span>
+<span class="bg-surface-container-highest text-on-surface-variant px-3 py-1 rounded border border-outline-variant font-label text-label">WAI-ARIA Enabled</span>
+</div>
+</section>
+</div>
+<!-- Right Column: Tools & Report -->
+<div class="flex flex-col gap-section">
+<div class="bg-surface-container-low border border-subtle rounded-xl p-section">
+<h3 class="font-h4 text-h4 text-on-surface mb-standard flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">build</span>
+                        Using the Utility Bar
+                    </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-component">Located at the very top of every page, the utility bar provides instant access to accessibility features.</p>
+<ul class="flex flex-col gap-4 font-body-sm text-body-sm text-on-surface">
+<li class="flex items-start gap-3">
+<div class="bg-surface border border-subtle rounded p-1 flex-shrink-0 flex items-center justify-center w-8 h-8">A+</div>
+<div>
+<strong class="block text-on-surface">Text Size Adjust</strong>
+<span class="text-on-surface-variant">Increase or decrease the global font size for better readability.</span>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<div class="bg-surface border border-subtle rounded p-1 flex-shrink-0 flex items-center justify-center w-8 h-8">
+<span class="material-symbols-outlined text-[18px]">contrast</span>
+</div>
+<div>
+<strong class="block text-on-surface">Contrast Toggle</strong>
+<span class="text-on-surface-variant">Switch to a high-contrast color scheme.</span>
+</div>
+</li>
+<li class="flex items-start gap-3">
+<div class="bg-surface border border-subtle rounded p-1 flex-shrink-0 flex items-center justify-center w-8 h-8">
+<span class="material-symbols-outlined text-[18px]">language</span>
+</div>
+<div>
+<strong class="block text-on-surface">Language Selection</strong>
+<span class="text-on-surface-variant">Translate the interface to Hindi or English.</span>
+</div>
+</li>
+</ul>
+</div>
+<div class="bg-surface rounded-xl border border-subtle p-section shadow-sm flex flex-col items-start gap-compact">
+<h3 class="font-h3 text-h3 text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-warning" data-weight="fill" style="font-variation-settings: 'FILL' 1;">report_problem</span>
+                        Encountered an Issue?
+                    </h3>
+<p class="font-body text-body text-on-surface-variant mb-4">If you experience any difficulty accessing information on MapanSetu, please let us know so we can assist you and rectify the issue.</p>
+<a class="inline-flex items-center gap-2 bg-primary text-on-primary px-6 py-3 rounded font-label text-label hover:bg-primary-container focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">bug_report</span>
+                        Report Accessibility Issue
+                    </a>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-subtle mt-auto">
+<div class="w-full py-major px-standard md:px-major max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-section">
+<div class="md:col-span-2 flex flex-col gap-compact">
+<span class="font-h4 text-h4 font-bold text-on-surface">MapanSetu</span>
+<p class="font-body text-body text-on-surface-variant max-w-md">Department of Legal Metrology. Facilitating seamless compliance and certification for businesses and citizens.</p>
+<p class="font-caption text-caption text-on-surface-variant mt-4">© 2024 Department of Legal Metrology, Government of India. All rights reserved.</p>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-label text-label text-on-surface mb-2">Legal &amp; Policies</span>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary rounded inline-block w-fit" href="#">Privacy Policy</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary rounded inline-block w-fit" href="#">Terms of Service</a>
+<a aria-current="page" class="font-caption text-caption text-primary underline hover:opacity-70 focus:outline-none focus:ring-2 focus:ring-primary rounded inline-block w-fit" href="#">GIGW Compliance</a>
+</div>
+<div class="flex flex-col gap-2">
+<span class="font-label text-label text-on-surface mb-2">Support</span>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary rounded inline-block w-fit" href="#">Help Desk</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary rounded inline-block w-fit" href="#">Contact Us</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary rounded inline-block w-fit" href="#">Sitemap</a>
+</div>
+</div>
+</footer>
+</body></html>

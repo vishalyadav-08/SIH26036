@@ -1,4 +1,4 @@
-import { api } from "@/lib/api";
+import { USE_MOCK_API, api } from "@/lib/api";
 import { Application, CreateApplicationDto } from "@/types/application";
 import { saveCachedApplication } from "@/lib/offline-storage";
 
@@ -75,30 +75,37 @@ function saveStoredApplications(apps: Application[]): void {
   localStorage.setItem(APPLICATIONS_STORAGE_KEY, JSON.stringify(apps));
 }
 
+// ----------------------------------------------------------------------------
+// PRIMARY EXPORTS (Switching logic)
+// ----------------------------------------------------------------------------
+
 export async function getApplications(): Promise<Application[]> {
-  try {
-    const res = await api.get<Application[]>("/applications");
-    return res.data;
-  } catch {
-    return getStoredApplications();
-  }
+  if (USE_MOCK_API) return getStoredApplications();
+  const res = await api.get<{ items: Application[] }>("/applications");
+  return res.items || res as unknown as Application[]; // Contract supports { items: [] } pagination shape
 }
 
 export async function getApplicationById(id: string): Promise<Application | null> {
-  const apps = await getApplications();
-  const found = apps.find(
-    (app) => app.id === id || app.applicationNumber.toLowerCase() === id.toLowerCase()
-  );
-  return found || null;
+  if (USE_MOCK_API) {
+    const apps = getStoredApplications();
+    return apps.find(
+      (app) => app.id === id || app.applicationNumber.toLowerCase() === id.toLowerCase()
+    ) || null;
+  }
+  
+  // Real API
+  try {
+    const res = await api.get<Application>(`/applications/${id}`);
+    return res as unknown as Application;
+  } catch {
+    return null;
+  }
 }
 
 export async function createApplication(
   data: CreateApplicationDto
 ): Promise<Application> {
-  try {
-    const res = await api.post<Application>("/applications", data);
-    return res.data;
-  } catch {
+  if (USE_MOCK_API) {
     const apps = getStoredApplications();
     let instrumentNum = data.instrumentId;
     let instrumentType = "ELECTRONIC_SCALE";
@@ -140,21 +147,23 @@ export async function createApplication(
     saveStoredApplications(apps);
     return newApp;
   }
+
+  // Real API
+  const res = await api.post<Application>("/applications", {
+    instrumentId: data.instrumentId,
+    reason: data.reason,
+    submit: true
+  });
+  return res as unknown as Application;
 }
 
 export async function assignOfficerToApplication(
   applicationId: string,
   officerUserId: string,
-  officerName: string,
+  officerName: string, // Kept for UI signature, backend assigns internally based on ID
   note?: string
 ): Promise<Application> {
-  try {
-    const res = await api.post<Application>(`/applications/${applicationId}/assign`, {
-      officerUserId,
-      assignmentNote: note || "Assigned by Admin Supervisor",
-    });
-    return res.data;
-  } catch {
+  if (USE_MOCK_API) {
     const apps = getStoredApplications();
     const index = apps.findIndex(
       (a) => a.id === applicationId || a.applicationNumber.toLowerCase() === applicationId.toLowerCase()
@@ -165,12 +174,18 @@ export async function assignOfficerToApplication(
       apps[index].assignedOfficerName = officerName;
       apps[index].updatedAt = new Date().toISOString();
       saveStoredApplications(apps);
-      // Also cache in offline storage for the field officer!
       saveCachedApplication(apps[index]);
       return apps[index];
     }
     throw new Error("Application not found");
   }
+
+  // Real API
+  const res = await api.post<Application>(`/applications/${applicationId}/assign`, {
+    officerUserId,
+    assignmentNote: note || "Assigned by Admin Supervisor",
+  });
+  return res as unknown as Application;
 }
 
 export async function scheduleApplicationVisit(
@@ -178,13 +193,7 @@ export async function scheduleApplicationVisit(
   scheduledAt: string,
   note?: string
 ): Promise<Application> {
-  try {
-    const res = await api.post<Application>(`/applications/${applicationId}/schedule`, {
-      scheduledAt,
-      scheduleNote: note || "Scheduled appointment",
-    });
-    return res.data;
-  } catch {
+  if (USE_MOCK_API) {
     const apps = getStoredApplications();
     const index = apps.findIndex(
       (a) => a.id === applicationId || a.applicationNumber.toLowerCase() === applicationId.toLowerCase()
@@ -194,10 +203,16 @@ export async function scheduleApplicationVisit(
       apps[index].scheduledDate = scheduledAt;
       apps[index].updatedAt = new Date().toISOString();
       saveStoredApplications(apps);
-      // Ensure cached for field officer
       saveCachedApplication(apps[index]);
       return apps[index];
     }
     throw new Error("Application not found");
   }
+
+  // Real API
+  const res = await api.post<Application>(`/applications/${applicationId}/schedule`, {
+    scheduledAt,
+    scheduleNote: note || "Scheduled appointment",
+  });
+  return res as unknown as Application;
 }

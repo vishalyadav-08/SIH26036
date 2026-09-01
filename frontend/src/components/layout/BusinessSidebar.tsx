@@ -10,8 +10,6 @@ import {
   Bell,
   User,
 } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 export const BUSINESS_NAV_ITEMS = [
   { label: "Dashboard", href: "/app", icon: LayoutDashboard },
@@ -34,27 +32,26 @@ export function BusinessSidebar() {
   };
 
   return (
-    <aside className="hidden md:flex flex-col w-64 border-r bg-muted/20 h-[calc(100vh-4rem)] sticky top-16 shrink-0">
+    <aside className="hidden md:flex flex-col w-64 border-r border-[#cbd5e1] bg-white h-[calc(100vh-4rem)] sticky top-16 shrink-0">
       <div className="flex-1 overflow-y-auto py-6 px-4 space-y-6">
         <nav aria-label="Business primary navigation" className="space-y-1">
           {BUSINESS_NAV_ITEMS.map((item) => {
             const Icon = item.icon;
             const active = isActive(item.href);
             return (
-              <Button
+              <Link
                 key={item.href}
-                variant={active ? "secondary" : "ghost"}
-                className={cn(
-                  "w-full justify-start gap-3 h-10 px-3 font-medium",
-                  active ? "bg-primary/10 text-primary hover:bg-primary/15" : "text-muted-foreground"
-                )}
-                asChild
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={`flex items-center gap-3 w-full justify-start h-10 px-3 rounded text-sm font-semibold transition-colors ${
+                  active
+                    ? "bg-[#f0f3ff] text-[#004e9f]"
+                    : "text-[#414753] hover:text-[#004e9f] hover:bg-[#f0f3ff]"
+                }`}
               >
-                <Link href={item.href} aria-current={active ? "page" : undefined}>
-                  <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
-                  {item.label}
-                </Link>
-              </Button>
+                <Icon className="w-4 h-4 shrink-0" aria-hidden="true" />
+                <span>{item.label}</span>
+              </Link>
             );
           })}
         </nav>

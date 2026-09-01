@@ -1,4 +1,4 @@
-import { api } from "@/lib/api";
+import { USE_MOCK_API, api } from "@/lib/api";
 import { AuditLogEntry, AuditQueryParams } from "@/types/audit";
 
 export const INITIAL_DEMO_AUDIT_LOGS: AuditLogEntry[] = [
@@ -41,7 +41,7 @@ export const INITIAL_DEMO_AUDIT_LOGS: AuditLogEntry[] = [
     timestamp: "2026-08-15T09:45:00Z",
     metadata: { applicationNumber: "APP-2026-0001", reason: "Annual Statutory Verification" },
     previousHash: "f4a8b79210c4391e30925b3cf17d23a12948271e847192a013948572918471a2",
-    currentHash: "9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b",
+    currentHash: "9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c",
     isValidChain: true,
   },
   {
@@ -54,8 +54,8 @@ export const INITIAL_DEMO_AUDIT_LOGS: AuditLogEntry[] = [
     action: "OFFICER_ASSIGNED",
     timestamp: "2026-08-15T10:00:00Z",
     metadata: { assignedOfficer: "Inspector Sharma", officerId: "usr-demo-off-001" },
-    previousHash: "9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b",
-    currentHash: "8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c",
+    previousHash: "9a8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c",
+    currentHash: "8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d",
     isValidChain: true,
   },
   {
@@ -68,8 +68,8 @@ export const INITIAL_DEMO_AUDIT_LOGS: AuditLogEntry[] = [
     action: "INSPECTION_COMPLETED",
     timestamp: "2026-08-15T11:15:00Z",
     metadata: { result: "PASS", pointsTested: 3, evidenceCount: 2 },
-    previousHash: "8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c",
-    currentHash: "7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d",
+    previousHash: "8b7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d",
+    currentHash: "7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e",
     isValidChain: true,
   },
   {
@@ -82,17 +82,14 @@ export const INITIAL_DEMO_AUDIT_LOGS: AuditLogEntry[] = [
     action: "CERTIFICATE_ISSUED",
     timestamp: "2026-08-15T11:20:00Z",
     metadata: { certificateNumber: "CERT-DEMO-001", signatureAlgorithm: "RSA-PSS/SHA-256" },
-    previousHash: "7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d",
-    currentHash: "6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e",
+    previousHash: "7c6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e",
+    currentHash: "6d5e4f3a2b1c0d9e8f7a6b5c4d3e2f1a0b9c8d7e6f5a4b3c2d1e0f9a8b7c6d5e4f",
     isValidChain: true,
   },
 ];
 
 export async function getAuditLogs(params?: AuditQueryParams): Promise<AuditLogEntry[]> {
-  try {
-    const res = await api.get<AuditLogEntry[]>("/audit", { params });
-    return res.data;
-  } catch {
+  if (USE_MOCK_API) {
     let logs = [...INITIAL_DEMO_AUDIT_LOGS];
     if (params?.entityType) {
       logs = logs.filter((l) => l.entityType === params.entityType);
@@ -106,4 +103,8 @@ export async function getAuditLogs(params?: AuditQueryParams): Promise<AuditLogE
       (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
   }
+
+  // Real API
+  const res = await api.get<{ items: AuditLogEntry[] }>("/audit", { params });
+  return res.items || res as unknown as AuditLogEntry[];
 }

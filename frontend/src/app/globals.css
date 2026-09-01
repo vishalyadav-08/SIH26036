@@ -1,23 +1,152 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Noto+Sans+Devanagari:wght@100..900&display=swap");
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ─── Sovereign Utility & MapanSetu Design Tokens (GIGW 3.0 / UX4G) ──────── */
+@theme {
+  /* Primary — signature Government Blue */
+  --color-primary: #004e9f;
+  --color-primary-container: #0066cc;
+  --color-primary-foreground: #ffffff;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #dfe8ff;
+  --color-primary-dark: #003366;
+
+  /* Secondary — institutional steel blue */
+  --color-secondary: #3a5f94;
+  --color-secondary-container: #9fc2fe;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #294f83;
+  --color-secondary-foreground: #0f172a;
+
+  /* National Accent — Saffron / Amber */
+  --color-tertiary: #7a4200;
+  --color-tertiary-container: #9d5600;
+  --color-on-tertiary: #ffffff;
+  --color-on-tertiary-container: #ffe3cf;
+  --color-saffron: #ff9933;
+
+  /* Surface and Backgrounds */
+  --color-background: #ffffff;
+  --color-page-bg: #f8fafc;
+  --color-surface: #ffffff;
+  --color-surface-dim: #cfdaf2;
+  --color-surface-bright: #f9f9ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f0f3ff;
+  --color-surface-container: #e7eeff;
+  --color-surface-container-high: #dee8ff;
+  --color-surface-container-highest: #d8e3fb;
+  --color-on-surface: #111c2d;
+  --color-on-surface-variant: #414753;
+  --color-on-background: #111c2d;
+
+  /* Outlines & Borders */
+  --color-border: #cbd5e1;
+  --color-border-subtle: #cbd5e1;
+  --color-outline: #727784;
+  --color-outline-variant: #c1c6d5;
+
+  /* Status Colors */
+  --color-success: #15803d;
+  --color-warning: #b45309;
+  --color-error: #b91c1c;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+
+  /* Typography */
+  --font-sans: "Noto Sans", "Noto Sans Devanagari", ui-sans-serif, system-ui, -apple-system, sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+/* ─── Base ─────────────────────────────────────────────────────────────── */
+html {
+  color-scheme: light;
+  scroll-behavior: smooth;
+  font-size: 16px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html[data-font-size="small"] {
+  font-size: 14px;
+}
+
+html[data-font-size="large"] {
+  font-size: 18px;
+}
+
+html[data-font-size="larger"] {
+  font-size: 20px;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: var(--color-page-bg);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+}
+
+/* High Contrast Mode */
+html[data-contrast="high"] body {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+html[data-contrast="high"] .bg-surface,
+html[data-contrast="high"] .bg-page-bg,
+html[data-contrast="high"] .bg-surface-container-low,
+html[data-contrast="high"] .bg-surface-container,
+html[data-contrast="high"] .bg-surface-container-lowest,
+html[data-contrast="high"] .bg-surface-container-high {
+  background-color: #000000 !important;
+  color: #ffff00 !important;
+  border-color: #ffffff !important;
+}
+
+html[data-contrast="high"] .text-on-surface,
+html[data-contrast="high"] .text-on-surface-variant,
+html[data-contrast="high"] .text-slate-600,
+html[data-contrast="high"] .text-slate-700,
+html[data-contrast="high"] .text-slate-800,
+html[data-contrast="high"] .text-slate-900 {
+  color: #ffffff !important;
+}
+
+html[data-contrast="high"] a,
+html[data-contrast="high"] .text-primary {
+  color: #00ffff !important;
+  text-decoration: underline !important;
+}
+
+html[data-contrast="high"] button.bg-primary,
+html[data-contrast="high"] a.bg-primary {
+  background-color: #ffff00 !important;
+  color: #000000 !important;
+  border: 2px solid #ffffff !important;
+  font-weight: bold !important;
+}
+
+/* ─── Focus Ring (WCAG 2.1 AA) ─────────────────────────────────────────── */
+*:focus-visible {
+  outline: 2px solid #004e9f;
+  outline-offset: 2px;
+}
+
+/* ─── Skip link (WCAG keyboard navigation) ─────────────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 0;
+  z-index: 9999;
+  padding: 0.5rem 1.25rem;
+  background: #003366;
+  color: #ffffff;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: top 0.2s ease-in-out;
+}
+.skip-link:focus {
+  top: 0;
 }

@@ -1,4 +1,4 @@
-import { api } from "@/lib/api";
+import { USE_MOCK_API, api } from "@/lib/api";
 import { LoginCredentials, LoginResponse, User } from "@/types/auth";
 
 const TOKEN_KEY = "mapansetu_access_token";
@@ -62,36 +62,34 @@ export async function loginUser(
 ): Promise<LoginResponse> {
   const normalizedEmail = credentials.email.trim().toLowerCase();
 
-  try {
-    const res = await api.post<LoginResponse>("/auth/login", {
-      email: normalizedEmail,
-      password: credentials.password,
-    });
-    return res.data;
-  } catch (error: unknown) {
-    // If backend is offline or in prototype demo environment, fall back to synthetic demo accounts
+  if (USE_MOCK_API) {
     const demoAccount = DEMO_ACCOUNTS[normalizedEmail];
     if (demoAccount && demoAccount.password === credentials.password) {
       return demoAccount.response;
     }
-
-    // Pass through or raise generic invalid credentials error
-    throw error;
+    throw new Error("Invalid credentials");
   }
+
+  // Real API
+  const res = await api.post<LoginResponse>("/auth/login", {
+    email: normalizedEmail,
+    password: credentials.password,
+  });
+  return res as unknown as LoginResponse;
 }
 
 export async function fetchCurrentUser(): Promise<User> {
-  try {
-    const res = await api.get<User>("/users/me");
-    return res.data;
-  } catch (error: unknown) {
-    // If backend is unavailable or during offline prototype testing, fallback to stored user session
+  if (USE_MOCK_API) {
     const storedUser = getStoredUser();
     if (storedUser) {
       return storedUser;
     }
-    throw error;
+    throw new Error("No mocked user session");
   }
+
+  // Real API
+  const res = await api.get<User>("/users/me");
+  return res as unknown as User;
 }
 
 export function getStoredToken(): string | null {

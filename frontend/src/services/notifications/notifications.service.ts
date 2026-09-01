@@ -1,4 +1,4 @@
-import { api } from "@/lib/api";
+import { USE_MOCK_API, api } from "@/lib/api";
 import { AppNotification } from "@/types/notification";
 
 const NOTIFICATIONS_STORAGE_KEY = "mapansetu_notifications_store";
@@ -61,34 +61,41 @@ function saveStoredNotifications(notifs: AppNotification[]): void {
   localStorage.setItem(NOTIFICATIONS_STORAGE_KEY, JSON.stringify(notifs));
 }
 
+// ----------------------------------------------------------------------------
+// PRIMARY EXPORTS (Switching logic)
+// ----------------------------------------------------------------------------
+
 export async function getNotifications(): Promise<AppNotification[]> {
-  try {
-    const res = await api.get<AppNotification[]>("/notifications");
-    return res.data;
-  } catch {
-    return getStoredNotifications();
-  }
+  if (USE_MOCK_API) return getStoredNotifications();
+  
+  const res = await api.get<{ items: AppNotification[] }>("/notifications");
+  return res.items || res as unknown as AppNotification[];
 }
 
 export async function markNotificationAsRead(id: string): Promise<void> {
-  try {
-    await api.post(`/notifications/${id}/read`);
-  } catch {
+  if (USE_MOCK_API) {
     const notifs = getStoredNotifications();
     const index = notifs.findIndex((n) => n.id === id);
     if (index >= 0) {
       notifs[index].read = true;
       saveStoredNotifications(notifs);
     }
+    return;
   }
+  
+  await api.post(`/notifications/${id}/read`);
 }
 
 export async function markAllNotificationsAsRead(): Promise<void> {
-  try {
-    await api.post("/notifications/read-all");
-  } catch {
+  if (USE_MOCK_API) {
     const notifs = getStoredNotifications();
     const updated = notifs.map((n) => ({ ...n, read: true }));
     saveStoredNotifications(updated);
+    return;
   }
+  
+  // Note: /notifications/read-all is NOT in the API_Contract.md!
+  // Backend gap documented. The UI has a "mark all as read" button.
+  // We will issue a request that will likely 404 in real mode unless the backend implements it.
+  await api.post("/notifications/read-all");
 }

@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Scale,
   Lock,
   Mail,
   ArrowRight,
@@ -17,10 +16,13 @@ import {
   Building2,
   Shield,
   UserCheck,
+  FileCheck2
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { GuestGuard } from "@/components/auth/GuestGuard";
 import { loginSchema, LoginFormData } from "@/schemas/auth/auth.schema";
+import { StateEmblem } from "@/components/ui/StateEmblem";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 
 function LoginForm() {
   const router = useRouter();
@@ -28,6 +30,7 @@ function LoginForm() {
   const redirectParam = searchParams?.get("redirect");
 
   const { login } = useAuth();
+  const [selectedRole, setSelectedRole] = useState<"BUSINESS" | "ADMIN" | "OFFICER" | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -54,6 +57,12 @@ function LoginForm() {
         email: data.email,
         password: data.password,
       });
+
+      if (loggedUser.role !== selectedRole) {
+        setAuthError(`Invalid credentials for ${selectedRole} role.`);
+        setIsSubmitting(false);
+        return;
+      }
 
       // Handle post-login redirection based on role & query param
       const defaultWorkspace =
@@ -86,254 +95,270 @@ function LoginForm() {
         router.replace(defaultWorkspace);
       }
     } catch {
-      // Documented generic invalid credentials error (no account enumeration)
       setAuthError(
         "Invalid email or password. Please check your credentials and try again."
       );
       setValue("password", "");
     } finally {
-      setIsSubmitting(false);
+      if (!authError) setIsSubmitting(false);
     }
   };
 
-  const fillDemoCredentials = (email: string) => {
+  const fillDemoCredentials = () => {
+    const email =
+      selectedRole === "BUSINESS"
+        ? "business@example.test"
+        : selectedRole === "ADMIN"
+        ? "admin@example.test"
+        : "officer@example.test";
     setValue("email", email, { shouldValidate: true });
     setValue("password", "synthetic-password", { shouldValidate: true });
     setAuthError(null);
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-slate-50 text-slate-900 selection:bg-blue-100 selection:text-blue-900">
+    <div className="min-h-screen flex flex-col justify-between bg-slate-50 text-slate-900 selection:bg-blue-100 selection:text-blue-900 font-sans">
       {/* Top Navbar */}
-      <header className="bg-white/95 backdrop-blur-sm border-b border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-slate-600 hover:text-blue-600 text-sm font-medium transition-colors"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Public Verification Portal</span>
-          </Link>
-
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-              SIH26036 Prototype
-            </span>
+      <header className="bg-white border-b border-slate-200 flex justify-between items-center w-full px-4 sm:px-8 py-3 max-w-screen-2xl mx-auto">
+        <div className="flex items-center gap-4">
+          <div aria-hidden="true" className="w-12 h-16 bg-slate-50 border border-slate-200 flex items-center justify-center rounded-lg">
+            <StateEmblem size="sm" />
           </div>
+          <div className="text-xl font-bold text-blue-700 uppercase tracking-tight">
+            MapanSetu
+          </div>
+        </div>
+        <div className="hidden sm:flex items-center gap-2">
+            <span className="text-xs font-semibold tracking-wider uppercase px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+              Department Single Sign-On
+            </span>
         </div>
       </header>
 
-      {/* Main Login Card */}
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
-        <div className="w-full max-w-md space-y-6">
-          {/* Brand Header */}
-          <div className="text-center space-y-2">
-            <div className="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center mx-auto shadow-xs">
-              <Scale className="w-6 h-6" />
+      {/* Main Content */}
+      <main className="flex-grow flex items-center justify-center p-4 sm:p-8 md:p-12 max-w-screen-2xl mx-auto w-full">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 w-full max-w-6xl items-center">
+          
+          {/* Left Column: Identity & Explanation */}
+          <div className="flex flex-col gap-8">
+            <div>
+              <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-4 leading-tight">
+                Welcome to <span className="text-blue-600">MapanSetu</span>
+              </h1>
+              <p className="text-lg text-slate-600 leading-relaxed">
+                The official portal for business registration and compliance management. Securely access your enterprise dashboard to manage certificates, track applications, and maintain regulatory standing with the Government of India.
+              </p>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Sign In to MapanSetu
-            </h1>
-            <p className="text-sm text-slate-600">
-              Authorized access for Businesses, Officers, and Administrators
-            </p>
+            
+            <div className="hidden md:flex gap-4 items-start mt-4">
+              <Shield className="w-8 h-8 text-emerald-600 shrink-0" />
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Secure & Authorized</h3>
+                <p className="text-base text-slate-600">Access your official business records with state-of-the-art encryption and authenticated protocols.</p>
+              </div>
+            </div>
+            
+            <div className="hidden md:flex gap-4 items-start">
+              <FileCheck2 className="w-8 h-8 text-blue-600 shrink-0" />
+              <div>
+                <h3 className="text-xl font-bold text-slate-900">Compliance Management</h3>
+                <p className="text-base text-slate-600">Streamline your regulatory requirements and certificate renewals in one centralized platform.</p>
+              </div>
+            </div>
           </div>
 
-          {/* Login Card Form */}
-          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-xs space-y-5">
-            {authError && (
-              <div
-                role="alert"
-                aria-live="polite"
-                className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 flex items-start gap-3 text-xs text-rose-800"
-              >
-                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
-                <span>{authError}</span>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              {/* Email Field */}
-              <div className="space-y-1.5">
-                <label
-                  htmlFor="email"
-                  className="block text-xs font-semibold text-slate-700 uppercase tracking-wider"
-                >
-                  Email Address
-                </label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Mail className="w-4 h-4" />
-                  </div>
-                  <input
-                    id="email"
-                    type="email"
-                    autoComplete="email"
-                    placeholder="name@organization.com"
-                    {...register("email")}
-                    className={`block w-full pl-10 pr-3.5 py-2.5 text-sm rounded-xl border ${
-                      errors.email
-                        ? "border-rose-500 focus:ring-rose-500 focus:border-rose-500"
-                        : "border-slate-300 focus:ring-blue-500 focus:border-blue-500"
-                    } bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 transition-all`}
-                  />
+          {/* Right Column: Login Card / Role Selection */}
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 md:p-10 shadow-lg">
+            {!selectedRole ? (
+              <>
+                <div className="mb-8">
+                  <h2 className="text-3xl font-bold text-slate-900 mb-2">Select Your Role</h2>
+                  <p className="text-base text-slate-600">Please choose your portal to continue.</p>
                 </div>
-                {errors.email && (
-                  <p className="text-xs text-rose-600 mt-1">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-
-              {/* Password Field */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <label
-                    htmlFor="password"
-                    className="block text-xs font-semibold text-slate-700 uppercase tracking-wider"
-                  >
-                    Password
-                  </label>
-                </div>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                    <Lock className="w-4 h-4" />
-                  </div>
-                  <input
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    autoComplete="current-password"
-                    placeholder="••••••••••••"
-                    {...register("password")}
-                    className={`block w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border ${
-                      errors.password
-                        ? "border-rose-500 focus:ring-rose-500 focus:border-rose-500"
-                        : "border-slate-300 focus:ring-blue-500 focus:border-blue-500"
-                    } bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 transition-all font-mono`}
-                  />
+                
+                <div className="space-y-4">
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                    onClick={() => setSelectedRole("BUSINESS")}
+                    className="w-full flex items-center gap-4 p-5 rounded-xl bg-white border border-slate-200 shadow-sm hover:border-blue-500 hover:ring-1 hover:ring-blue-500 transition-all text-left group"
                   >
-                    {showPassword ? (
-                      <EyeOff className="w-4 h-4" />
-                    ) : (
-                      <Eye className="w-4 h-4" />
-                    )}
+                    <div className="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-100 transition-colors">
+                      <Building2 className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-900 text-lg">Business</h3>
+                      <p className="text-xs text-slate-500 mt-0.5">For merchants and enterprises</p>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-slate-400 ml-auto shrink-0 group-hover:text-blue-600 transition-colors" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole("OFFICER")}
+                    className="w-full flex items-center gap-4 p-5 rounded-xl bg-white border border-slate-200 shadow-sm hover:border-emerald-500 hover:ring-1 hover:ring-emerald-500 transition-all text-left group"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-100 transition-colors">
+                      <UserCheck className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-900 text-lg">Field Officer</h3>
+                      <p className="text-xs text-slate-500 mt-0.5">For inspectors and LMOs</p>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-slate-400 ml-auto shrink-0 group-hover:text-emerald-600 transition-colors" />
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setSelectedRole("ADMIN")}
+                    className="w-full flex items-center gap-4 p-5 rounded-xl bg-white border border-slate-200 shadow-sm hover:border-indigo-500 hover:ring-1 hover:ring-indigo-500 transition-all text-left group"
+                  >
+                    <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:bg-indigo-100 transition-colors">
+                      <Shield className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-900 text-lg">Administrator</h3>
+                      <p className="text-xs text-slate-500 mt-0.5">For supervisors and department heads</p>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-slate-400 ml-auto shrink-0 group-hover:text-indigo-600 transition-colors" />
                   </button>
                 </div>
-                {errors.password && (
-                  <p className="text-xs text-rose-600 mt-1">
-                    {errors.password.message}
+              </>
+            ) : (
+              <>
+                <div className="mb-8 relative">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSelectedRole(null);
+                      setAuthError(null);
+                    }}
+                    className="absolute -left-2 -top-2 p-2 text-slate-400 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors flex items-center gap-1"
+                    aria-label="Back to role selection"
+                  >
+                    <ArrowLeft className="w-5 h-5" />
+                  </button>
+                  <div className="text-center mt-2">
+                    <h2 className="text-3xl font-bold text-slate-900 mb-2">
+                      {selectedRole === "BUSINESS" ? "Business Login" : selectedRole === "ADMIN" ? "Admin Login" : "Officer Login"}
+                    </h2>
+                    <p className="text-base text-slate-600">Please enter your authorized credentials.</p>
+                  </div>
+                </div>
+
+                {authError && (
+                  <div
+                    role="alert"
+                    aria-live="polite"
+                    className="p-4 mb-6 rounded-lg bg-rose-50 border border-rose-200 flex items-start gap-3 text-sm text-rose-800"
+                  >
+                    <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
+                    <span>{authError}</span>
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="email" className="font-semibold text-sm text-slate-900">Email Address</label>
+                    <div className="relative rounded-lg">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                        <Mail className="w-5 h-5" />
+                      </span>
+                      <input
+                        id="email"
+                        type="email"
+                        autoComplete="email"
+                        placeholder="Enter your official email"
+                        {...register("email")}
+                        className={`w-full pl-10 pr-3 py-3 border rounded-lg text-base text-slate-900 focus:outline-none transition-colors ${
+                          errors.email ? "border-rose-500 focus:ring-1 focus:ring-rose-500 focus:border-rose-500" : "border-slate-300 focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
+                        }`}
+                      />
+                    </div>
+                    {errors.email && (
+                      <p className="text-sm text-rose-600 mt-1">{errors.email.message}</p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="password" className="font-semibold text-sm text-slate-900">Password</label>
+                    <div className="relative rounded-lg">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                        <Lock className="w-5 h-5" />
+                      </span>
+                      <input
+                        id="password"
+                        type={showPassword ? "text" : "password"}
+                        autoComplete="current-password"
+                        placeholder="Enter your secure password"
+                        {...register("password")}
+                        className={`w-full pl-10 pr-10 py-3 border rounded-lg text-base text-slate-900 focus:outline-none transition-colors font-mono ${
+                          errors.password ? "border-rose-500 focus:ring-1 focus:ring-rose-500 focus:border-rose-500" : "border-slate-300 focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
+                        }`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
+                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                      >
+                        {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                      </button>
+                    </div>
+                    {errors.password && (
+                      <p className="text-sm text-rose-600 mt-1">{errors.password.message}</p>
+                    )}
+                  </div>
+
+                  <div className="flex justify-between items-center mt-1">
+                    <div className="flex items-center gap-2">
+                      <input id="remember" type="checkbox" className="border-slate-300 rounded text-blue-600 focus:ring-blue-600 w-4 h-4 cursor-pointer" />
+                      <label htmlFor="remember" className="text-sm text-slate-600 cursor-pointer">Remember me</label>
+                    </div>
+                    <a href="#" className="text-sm font-semibold text-blue-600 hover:underline">Forgot Password?</a>
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className={`w-full text-white font-bold text-base py-3 px-6 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 mt-4 flex items-center justify-center gap-2 ${
+                      selectedRole === "BUSINESS" ? "bg-blue-600 hover:bg-blue-700 focus:ring-blue-600 disabled:bg-blue-400" :
+                      selectedRole === "ADMIN" ? "bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-600 disabled:bg-indigo-400" :
+                      "bg-emerald-600 hover:bg-emerald-700 focus:ring-emerald-600 disabled:bg-emerald-400"
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        <span>Logging in...</span>
+                      </>
+                    ) : (
+                      <span>Login</span>
+                    )}
+                  </button>
+                </form>
+
+                {/* Demo Credentials Quick Fill */}
+                <div className="mt-8 pt-6 border-t border-slate-200 text-center">
+                  <p className="text-sm text-slate-600 mb-4">
+                    Prototype evaluation?
                   </p>
-                )}
-              </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-400 text-white font-medium text-sm rounded-xl shadow-xs transition-colors cursor-pointer disabled:cursor-not-allowed focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mt-2"
-              >
-                {isSubmitting ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Signing in...</span>
-                  </>
-                ) : (
-                  <>
-                    <span>Sign In</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </>
-                )}
-              </button>
-            </form>
-
-            {/* Prototype Demo Credentials Section */}
-            <div className="pt-4 border-t border-slate-100 space-y-2.5">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                Quick 1-Click Demo Fill (SIH Prototype Evaluation):
-              </span>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                <button
-                  type="button"
-                  onClick={() => fillDemoCredentials("business@example.test")}
-                  className="flex items-center gap-2 p-2 rounded-lg bg-blue-50/60 hover:bg-blue-100 border border-blue-200 text-left transition-colors cursor-pointer"
-                >
-                  <Building2 className="w-4 h-4 text-blue-600 shrink-0" />
-                  <div className="overflow-hidden">
-                    <div className="text-xs font-bold text-slate-900 truncate">
-                      Business
-                    </div>
-                    <div className="text-[10px] text-slate-500 font-mono truncate">
-                      business@...
-                    </div>
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => fillDemoCredentials("admin@example.test")}
-                  className="flex items-center gap-2 p-2 rounded-lg bg-indigo-50/60 hover:bg-indigo-100 border border-indigo-200 text-left transition-colors cursor-pointer"
-                >
-                  <Shield className="w-4 h-4 text-indigo-600 shrink-0" />
-                  <div className="overflow-hidden">
-                    <div className="text-xs font-bold text-slate-900 truncate">
-                      Admin
-                    </div>
-                    <div className="text-[10px] text-slate-500 font-mono truncate">
-                      admin@...
-                    </div>
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => fillDemoCredentials("officer@example.test")}
-                  className="flex items-center gap-2 p-2 rounded-lg bg-emerald-50/60 hover:bg-emerald-100 border border-emerald-200 text-left transition-colors cursor-pointer"
-                >
-                  <UserCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                  <div className="overflow-hidden">
-                    <div className="text-xs font-bold text-slate-900 truncate">
-                      Field Officer
-                    </div>
-                    <div className="text-[10px] text-slate-500 font-mono truncate">
-                      officer@...
-                    </div>
-                  </div>
-                </button>
-              </div>
-
-              <div className="text-[11px] text-slate-500 text-center pt-1">
-                Password:{" "}
-                <span className="font-mono font-semibold">
-                  synthetic-password
-                </span>
-              </div>
-            </div>
+                  <button
+                    type="button"
+                    onClick={fillDemoCredentials}
+                    className={`inline-flex items-center justify-center w-full gap-2 px-4 py-2.5 rounded-lg border font-bold text-sm transition-colors cursor-pointer ${
+                      selectedRole === "BUSINESS" ? "bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700" :
+                      selectedRole === "ADMIN" ? "bg-indigo-50 hover:bg-indigo-100 border-indigo-200 text-indigo-700" :
+                      "bg-emerald-50 hover:bg-emerald-100 border-emerald-200 text-emerald-700"
+                    }`}
+                  >
+                    Use Demo Credentials
+                  </button>
+                </div>
+              </>
+            )}
           </div>
-
-          {/* Prototype Scope Disclaimer */}
-          <p className="text-[11px] text-slate-500 text-center leading-relaxed max-w-sm mx-auto">
-            Prototype scope. Synthetic credentials only. Access authorization is
-            enforced by the backend API.
-          </p>
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>MapanSetu — SIH26036 Prototype</span>
-          <Link href="/" className="hover:text-blue-600 transition-colors">
-            Public Certificate Verification
-          </Link>
-        </div>
-      </footer>
     </div>
   );
 }
@@ -341,14 +366,18 @@ function LoginForm() {
 function LoginFormSkeleton() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <div className="w-full max-w-md p-8 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4 animate-pulse">
-        <div className="h-10 w-10 bg-slate-200 rounded-xl mx-auto" />
-        <div className="h-6 w-48 bg-slate-200 rounded mx-auto" />
-        <div className="h-4 w-64 bg-slate-200 rounded mx-auto" />
-        <div className="space-y-3 pt-4">
-          <div className="h-10 bg-slate-200 rounded-xl" />
-          <div className="h-10 bg-slate-200 rounded-xl" />
-          <div className="h-10 bg-slate-200 rounded-xl" />
+      <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-16 p-8">
+        <div className="space-y-6">
+          <div className="h-12 w-3/4 bg-slate-200 rounded animate-pulse" />
+          <div className="h-24 w-full bg-slate-200 rounded animate-pulse" />
+        </div>
+        <div className="p-10 bg-white rounded-2xl border border-slate-200 shadow-lg space-y-4 animate-pulse">
+          <div className="h-8 w-1/2 bg-slate-200 rounded" />
+          <div className="space-y-4 pt-6">
+            <div className="h-16 bg-slate-200 rounded-xl" />
+            <div className="h-16 bg-slate-200 rounded-xl" />
+            <div className="h-16 bg-slate-200 rounded-xl" />
+          </div>
         </div>
       </div>
     </div>

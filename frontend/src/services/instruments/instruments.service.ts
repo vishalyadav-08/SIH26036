@@ -1,4 +1,4 @@
-import { api } from "@/lib/api";
+import { USE_MOCK_API, api } from "@/lib/api";
 import { Instrument, RegisterInstrumentDto } from "@/types/instrument";
 
 const INSTRUMENTS_STORAGE_KEY = "mapansetu_instruments_store";
@@ -81,35 +81,37 @@ function saveStoredInstruments(instruments: Instrument[]): void {
   localStorage.setItem(INSTRUMENTS_STORAGE_KEY, JSON.stringify(instruments));
 }
 
+// ----------------------------------------------------------------------------
+// PRIMARY EXPORTS (Switching logic)
+// ----------------------------------------------------------------------------
+
 export async function getInstruments(): Promise<Instrument[]> {
-  try {
-    const res = await api.get<Instrument[]>("/instruments");
-    return res.data;
-  } catch {
-    return getStoredInstruments();
-  }
+  if (USE_MOCK_API) return getStoredInstruments();
+
+  const res = await api.get<{ items: Instrument[] }>("/instruments");
+  return res.items || res as unknown as Instrument[];
 }
 
 export async function getInstrumentById(id: string): Promise<Instrument | null> {
+  if (USE_MOCK_API) {
+    const list = getStoredInstruments();
+    return list.find(
+      (ins) => ins.id === id || ins.instrumentNumber.toLowerCase() === id.toLowerCase()
+    ) || null;
+  }
+
   try {
     const res = await api.get<Instrument>(`/instruments/${id}`);
-    return res.data;
+    return res as unknown as Instrument;
   } catch {
-    const list = getStoredInstruments();
-    const found = list.find(
-      (ins) => ins.id === id || ins.instrumentNumber.toLowerCase() === id.toLowerCase()
-    );
-    return found || null;
+    return null;
   }
 }
 
 export async function registerInstrument(
   data: RegisterInstrumentDto
 ): Promise<Instrument> {
-  try {
-    const res = await api.post<Instrument>("/instruments", data);
-    return res.data;
-  } catch {
+  if (USE_MOCK_API) {
     const instruments = getStoredInstruments();
     const newInstrument: Instrument = {
       id: `ins-uuid-${Date.now()}`,
@@ -130,4 +132,7 @@ export async function registerInstrument(
     saveStoredInstruments(instruments);
     return newInstrument;
   }
+
+  const res = await api.post<Instrument>("/instruments", data);
+  return res as unknown as Instrument;
 }

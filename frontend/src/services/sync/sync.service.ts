@@ -1,4 +1,4 @@
-import { api } from "@/lib/api";
+import { USE_MOCK_API, api } from "@/lib/api";
 import {
   getSyncQueue,
   updateSyncOperationStatus,
@@ -33,34 +33,7 @@ export async function processOfflineSync(): Promise<{
     return { syncedCount: 0, failedCount: 0, message: "Sync queue is empty." };
   }
 
-  try {
-    const res = await api.post<SyncBatchResponse>("/sync", {
-      operations: pending,
-    });
-
-    let synced = 0;
-    let failed = 0;
-
-    for (const result of res.data.results) {
-      if (result.status === "SYNCED") {
-        updateSyncOperationStatus(result.clientOperationId, "SYNCED");
-        synced++;
-      } else {
-        updateSyncOperationStatus(
-          result.clientOperationId,
-          "FAILED",
-          result.message || "Sync rejected by server"
-        );
-        failed++;
-      }
-    }
-
-    return {
-      syncedCount: synced,
-      failedCount: failed,
-      message: `Successfully synchronized ${synced} record(s).`,
-    };
-  } catch {
+  if (USE_MOCK_API) {
     // Prototype offline fallback: simulate successful server synchronization
     for (const op of pending) {
       updateSyncOperationStatus(op.clientOperationId, "SYNCED");
@@ -69,7 +42,37 @@ export async function processOfflineSync(): Promise<{
     return {
       syncedCount: pending.length,
       failedCount: 0,
-      message: `Successfully processed ${pending.length} offline operation(s) (Prototype Mode).`,
+      message: `Successfully processed ${pending.length} offline operation(s) (Mock Mode).`,
     };
   }
+
+  // Real API
+  const res = await api.post<SyncBatchResponse>("/sync", {
+    operations: pending,
+  });
+
+  const batchResponse = res as unknown as SyncBatchResponse;
+  
+  let synced = 0;
+  let failed = 0;
+
+  for (const result of batchResponse.results) {
+    if (result.status === "SYNCED") {
+      updateSyncOperationStatus(result.clientOperationId, "SYNCED");
+      synced++;
+    } else {
+      updateSyncOperationStatus(
+        result.clientOperationId,
+        "FAILED",
+        result.message || "Sync rejected by server"
+      );
+      failed++;
+    }
+  }
+
+  return {
+    syncedCount: synced,
+    failedCount: failed,
+    message: `Successfully synchronized ${synced} record(s).`,
+  };
 }

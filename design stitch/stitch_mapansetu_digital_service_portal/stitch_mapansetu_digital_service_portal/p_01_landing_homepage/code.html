@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MapanSetu - Digital Verification for Weighing &amp; Measuring Instruments</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container": "#e7eeff",
+                        "surface": "#FFFFFF",
+                        "tertiary-fixed-dim": "#ffb77a",
+                        "error-container": "#ffdad6",
+                        "inverse-on-surface": "#ecf1ff",
+                        "secondary-fixed": "#d5e3ff",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#00458e",
+                        "surface-container-lowest": "#ffffff",
+                        "outline-variant": "#c1c6d5",
+                        "warning": "#B45309",
+                        "border-subtle": "#CBD5E1",
+                        "secondary-container": "#9fc2fe",
+                        "surface-dim": "#cfdaf2",
+                        "primary": "#004e9f",
+                        "error": "#B91C1C",
+                        "surface-container-high": "#dee8ff",
+                        "success": "#15803D",
+                        "on-secondary-fixed-variant": "#1f477b",
+                        "tertiary": "#7a4200",
+                        "inverse-surface": "#263143",
+                        "inverse-primary": "#aac7ff",
+                        "primary-fixed": "#d7e3ff",
+                        "primary-container": "#0066cc",
+                        "primary-fixed-dim": "#aac7ff",
+                        "surface-container-low": "#f0f3ff",
+                        "on-primary-fixed": "#001b3e",
+                        "background": "#f9f9ff",
+                        "tertiary-container": "#9d5600",
+                        "on-surface": "#111c2d",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed": "#001b3c",
+                        "on-tertiary-fixed": "#2e1500",
+                        "on-primary": "#ffffff",
+                        "surface-variant": "#d8e3fb",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "page-bg": "#F8FAFC",
+                        "surface-bright": "#f9f9ff",
+                        "on-background": "#111c2d",
+                        "secondary-fixed-dim": "#a7c8ff",
+                        "on-tertiary-fixed-variant": "#6d3a00",
+                        "secondary": "#3a5f94",
+                        "tertiary-fixed": "#ffdcc2",
+                        "on-secondary-container": "#294f83",
+                        "on-primary-container": "#dfe8ff",
+                        "surface-tint": "#005cba",
+                        "surface-container-highest": "#d8e3fb",
+                        "outline": "#727784",
+                        "on-surface-variant": "#414753",
+                        "on-tertiary-container": "#ffe3cf"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "compact": "8px",
+                        "exceptional": "80px",
+                        "component": "24px",
+                        "major": "48px",
+                        "section": "32px",
+                        "large": "40px",
+                        "standard": "16px",
+                        "hero": "64px",
+                        "micro": "4px"
+                    },
+                    "fontFamily": {
+                        "h3": ["Noto Sans"],
+                        "h4": ["Noto Sans"],
+                        "h1": ["Noto Sans"],
+                        "body-sm": ["Noto Sans"],
+                        "caption": ["Noto Sans"],
+                        "h2": ["Noto Sans"],
+                        "h2-mobile": ["Noto Sans"],
+                        "body-lg": ["Noto Sans"],
+                        "label": ["Noto Sans"],
+                        "display-heading-mobile": ["Noto Sans"],
+                        "display-heading": ["Noto Sans"],
+                        "h1-mobile": ["Noto Sans"],
+                        "body": ["Noto Sans"]
+                    },
+                    "fontSize": {
+                        "h3": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "h4": ["20px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "h1": ["36px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "caption": ["12px", { "lineHeight": "1.4", "fontWeight": "400" }],
+                        "h2": ["28px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "h2-mobile": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "label": ["14px", { "lineHeight": "1.2", "fontWeight": "600" }],
+                        "display-heading-mobile": ["32px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "display-heading": ["48px", { "lineHeight": "1.2", "fontWeight": "700" }],
+                        "h1-mobile": ["28px", { "lineHeight": "1.3", "fontWeight": "700" }],
+                        "body": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Noto Sans', sans-serif; background-color: theme('colors.page-bg'); }
+    </style>
+</head>
+<body class="antialiased text-on-surface flex flex-col min-h-screen">
+<!-- Top Utility Bar -->
+<div class="bg-primary text-on-primary py-compact px-standard">
+<div class="max-w-7xl mx-auto flex justify-between items-center text-caption font-caption">
+<div class="flex gap-standard items-center">
+<a class="hover:underline" href="#main-content">Skip to Main Content</a>
+</div>
+<div class="flex gap-standard items-center">
+<button class="hover:underline">English | Hindi</button>
+<div class="flex gap-micro items-center border-l border-on-primary/30 pl-standard">
+<button class="px-micro hover:bg-primary-container rounded">A-</button>
+<button class="px-micro hover:bg-primary-container rounded font-bold">A</button>
+<button class="px-micro hover:bg-primary-container rounded">A+</button>
+</div>
+<button aria-label="Toggle Contrast" class="hover:bg-primary-container p-micro rounded flex items-center border-l border-on-primary/30 pl-standard">
+<span class="material-symbols-outlined" style="font-size: 16px;">contrast</span>
+</button>
+</div>
+</div>
+</div>
+<!-- TopNavBar -->
+<header class="bg-surface border-b border-subtle sticky top-0 z-50 w-full">
+<div class="flex flex-col w-full max-w-7xl mx-auto px-major">
+<div class="flex justify-between items-center py-standard">
+<div class="flex items-center gap-component">
+<div class="font-h3 text-h3 font-bold text-primary flex items-center gap-2">
+<img alt="State Emblem" class="w-10 h-14 object-contain" data-alt="Official state emblem of India, crisp metallic texture, corporate blue accent, perfectly centered, formal governmental aesthetic, high resolution graphic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTr9OzakyGLRHgdpKRa6i5vV8RfYOS8Mi83lEyG4YgytQ73IjlSqBh6W3ONEu1H2gWTWhphlyuBubp0HIZs20LKoMECb4Xi_r3SGBCeeAWzxVAHEyoXnGK7oudaPDwvW6-uvtTfy7QWHhnXHvsBYn31NT0ZKTxbaPhXTgTUlwEdzY_BL6sPgKv-OJNW5DGG_PDEFGYSaWv5tRid2ZHEeoxw-ZHsdiEAGb7TzwPEMMX9uo3bF_tfUpbhA"/>
+<div class="flex flex-col">
+<span>MapanSetu</span>
+<span class="font-caption text-caption text-on-surface-variant font-normal">Department of Legal Metrology</span>
+</div>
+</div>
+</div>
+<nav class="hidden md:flex items-center gap-large h-full">
+<a class="font-body text-body text-primary font-bold border-b-2 border-primary pb-1 h-full flex items-center opacity-80 hover:bg-surface-container-low transition-colors duration-150" href="#">Home</a>
+<a class="font-body text-body text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors px-2 py-1 rounded" href="#">About</a>
+<a class="font-body text-body text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors px-2 py-1 rounded" href="#">Services</a>
+<a class="font-body text-body text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors px-2 py-1 rounded" href="#">Verify Certificate</a>
+<a class="font-body text-body text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors px-2 py-1 rounded" href="#">Help</a>
+<a class="font-body text-body text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors px-2 py-1 rounded" href="#">Contact</a>
+</nav>
+<div class="flex items-center gap-standard">
+<button class="bg-primary text-on-primary font-label text-label px-standard py-compact rounded flex items-center gap-compact hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined" style="font-size: 20px;">login</span>
+                        Login
+                    </button>
+<button class="md:hidden text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow" id="main-content">
+<!-- Hero Section -->
+<section class="relative bg-surface-container-low py-exceptional border-b border-subtle overflow-hidden">
+<div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle at 100% 100%, theme('colors.primary') 0%, transparent 50%), radial-gradient(circle at 0% 0%, theme('colors.secondary') 0%, transparent 50%);"></div>
+<div class="max-w-7xl mx-auto px-major relative z-10 grid md:grid-cols-2 gap-hero items-center">
+<div>
+<h1 class="font-display-heading-mobile md:font-display-heading text-display-heading-mobile md:text-display-heading text-on-surface mb-component">Digital Verification for Weighing &amp; Measuring Instruments</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mb-large max-w-xl">MapanSetu ensures accuracy, fairness, and compliance in trade by providing a seamless digital platform for the legal metrology ecosystem.</p>
+<div class="flex flex-wrap gap-standard">
+<button class="bg-primary text-on-primary font-label text-label px-large py-standard rounded border border-primary hover:bg-primary-container transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                            Verify Certificate
+                        </button>
+<button class="bg-surface text-primary font-label text-label px-large py-standard rounded border border-primary hover:bg-surface-container-low transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                            Login to Dashboard
+                        </button>
+</div>
+</div>
+<div class="hidden md:block">
+<img alt="Digital Verification Illustration" class="w-full h-auto rounded-xl shadow-lg border border-subtle object-cover aspect-video" data-alt="Abstract 3D illustration of a digital weighing scale and compliance documents floating in a clean, professional blue and white digital space, representing trust and digital governance, highly detailed." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDinueYEklkynGdTzGHndnQJIjy6zvitN05LUv2hkCeJGRgOcmbLSsQdfmL7tXCanwiAnjfRXPWXyuPJOUU9dS4a1R_NljqSbs10TbYqO8MXPaeF0SHi8T9SbsO_EmUZFBeR1-PzWq6uZJstA9B0ojPQJIejobfWEfK5UdLZAIpRPsnNyRki_tPh0wF8qHXypzLphiYUYzlnyJvl1SUEm5wLRTt7tpdEuKGu84g2KXUMonpeBlebss2Q"/>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest text-on-surface py-major px-major w-full border-t border-subtle mt-auto">
+<div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-section">
+<div class="col-span-1 md:col-span-1">
+<div class="font-h4 text-h4 font-bold text-on-surface mb-compact flex items-center gap-2">
+<img alt="Emblem" class="w-8 h-8 object-contain grayscale opacity-80" data-alt="Small monochromatic governmental crest logo, simple clean lines, high contrast dark blue on white background, formal official style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2ltW-MEMbEOPrM8LYFdS39mUiUb-OyIBDvPq0nD2xbh59HmeMsw3Otcd6Xentjzg4Tt6Bpd4mTfdvXf9i8vLn33HuUUx6H__nsQOwMLS-zAy6aZwxEecRDQcKYdV69jVVgFl4rly7vQGGBg1ngn61kVNhz_Q1DKq3DHna9PqTf_LF1z29M91_7D6des8If-00QlkDmrIlSTsaqvMZQjV6q2jMdAVHhZ-LUSbzPo_ifFLmVGEJeavTVQ"/>
+                    MapanSetu
+                </div>
+<p class="font-body text-body text-on-surface-variant mb-standard text-sm">Department of Legal Metrology, Government of India.</p>
+<p class="font-caption text-caption text-on-surface-variant">© 2024 Department of Legal Metrology. All rights reserved.</p>
+</div>
+<div class="col-span-1">
+<h3 class="font-label text-label text-on-surface font-bold mb-standard">Quick Links</h3>
+<ul class="flex flex-col gap-compact font-caption text-caption">
+<li><a class="text-on-surface-variant hover:text-primary transition-all hover:underline" href="#">Privacy Policy</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-all hover:underline" href="#">Terms of Service</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-all hover:underline" href="#">GIGW Compliance</a></li>
+</ul>
+</div>
+<div class="col-span-1">
+<h3 class="font-label text-label text-on-surface font-bold mb-standard">Support</h3>
+<ul class="flex flex-col gap-compact font-caption text-caption">
+<li><a class="text-on-surface-variant hover:text-primary transition-all hover:underline" href="#">Sitemap</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-all hover:underline" href="#">Help Desk</a></li>
+<li><a class="text-on-surface-variant hover:text-primary transition-all hover:underline" href="#">Contact Us</a></li>
+</ul>
+</div>
+<div class="col-span-1">
+<div class="p-standard bg-surface border border-subtle rounded-lg flex flex-col items-center justify-center h-full text-center">
+<span class="material-symbols-outlined text-primary mb-2" style="font-size: 32px; font-variation-settings: 'FILL' 1;">security</span>
+<p class="font-caption text-caption text-on-surface-variant">Secured by NIC</p>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

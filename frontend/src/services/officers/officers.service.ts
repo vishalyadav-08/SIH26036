@@ -1,4 +1,4 @@
-import { api } from "@/lib/api";
+import { USE_MOCK_API, api } from "@/lib/api";
 import { Officer } from "@/types/officer";
 
 export const DEMO_OFFICERS: Officer[] = [
@@ -44,17 +44,23 @@ export const DEMO_OFFICERS: Officer[] = [
 ];
 
 export async function getOfficers(): Promise<Officer[]> {
-  try {
-    const res = await api.get<Officer[]>("/officers");
-    return res.data;
-  } catch {
-    return DEMO_OFFICERS;
-  }
+  if (USE_MOCK_API) return DEMO_OFFICERS;
+  
+  const res = await api.get<{ items: Officer[] }>("/officers");
+  return res.items || res as unknown as Officer[];
 }
 
 export async function getOfficerById(id: string): Promise<Officer | null> {
-  const officers = await getOfficers();
-  return (
-    officers.find((o) => o.id === id || o.userId === id) || null
-  );
+  if (USE_MOCK_API) {
+    return DEMO_OFFICERS.find((o) => o.id === id || o.userId === id) || null;
+  }
+  
+  // NOTE: /officers/{id} is not documented in the API_Contract.md!
+  // Documenting as a gap. We'll issue the GET request anyway.
+  try {
+    const res = await api.get<Officer>(`/officers/${id}`);
+    return res as unknown as Officer;
+  } catch {
+    return null;
+  }
 }

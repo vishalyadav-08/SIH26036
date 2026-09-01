@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hyperlinking Policy - MapanSetu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container": "#e7eeff",
+                      "surface": "#FFFFFF",
+                      "tertiary-fixed-dim": "#ffb77a",
+                      "error-container": "#ffdad6",
+                      "inverse-on-surface": "#ecf1ff",
+                      "secondary-fixed": "#d5e3ff",
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed-variant": "#00458e",
+                      "surface-container-lowest": "#ffffff",
+                      "outline-variant": "#c1c6d5",
+                      "warning": "#B45309",
+                      "border-subtle": "#CBD5E1",
+                      "secondary-container": "#9fc2fe",
+                      "surface-dim": "#cfdaf2",
+                      "primary": "#004e9f",
+                      "error": "#B91C1C",
+                      "surface-container-high": "#dee8ff",
+                      "success": "#15803D",
+                      "on-secondary-fixed-variant": "#1f477b",
+                      "tertiary": "#7a4200",
+                      "inverse-surface": "#263143",
+                      "inverse-primary": "#aac7ff",
+                      "primary-fixed": "#d7e3ff",
+                      "primary-container": "#0066cc",
+                      "primary-fixed-dim": "#aac7ff",
+                      "surface-container-low": "#f0f3ff",
+                      "on-primary-fixed": "#001b3e",
+                      "background": "#f9f9ff",
+                      "tertiary-container": "#9d5600",
+                      "on-surface": "#111c2d",
+                      "on-error-container": "#93000a",
+                      "on-secondary-fixed": "#001b3c",
+                      "on-tertiary-fixed": "#2e1500",
+                      "on-primary": "#ffffff",
+                      "surface-variant": "#d8e3fb",
+                      "on-error": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "page-bg": "#F8FAFC",
+                      "surface-bright": "#f9f9ff",
+                      "on-background": "#111c2d",
+                      "secondary-fixed-dim": "#a7c8ff",
+                      "on-tertiary-fixed-variant": "#6d3a00",
+                      "secondary": "#3a5f94",
+                      "tertiary-fixed": "#ffdcc2",
+                      "on-secondary-container": "#294f83",
+                      "on-primary-container": "#dfe8ff",
+                      "surface-tint": "#005cba",
+                      "surface-container-highest": "#d8e3fb",
+                      "outline": "#727784",
+                      "on-surface-variant": "#414753",
+                      "on-tertiary-container": "#ffe3cf"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {
+                      "compact": "8px",
+                      "exceptional": "80px",
+                      "component": "24px",
+                      "major": "48px",
+                      "section": "32px",
+                      "large": "40px",
+                      "standard": "16px",
+                      "hero": "64px",
+                      "micro": "4px"
+              },
+              "fontFamily": {
+                      "h3": ["Noto Sans"],
+                      "h4": ["Noto Sans"],
+                      "h1": ["Noto Sans"],
+                      "body-sm": ["Noto Sans"],
+                      "caption": ["Noto Sans"],
+                      "h2": ["Noto Sans"],
+                      "h2-mobile": ["Noto Sans"],
+                      "body-lg": ["Noto Sans"],
+                      "label": ["Noto Sans"],
+                      "display-heading-mobile": ["Noto Sans"],
+                      "display-heading": ["Noto Sans"],
+                      "h1-mobile": ["Noto Sans"],
+                      "body": ["Noto Sans"]
+              },
+              "fontSize": {
+                      "h3": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "h4": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "h1": ["36px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "caption": ["12px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                      "h2": ["28px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "h2-mobile": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "label": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                      "display-heading-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "display-heading": ["48px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                      "h1-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                      "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+      </style>
+</head>
+<body class="bg-page-bg text-on-surface font-body text-body min-h-screen flex flex-col">
+<!-- Global Utility Bar -->
+<div class="bg-surface-container-low border-b border-subtle py-compact px-standard text-right">
+<div class="max-w-7xl mx-auto flex justify-end items-center gap-standard font-caption text-caption">
+<a class="text-primary hover:underline" href="#main-content">Skip to Main Content</a>
+<div class="flex gap-2">
+<button aria-label="Decrease Text Size" class="text-on-surface-variant hover:text-primary">A-</button>
+<button aria-label="Default Text Size" class="text-on-surface-variant hover:text-primary">A</button>
+<button aria-label="Increase Text Size" class="text-on-surface-variant hover:text-primary">A+</button>
+</div>
+<button aria-label="Toggle Contrast" class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined text-[16px] align-middle">contrast</span>
+</button>
+<button aria-label="Change Language" class="text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined text-[16px] align-middle">language</span>
+</button>
+</div>
+</div>
+<!-- Top Navigation (Hidden on Mobile) -->
+<header class="hidden md:flex flex-col w-full max-w-7xl mx-auto px-major bg-surface dark:bg-inverse-surface border-b border-subtle dark:border-outline-variant full-width top-0 z-50">
+<div class="flex items-center justify-between py-component">
+<div class="font-h3 text-h3 font-bold text-primary dark:text-inverse-primary flex items-center gap-2">
+<img alt="State Emblem of India" class="h-10 w-auto" data-alt="A stoic and official state emblem representing authority and trust. The emblem is depicted in a monochromatic or subtle gold tone, isolated on a clean white background. It exudes a sense of government legitimacy and institutional stability. Highly detailed and formal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBtKPJ3F8bekiU7VrNfyYtWOo-9vmwOhyLd_bsGnfXdlB-kcOC2OVL4pwLOWuhzKc_7kMaXu28IjgLBb45OQmVd8hUkJYk2f4rMDyI9OWx4QqQpH2OW5nBsMhiZbYIbYawVdlCIuwQ1CHEjb5EEvvns4IrUPm7-gt_dZ4gEzF7rXfFgwc1Rz3SK-9hX9t1bmtxS3xE7ENmgx1bVHv049dYrf7bjWgBvxEPuq0n1GEj-sXjOCqpIsYRCCQ"/>
+                MapanSetu
+            </div>
+<div class="flex items-center gap-component">
+<nav class="flex gap-standard">
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low dark:hover:bg-on-surface-variant/10 px-2 py-1 rounded" href="#">Home</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low dark:hover:bg-on-surface-variant/10 px-2 py-1 rounded" href="#">About</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low dark:hover:bg-on-surface-variant/10 px-2 py-1 rounded" href="#">Services</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low dark:hover:bg-on-surface-variant/10 px-2 py-1 rounded" href="#">Verify Certificate</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low dark:hover:bg-on-surface-variant/10 px-2 py-1 rounded" href="#">Help</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low dark:hover:bg-on-surface-variant/10 px-2 py-1 rounded" href="#">Contact</a>
+</nav>
+<button class="bg-primary text-on-primary px-4 py-2 rounded hover:bg-primary-container transition-colors font-label text-label">Login</button>
+</div>
+</div>
+</header>
+<!-- Side Navigation (Mobile Only) -->
+<nav class="md:hidden flex flex-col h-full bg-surface dark:bg-inverse-surface border-r border-subtle shadow-md fixed left-0 top-0 h-full w-64 z-50 transform -translate-x-full transition-transform" id="mobile-nav">
+<div class="p-component border-b border-subtle">
+<div class="flex items-center gap-2 mb-2">
+<img alt="State Emblem of India" class="h-8 w-auto" data-alt="A stoic and official state emblem representing authority and trust. The emblem is depicted in a monochromatic or subtle gold tone, isolated on a clean white background. It exudes a sense of government legitimacy and institutional stability. Highly detailed and formal." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDTw3rc1FXXb4a__bg4P2mKOoTPfFDCnKDf2JHqvDEhwos0YXHIT9kfESv391WU16F34hwCbpNTN1ooCg5BP17HHn9nYlNbf06cqATNh3h5fRDiDYgdI8at19z-1D_Y4tXIfGhmztd5uF_Dh1UG-_6DYtETLzZWZjd33dW88TfRzn33ysfhs2zbXIi8r-YTw-4fwo3TKnibUMzUKjm6PBwQYCsv4bX2bgtPlL56d6iBUkskfu5R0iPqyw"/>
+<div class="font-h4 text-h4 font-bold text-on-surface">MapanSetu</div>
+</div>
+<div class="font-caption text-caption text-on-surface-variant">Department of Legal Metrology</div>
+</div>
+<div class="flex-1 overflow-y-auto py-standard">
+<a class="flex items-center gap-4 px-component py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors font-label text-label" href="#"><span class="material-symbols-outlined">home</span>Home</a>
+<a class="flex items-center gap-4 px-component py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors font-label text-label" href="#"><span class="material-symbols-outlined">info</span>About</a>
+<a class="flex items-center gap-4 px-component py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors font-label text-label" href="#"><span class="material-symbols-outlined">settings_suggest</span>Services</a>
+<a class="flex items-center gap-4 px-component py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors font-label text-label" href="#"><span class="material-symbols-outlined">verified_user</span>Verify Certificate</a>
+<a class="flex items-center gap-4 px-component py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors font-label text-label" href="#"><span class="material-symbols-outlined">help</span>Help</a>
+<a class="flex items-center gap-4 px-component py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors font-label text-label" href="#"><span class="material-symbols-outlined">contact_support</span>Contact</a>
+<a class="flex items-center gap-4 px-component py-3 text-on-surface-variant hover:bg-surface-container-low transition-colors font-label text-label" href="#"><span class="material-symbols-outlined">login</span>Login</a>
+</div>
+<div class="p-component border-t border-subtle">
+<button class="w-full bg-primary text-on-primary px-4 py-2 rounded hover:bg-primary-container transition-colors font-label text-label">Verify Certificate</button>
+</div>
+</nav>
+<!-- Mobile Menu Toggle Button -->
+<div class="md:hidden fixed top-4 right-4 z-50">
+<button class="bg-surface p-2 rounded border border-subtle shadow-md" onclick="document.getElementById('mobile-nav').classList.toggle('-translate-x-full')">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+<!-- Main Content -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-standard md:px-major py-major" id="main-content">
+<!-- Page Header -->
+<div class="mb-section">
+<h1 class="font-h1-mobile md:font-h1 text-h1-mobile md:text-h1 text-on-surface mb-compact">Hyperlinking Policy</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Guidelines for linking to and from the MapanSetu platform.</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-section">
+<!-- Sidebar Navigation for Policy -->
+<aside class="md:col-span-3">
+<nav class="sticky top-component bg-surface border border-subtle rounded-lg p-standard">
+<h3 class="font-label text-label text-primary mb-standard uppercase tracking-wider">Contents</h3>
+<ul class="space-y-compact font-body-sm text-body-sm">
+<li><a class="text-on-surface-variant hover:text-primary flex items-center gap-2" href="#links-to-external"><span class="material-symbols-outlined text-[16px]">arrow_forward</span> Links to External Websites</a></li>
+<li><a class="text-on-surface-variant hover:text-primary flex items-center gap-2" href="#links-to-mapansetu"><span class="material-symbols-outlined text-[16px]">arrow_forward</span> Linking to MapanSetu</a></li>
+<li><a class="text-on-surface-variant hover:text-primary flex items-center gap-2" href="#prohibited-links"><span class="material-symbols-outlined text-[16px]">arrow_forward</span> Prohibited Links</a></li>
+</ul>
+</nav>
+</aside>
+<!-- Policy Content -->
+<div class="md:col-span-9 space-y-major">
+<section class="bg-surface border border-subtle rounded-xl p-section" id="links-to-external">
+<div class="flex items-center gap-3 mb-standard border-b border-subtle pb-standard">
+<span class="material-symbols-outlined text-primary text-h2" style="font-variation-settings: 'FILL' 1;">public</span>
+<h2 class="font-h2-mobile md:font-h2 text-h2-mobile md:text-h2 text-on-surface">Links to External Websites/Portals</h2>
+</div>
+<div class="prose font-body text-body text-on-surface-variant max-w-none">
+<p class="mb-standard">At many places in this Website, you shall find links to other websites/portals. This links have been placed for your convenience. The Department of Legal Metrology is not responsible for the contents and reliability of the linked websites and does not necessarily endorse the views expressed in them. Mere presence of the link or its listing on this Website should not be assumed as endorsement of any kind.</p>
+<p>We can not guarantee that these links will work all the time and we have no control over availability of linked pages.</p>
+</div>
+</section>
+<section class="bg-surface border border-subtle rounded-xl p-section" id="links-to-mapansetu">
+<div class="flex items-center gap-3 mb-standard border-b border-subtle pb-standard">
+<span class="material-symbols-outlined text-primary text-h2" style="font-variation-settings: 'FILL' 1;">link</span>
+<h2 class="font-h2-mobile md:font-h2 text-h2-mobile md:text-h2 text-on-surface">Linking to MapanSetu</h2>
+</div>
+<div class="prose font-body text-body text-on-surface-variant max-w-none">
+<p class="mb-standard">We do not object to you linking directly to the information that is hosted on this site and no prior permission is required for the same. However, we would like you to inform us about any links provided to this Portal so that you can be informed of any changes or updations therein.</p>
+<div class="bg-surface-container-low border-l-4 border-primary p-standard mt-standard">
+<h4 class="font-h4 text-h4 text-on-surface mb-compact">Framing Policy</h4>
+<p class="font-body-sm text-body-sm">Also, we do not permit our pages to be loaded into frames on your site. The pages belonging to this site must load into a newly opened browser window of the User.</p>
+</div>
+</div>
+</section>
+<section class="bg-surface border border-subtle rounded-xl p-section" id="prohibited-links">
+<div class="flex items-center gap-3 mb-standard border-b border-subtle pb-standard">
+<span class="material-symbols-outlined text-error text-h2" style="font-variation-settings: 'FILL' 1;">block</span>
+<h2 class="font-h2-mobile md:font-h2 text-h2-mobile md:text-h2 text-on-surface">Prohibited Links</h2>
+</div>
+<div class="prose font-body text-body text-on-surface-variant max-w-none">
+<p class="mb-standard">Under no circumstances will MapanSetu establish a link to a website that:</p>
+<ul class="list-disc pl-5 space-y-2">
+<li>Promotes or depicts illegal activities or explicit content.</li>
+<li>Provides misleading information or engages in fraudulent practices.</li>
+<li>Violates intellectual property rights.</li>
+<li>Compromises the security or integrity of the MapanSetu platform.</li>
+</ul>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-inverse-surface border-t border-subtle dark:border-outline-variant mt-auto">
+<div class="w-full py-major px-major max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-section">
+<div class="col-span-1 md:col-span-1">
+<div class="font-h4 text-h4 font-bold text-on-surface mb-standard">MapanSetu</div>
+<p class="font-body text-body text-on-surface-variant">© 2024 Department of Legal Metrology, Government of India. All rights reserved.</p>
+</div>
+<div class="col-span-1 md:col-span-3 flex flex-wrap gap-standard md:justify-end">
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-all" href="#">Privacy Policy</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-all" href="#">Terms of Service</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-all" href="#">Sitemap</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-all" href="#">Help Desk</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-all" href="#">Contact Us</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary transition-all" href="#">GIGW Compliance</a>
+</div>
+</div>
+</footer>
+</body></html>

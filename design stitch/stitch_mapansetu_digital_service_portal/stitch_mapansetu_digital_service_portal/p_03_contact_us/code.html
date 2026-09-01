@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Contact Us - MapanSetu</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#e7eeff",
+                    "surface": "#FFFFFF",
+                    "tertiary-fixed-dim": "#ffb77a",
+                    "error-container": "#ffdad6",
+                    "inverse-on-surface": "#ecf1ff",
+                    "secondary-fixed": "#d5e3ff",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed-variant": "#00458e",
+                    "surface-container-lowest": "#ffffff",
+                    "outline-variant": "#c1c6d5",
+                    "warning": "#B45309",
+                    "border-subtle": "#CBD5E1",
+                    "secondary-container": "#9fc2fe",
+                    "surface-dim": "#cfdaf2",
+                    "primary": "#004e9f",
+                    "error": "#B91C1C",
+                    "surface-container-high": "#dee8ff",
+                    "success": "#15803D",
+                    "on-secondary-fixed-variant": "#1f477b",
+                    "tertiary": "#7a4200",
+                    "inverse-surface": "#263143",
+                    "inverse-primary": "#aac7ff",
+                    "primary-fixed": "#d7e3ff",
+                    "primary-container": "#0066cc",
+                    "primary-fixed-dim": "#aac7ff",
+                    "surface-container-low": "#f0f3ff",
+                    "on-primary-fixed": "#001b3e",
+                    "background": "#f9f9ff",
+                    "tertiary-container": "#9d5600",
+                    "on-surface": "#111c2d",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed": "#001b3c",
+                    "on-tertiary-fixed": "#2e1500",
+                    "on-primary": "#ffffff",
+                    "surface-variant": "#d8e3fb",
+                    "on-error": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "page-bg": "#F8FAFC",
+                    "surface-bright": "#f9f9ff",
+                    "on-background": "#111c2d",
+                    "secondary-fixed-dim": "#a7c8ff",
+                    "on-tertiary-fixed-variant": "#6d3a00",
+                    "secondary": "#3a5f94",
+                    "tertiary-fixed": "#ffdcc2",
+                    "on-secondary-container": "#294f83",
+                    "on-primary-container": "#dfe8ff",
+                    "surface-tint": "#005cba",
+                    "surface-container-highest": "#d8e3fb",
+                    "outline": "#727784",
+                    "on-surface-variant": "#414753",
+                    "on-tertiary-container": "#ffe3cf"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "compact": "8px",
+                    "exceptional": "80px",
+                    "component": "24px",
+                    "major": "48px",
+                    "section": "32px",
+                    "large": "40px",
+                    "standard": "16px",
+                    "hero": "64px",
+                    "micro": "4px"
+            },
+            "fontFamily": {
+                    "h3": ["Noto Sans"],
+                    "h4": ["Noto Sans"],
+                    "h1": ["Noto Sans"],
+                    "body-sm": ["Noto Sans"],
+                    "caption": ["Noto Sans"],
+                    "h2": ["Noto Sans"],
+                    "h2-mobile": ["Noto Sans"],
+                    "body-lg": ["Noto Sans"],
+                    "label": ["Noto Sans"],
+                    "display-heading-mobile": ["Noto Sans"],
+                    "display-heading": ["Noto Sans"],
+                    "h1-mobile": ["Noto Sans"],
+                    "body": ["Noto Sans"]
+            },
+            "fontSize": {
+                    "h3": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "h4": ["20px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "h1": ["36px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "caption": ["12px", {"lineHeight": "1.4", "fontWeight": "400"}],
+                    "h2": ["28px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "h2-mobile": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "label": ["14px", {"lineHeight": "1.2", "fontWeight": "600"}],
+                    "display-heading-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "display-heading": ["48px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "h1-mobile": ["28px", {"lineHeight": "1.3", "fontWeight": "700"}],
+                    "body": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-page-bg text-on-background font-body min-h-screen flex flex-col">
+<!-- Global Utility Bar -->
+<div class="bg-surface-container-low border-b border-subtle py-compact px-standard md:px-major flex justify-end items-center gap-standard text-body-sm text-on-surface-variant h-10">
+<a class="hover:text-primary focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded" href="#main-content">Skip to Main Content</a>
+<div class="w-px h-4 bg-outline-variant"></div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px]">language</span>
+<span>English</span>
+</div>
+<div class="w-px h-4 bg-outline-variant"></div>
+<div class="flex items-center gap-1">
+<button class="hover:text-primary p-1 focus:outline-none focus:ring-2 focus:ring-primary rounded">A-</button>
+<button class="hover:text-primary p-1 focus:outline-none focus:ring-2 focus:ring-primary rounded">A</button>
+<button class="hover:text-primary p-1 focus:outline-none focus:ring-2 focus:ring-primary rounded">A+</button>
+</div>
+<div class="w-px h-4 bg-outline-variant"></div>
+<button class="flex items-center hover:text-primary p-1 focus:outline-none focus:ring-2 focus:ring-primary rounded">
+<span class="material-symbols-outlined text-[16px]">contrast</span>
+</button>
+</div>
+<!-- Top Navigation (Web) -->
+<header class="hidden md:flex bg-surface dark:bg-inverse-surface border-b border-subtle dark:border-outline-variant docked full-width top-0 sticky z-50">
+<div class="flex flex-col w-full max-w-7xl mx-auto px-major py-standard">
+<div class="flex items-center justify-between w-full">
+<!-- Brand -->
+<div class="flex items-center gap-standard">
+<img alt="State Emblem" class="h-12 w-auto" data-alt="Official State Emblem of India, high contrast, clean vector style, authoritative and clear, designed for institutional use against a white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfncGQfu2837OkJtBhIFM7C53W1c90fRi-eCyWaeXbXw3OYmz-61j1DEYWQFj_paOvJMzMhM2323vfAz0HxM071R2EHOqCEUqRk3SwZ1UhbZ2VWt65YWC_TbQieXC5oy0eWkBDcVIF2X23Ir-oDH3Fc_sLTadm3eh5GWcTpBgJojwxEyU0SP6R2zXm3ZBAohX9HjU4F82zRcQKsf4mnPz2JsiaKGXGQZrd9blXmYIjDy-4fDqo2AtCqw"/>
+<div class="flex flex-col">
+<span class="font-h3 text-h3 font-bold text-primary dark:text-inverse-primary">MapanSetu</span>
+<span class="font-caption text-caption text-on-surface-variant">Department of Legal Metrology</span>
+</div>
+</div>
+<!-- Navigation -->
+<nav class="flex items-center gap-section">
+<a class="font-body text-body text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors px-2 py-1 rounded" href="#">Home</a>
+<a class="font-body text-body text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors px-2 py-1 rounded" href="#">About</a>
+<a class="font-body text-body text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors px-2 py-1 rounded" href="#">Services</a>
+<a class="font-body text-body text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors px-2 py-1 rounded" href="#">Verify Certificate</a>
+<a class="font-body text-body text-on-surface-variant hover:text-primary hover:bg-surface-container-low transition-colors px-2 py-1 rounded" href="#">Help</a>
+<a class="font-body text-body text-primary font-bold border-b-2 border-primary pb-1 px-2 py-1 hover:bg-surface-container-low transition-colors active:opacity-80 transition-opacity duration-150" href="#">Contact</a>
+</nav>
+<!-- Actions -->
+<div class="flex items-center gap-standard">
+<button class="font-label text-label bg-primary text-on-primary px-standard py-compact rounded flex items-center gap-2 hover:bg-surface-tint focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2">
+                        Login
+                    </button>
+</div>
+</div>
+</div>
+</header>
+<!-- Side Navigation (Mobile) -->
+<nav class="md:hidden fixed left-0 top-0 h-full w-64 bg-surface dark:bg-inverse-surface border-r border-subtle shadow-md z-40 transform -translate-x-full transition-transform duration-300" id="mobile-nav">
+<div class="flex flex-col h-full py-standard">
+<div class="px-standard pb-standard border-b border-subtle mb-standard flex items-center justify-between">
+<div class="flex items-center gap-2">
+<img alt="State Emblem of India" class="h-8 w-auto" data-alt="Official State Emblem of India, high contrast, clean vector style, authoritative and clear, designed for institutional use against a white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAXlaxphN9sRbwKbaS78L5UY-p5RaI4wO_5IFzGSgUgNvPiRPhJKcJP-3QclnNH3heLKxnsCOczCjgaN3whBw0QoYRhTYq0mSzJjiZmaKQaDbP2JX1mg5AM7-DPShozBNwVP-_nykEqZoQHf2SJjLRqhbewUBSt1K1kFNyIKw-RHKJPJbodV-5fyPSuQLQwoC1-CT6Q_PSd-IgN1-APDZSbyW3E5W7SLI7gT0-UlXSOWYnZXCgdTG-mRg"/>
+<div class="flex flex-col">
+<span class="font-h4 text-h4 font-bold text-on-surface">MapanSetu</span>
+</div>
+</div>
+<button class="p-1 focus:outline-none focus:ring-2 focus:ring-primary rounded" onclick="document.getElementById('mobile-nav').classList.add('-translate-x-full')">
+<span class="material-symbols-outlined">close</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto px-compact flex flex-col gap-1">
+<a class="flex items-center gap-standard px-standard py-compact rounded text-on-surface-variant hover:bg-surface-container-low font-label text-label" href="#">
+<span class="material-symbols-outlined">home</span>
+                    Home
+                </a>
+<a class="flex items-center gap-standard px-standard py-compact rounded text-on-surface-variant hover:bg-surface-container-low font-label text-label" href="#">
+<span class="material-symbols-outlined">info</span>
+                    About
+                </a>
+<a class="flex items-center gap-standard px-standard py-compact rounded text-on-surface-variant hover:bg-surface-container-low font-label text-label" href="#">
+<span class="material-symbols-outlined">settings_suggest</span>
+                    Services
+                </a>
+<a class="flex items-center gap-standard px-standard py-compact rounded text-on-surface-variant hover:bg-surface-container-low font-label text-label" href="#">
+<span class="material-symbols-outlined">verified_user</span>
+                    Verify Certificate
+                </a>
+<a class="flex items-center gap-standard px-standard py-compact rounded text-on-surface-variant hover:bg-surface-container-low font-label text-label" href="#">
+<span class="material-symbols-outlined">help</span>
+                    Help
+                </a>
+<a class="flex items-center gap-standard px-standard py-compact rounded bg-primary-container text-on-primary-container font-bold font-label text-label active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">contact_support</span>
+                    Contact
+                </a>
+</div>
+<div class="px-standard pt-standard border-t border-subtle mt-auto">
+<button class="w-full font-label text-label bg-primary text-on-primary px-standard py-compact rounded flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">login</span>
+                    Login
+                </button>
+<button class="w-full mt-2 font-label text-label bg-surface border border-primary text-primary px-standard py-compact rounded flex items-center justify-center gap-2">
+                    Verify Certificate
+                </button>
+</div>
+</div>
+</nav>
+<!-- Mobile Header -->
+<header class="md:hidden bg-surface border-b border-subtle py-standard px-standard flex items-center justify-between sticky top-0 z-30">
+<div class="flex items-center gap-2">
+<button class="p-1 focus:outline-none focus:ring-2 focus:ring-primary rounded" onclick="document.getElementById('mobile-nav').classList.remove('-translate-x-full')">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<span class="font-h4 text-h4 font-bold text-primary">MapanSetu</span>
+</div>
+<img alt="State Emblem" class="h-8 w-auto" data-alt="Official State Emblem of India, high contrast, clean vector style, authoritative and clear, designed for institutional use against a white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA_QavouHlmMODXaPo_9v3raxI2aBB-8jj-wAySk18YJCD8jiIWceFFBUY9asflufHQ_APOYKKNNYEEfbTpW6bTJQYO2JAfaBY2ODjjjzZ1ykpnOdBdwq8nLN_LmC-hLfkEqR-8Q2vKc0v3gtEUtvMVB1wQj1r08A6b1_vA78YSi1itrSPVbQ7PQ4C3oc4Xyi1Ktdrir2zezgzOJWClSKKk14DYUBeVkK7f1Ig-MiNSbjrlCbQ9STCUmg"/>
+</header>
+<!-- Main Content -->
+<main class="flex-1 w-full max-w-7xl mx-auto px-standard md:px-major py-major focus:outline-none" id="main-content" tabindex="-1">
+<div class="mb-major">
+<h1 class="font-h1-mobile md:font-h1 text-h1-mobile md:text-h1 text-on-surface mb-2">Contact Us</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">We are here to assist you. Please reach out to the Department of Legal Metrology or our Citizen Support channels for inquiries or assistance.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-section">
+<!-- Contact Information Side -->
+<div class="lg:col-span-4 flex flex-col gap-section">
+<!-- Department Info Card -->
+<div class="bg-surface border border-subtle rounded-xl p-component flex flex-col gap-standard">
+<div class="flex items-center gap-3 border-b border-subtle pb-3">
+<span class="material-symbols-outlined text-primary text-[28px]">account_balance</span>
+<h2 class="font-h4 text-h4 text-on-surface">Department Contact</h2>
+</div>
+<div class="flex flex-col gap-4 mt-2">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-on-surface-variant mt-1">location_on</span>
+<div>
+<p class="font-label text-label text-on-surface mb-1">Head Office</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Block No. 4, CGO Complex,<br/>Lodhi Road, New Delhi - 110003</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-on-surface-variant mt-1">phone</span>
+<div>
+<p class="font-label text-label text-on-surface mb-1">General Inquiries</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">+91 11 2436 0000</p>
+</div>
+</div>
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-on-surface-variant mt-1">mail</span>
+<div>
+<p class="font-label text-label text-on-surface mb-1">Official Email</p>
+<a class="font-body-sm text-body-sm text-primary hover:underline focus:outline-none focus:ring-2 focus:ring-primary rounded" href="mailto:contact@legalmetrology.gov.in">contact@legalmetrology.gov.in</a>
+</div>
+</div>
+</div>
+</div>
+<!-- Citizen Support Card -->
+<div class="bg-surface-container-low border border-subtle rounded-xl p-component flex flex-col gap-standard">
+<div class="flex items-center gap-3 border-b border-subtle pb-3">
+<span class="material-symbols-outlined text-primary text-[28px]">support_agent</span>
+<h2 class="font-h4 text-h4 text-on-surface">Citizen Support</h2>
+</div>
+<div class="flex flex-col gap-4 mt-2">
+<p class="font-body-sm text-body-sm text-on-surface-variant">For immediate assistance regarding application status, technical issues, or general guidance.</p>
+<div class="flex items-start gap-3 bg-surface p-3 rounded-lg border border-subtle">
+<span class="material-symbols-outlined text-success mt-1">call</span>
+<div>
+<p class="font-label text-label text-on-surface mb-1">Toll-Free Helpline</p>
+<p class="font-h3 text-h3 text-on-surface">1800-11-4000</p>
+<p class="font-caption text-caption text-on-surface-variant mt-1">Available Mon-Sat, 9:00 AM to 6:00 PM</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Map Area Placeholder -->
+<div class="rounded-xl overflow-hidden border border-subtle h-48 bg-surface-variant relative">
+<!-- A placeholder for an embedded map -->
+<div class="absolute inset-0 flex items-center justify-center flex-col text-on-surface-variant">
+<span class="material-symbols-outlined text-[32px] mb-2">map</span>
+<span class="font-label text-label">Interactive Map View</span>
+</div>
+</div>
+</div>
+<!-- Contact Form Side -->
+<div class="lg:col-span-8">
+<div class="bg-surface border border-subtle rounded-xl p-component md:p-section">
+<div class="mb-section">
+<h2 class="font-h2-mobile md:font-h2 text-h2-mobile md:text-h2 text-on-surface mb-2">Send us a Message</h2>
+<p class="font-body text-body text-on-surface-variant">Fill out the form below and our team will get back to you within 2 working days.</p>
+</div>
+<form class="flex flex-col gap-component">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-component">
+<!-- Name Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label text-label text-on-surface flex gap-1" for="fullName">
+                                    Full Name <span aria-hidden="true" class="text-error">*</span>
+</label>
+<input aria-required="true" class="w-full bg-surface border border-subtle rounded px-3 py-2 font-body text-body text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-1 transition-colors" id="fullName" name="fullName" placeholder="Enter your full name" required="" type="text"/>
+</div>
+<!-- Email Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label text-label text-on-surface flex gap-1" for="email">
+                                    Email Address <span aria-hidden="true" class="text-error">*</span>
+</label>
+<input aria-required="true" class="w-full bg-surface border border-subtle rounded px-3 py-2 font-body text-body text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-1 transition-colors" id="email" name="email" placeholder="your.email@example.com" required="" type="email"/>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-component">
+<!-- Phone Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label text-label text-on-surface" for="phone">
+                                    Phone Number (Optional)
+                                </label>
+<input class="w-full bg-surface border border-subtle rounded px-3 py-2 font-body text-body text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-1 transition-colors" id="phone" name="phone" placeholder="10-digit mobile number" type="tel"/>
+</div>
+<!-- Subject Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label text-label text-on-surface flex gap-1" for="subject">
+                                    Subject <span aria-hidden="true" class="text-error">*</span>
+</label>
+<div class="relative">
+<select aria-required="true" class="w-full bg-surface border border-subtle rounded px-3 py-2 font-body text-body text-on-surface appearance-none focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-1 transition-colors" id="subject" name="subject" required="">
+<option disabled="" selected="" value="">Select a subject</option>
+<option value="general">General Inquiry</option>
+<option value="technical">Technical Support</option>
+<option value="application">Application Status</option>
+<option value="feedback">Feedback / Grievance</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Message Field -->
+<div class="flex flex-col gap-2">
+<label class="font-label text-label text-on-surface flex gap-1" for="message">
+                                Message <span aria-hidden="true" class="text-error">*</span>
+</label>
+<textarea aria-required="true" class="w-full bg-surface border border-subtle rounded px-3 py-2 font-body text-body text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary focus:ring-offset-1 transition-colors resize-y" id="message" name="message" placeholder="Please describe your inquiry in detail..." required="" rows="5"></textarea>
+<p class="font-caption text-caption text-on-surface-variant text-right">Maximum 500 characters</p>
+</div>
+<!-- Submit Action -->
+<div class="flex items-center justify-end border-t border-subtle pt-component mt-compact">
+<button class="font-label text-label bg-primary text-on-primary px-section py-2 rounded flex items-center gap-2 hover:bg-surface-tint focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 transition-colors" type="submit">
+<span class="material-symbols-outlined text-[20px]">send</span>
+                                Submit Message
+                            </button>
+</div>
+</form>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest dark:bg-inverse-surface border-t border-subtle dark:border-outline-variant mt-auto">
+<div class="w-full py-major px-standard md:px-major max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-section">
+<div class="col-span-1 md:col-span-2 flex flex-col gap-standard">
+<span class="font-h4 text-h4 font-bold text-on-surface">MapanSetu</span>
+<p class="font-body text-body text-on-surface-variant max-w-md">
+                    © 2024 Department of Legal Metrology, Government of India. All rights reserved.
+                </p>
+</div>
+<div class="col-span-1 flex flex-col gap-compact">
+<span class="font-label text-label text-on-surface mb-2">Information</span>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary hover:underline transition-all active:opacity-70" href="#">Privacy Policy</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary hover:underline transition-all active:opacity-70" href="#">Terms of Service</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary hover:underline transition-all active:opacity-70" href="#">Sitemap</a>
+</div>
+<div class="col-span-1 flex flex-col gap-compact">
+<span class="font-label text-label text-on-surface mb-2">Support</span>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary hover:underline transition-all active:opacity-70" href="#">Help Desk</a>
+<a class="font-caption text-caption text-primary underline active:opacity-70" href="#">Contact Us</a>
+<a class="font-caption text-caption text-on-surface-variant hover:text-primary hover:underline transition-all active:opacity-70" href="#">GIGW Compliance</a>
+</div>
+</div>
+</footer>
+</body></html>

@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
-export const ADMIN_NAV_ITEMS = [
+const ADMIN_NAV_ITEMS = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Applications", href: "/admin/applications", icon: ClipboardList },
   { label: "Officers", href: "/admin/officers", icon: Users },
@@ -97,19 +97,6 @@ export function AdminHeader() {
                 </div>
               </div>
             </div>
-
-            <button
-              type="button"
-              onClick={async () => {
-                const { DemoRepository } = await import("@/lib/demo-db");
-                DemoRepository.reset();
-                window.location.reload();
-              }}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-amber-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 border border-amber-200 rounded-xl transition-colors cursor-pointer"
-              title="Reset Demo Data"
-            >
-              <span>Reset Demo</span>
-            </button>
 
             <button
               type="button"

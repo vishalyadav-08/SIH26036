@@ -9,6 +9,12 @@ import {
   Award,
   ArrowRight,
   Clock,
+  Download,
+  UserPlus,
+  Shield,
+  Activity,
+  AlertCircle,
+  FileCheck2,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { getAdminDashboardData } from "@/services/admin/admin.service";
@@ -54,14 +60,14 @@ export default function AdminDashboardPage() {
     return (
       <div className="space-y-6 animate-pulse" role="status" aria-label="Loading supervisor dashboard">
         <span className="sr-only">Loading supervisor dashboard...</span>
-        <div className="h-28 bg-slate-200 rounded-2xl" />
+        <div className="h-20 bg-slate-200 rounded-xl" />
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="h-28 bg-slate-200 rounded-2xl" />
-          <div className="h-28 bg-slate-200 rounded-2xl" />
-          <div className="h-28 bg-slate-200 rounded-2xl" />
-          <div className="h-28 bg-slate-200 rounded-2xl" />
+          <div className="h-28 bg-slate-200 rounded-xl" />
+          <div className="h-28 bg-slate-200 rounded-xl" />
+          <div className="h-28 bg-slate-200 rounded-xl" />
+          <div className="h-28 bg-slate-200 rounded-xl" />
         </div>
-        <div className="h-64 bg-slate-200 rounded-2xl" />
+        <div className="h-64 bg-slate-200 rounded-xl" />
       </div>
     );
   }
@@ -70,175 +76,161 @@ export default function AdminDashboardPage() {
   const certCounts = data?.certificateCounts;
 
   return (
-    <div className="space-y-6">
-      {/* Supervisor Header */}
-      <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] font-bold text-indigo-800 uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-50 border border-indigo-200">
-              Departmental Supervisor
-            </span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            {user?.displayName || "Admin Supervisor"}
+    <div className="space-y-8 animate-in fade-in duration-300">
+      {/* Page Header */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#cbd5e1] pb-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-[#111c2d] tracking-tight flex items-center gap-2">
+            Admin Directorate Dashboard <span className="text-[#727784] font-normal text-xl">| प्रशासनिक डैशबोर्ड</span>
           </h1>
-          <p className="text-xs text-slate-600">
-            Legal Metrology Department • Verification & Certification Control Hub
+          <p className="text-xs md:text-sm text-[#414753] mt-1">
+            Departmental supervision, officer assignments, audit logs, and verification control hub.
           </p>
         </div>
-
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex items-center gap-3">
           <Link
-            href="/admin/applications"
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs rounded-xl shadow-xs transition-colors"
+            href="/admin/audit"
+            className="bg-white border border-[#cbd5e1] text-[#004e9f] font-semibold text-xs py-2.5 px-4 rounded-lg hover:bg-[#f0f3ff] transition-colors flex items-center gap-2 shadow-xs"
           >
-            <ClipboardList className="w-4 h-4" />
-            <span>Triage Queue ({data?.pendingTriageCount || 0})</span>
+            <Download className="w-4 h-4" />
+            <span>Export Audit Log</span>
           </Link>
           <Link
-            href="/admin/certificates"
-            className="inline-flex items-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs rounded-xl shadow-xs transition-colors"
+            href="/admin/officers"
+            className="bg-[#004e9f] text-white font-bold text-xs py-2.5 px-4 rounded-lg hover:bg-[#003366] transition-colors flex items-center gap-2 shadow-xs"
           >
-            <Award className="w-4 h-4" />
-            <span>Certificates</span>
+            <UserPlus className="w-4 h-4" />
+            <span>Deploy Officer</span>
           </Link>
         </div>
       </div>
 
-      {/* 4 KPI Metrics */}
+      {/* 4 KPI Metrics Bento Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Link
           href="/admin/applications"
-          className="p-5 rounded-2xl bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-xs transition-all group"
+          className="bg-white rounded-xl border border-[#cbd5e1] p-5 flex flex-col justify-between hover:border-[#b45309] transition-all shadow-xs group"
         >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Pending Triage
-            </span>
-            <div className="w-8 h-8 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center group-hover:bg-amber-600 group-hover:text-white transition-colors">
-              <Clock className="w-4 h-4" />
+          <div className="flex justify-between items-start mb-4">
+            <div className="w-10 h-10 rounded-full bg-amber-50 text-[#b45309] flex items-center justify-center">
+              <Clock className="w-5 h-5" />
             </div>
+            <span className="text-[11px] font-bold text-[#b45309] bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
+              Pending
+            </span>
           </div>
-          <div className="text-2xl font-extrabold text-slate-900 font-mono">
-            {appCounts?.submitted || 0}
+          <div>
+            <h3 className="text-2xl font-bold text-[#111c2d]">{appCounts?.submitted || 0}</h3>
+            <p className="text-xs text-[#414753] mt-0.5">Awaiting Officer Assignment</p>
           </div>
-          <p className="text-[11px] text-slate-500 mt-1">
-            Applications awaiting assignment
-          </p>
         </Link>
 
         <Link
           href="/admin/schedules"
-          className="p-5 rounded-2xl bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-xs transition-all group"
+          className="bg-white rounded-xl border border-[#cbd5e1] p-5 flex flex-col justify-between hover:border-[#004e9f] transition-all shadow-xs group"
         >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              In Field & Scheduled
-            </span>
-            <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
-              <Calendar className="w-4 h-4" />
+          <div className="flex justify-between items-start mb-4">
+            <div className="w-10 h-10 rounded-full bg-[#f0f3ff] text-[#004e9f] flex items-center justify-center">
+              <Calendar className="w-5 h-5" />
             </div>
+            <span className="text-[11px] font-bold text-[#004e9f] bg-[#f0f3ff] border border-[#004e9f]/20 px-2 py-0.5 rounded">
+              Field Active
+            </span>
           </div>
-          <div className="text-2xl font-extrabold text-slate-900 font-mono">
-            {(appCounts?.assigned || 0) + (appCounts?.scheduled || 0)}
+          <div>
+            <h3 className="text-2xl font-bold text-[#111c2d]">
+              {(appCounts?.assigned || 0) + (appCounts?.scheduled || 0)}
+            </h3>
+            <p className="text-xs text-[#414753] mt-0.5">Scheduled Visits On Duty</p>
           </div>
-          <p className="text-[11px] text-slate-500 mt-1">
-            {appCounts?.scheduled || 0} visits scheduled
-          </p>
         </Link>
 
         <Link
           href="/admin/certificates"
-          className="p-5 rounded-2xl bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-xs transition-all group"
+          className="bg-white rounded-xl border border-[#cbd5e1] p-5 flex flex-col justify-between hover:border-[#15803d] transition-all shadow-xs group"
         >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Active Certificates
-            </span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-colors">
-              <Award className="w-4 h-4" />
+          <div className="flex justify-between items-start mb-4">
+            <div className="w-10 h-10 rounded-full bg-emerald-50 text-[#15803d] flex items-center justify-center">
+              <Award className="w-5 h-5" />
             </div>
+            <span className="text-[11px] font-bold text-[#15803d] bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">
+              Valid
+            </span>
           </div>
-          <div className="text-2xl font-extrabold text-slate-900 font-mono">
-            {certCounts?.valid || 0}
+          <div>
+            <h3 className="text-2xl font-bold text-[#111c2d]">{certCounts?.valid || 0}</h3>
+            <p className="text-xs text-[#414753] mt-0.5">Active Certificates Issued</p>
           </div>
-          <p className="text-[11px] text-slate-500 mt-1">
-            {certCounts?.revoked || 0} revoked • {certCounts?.expired || 0} expired
-          </p>
         </Link>
 
         <Link
           href="/admin/officers"
-          className="p-5 rounded-2xl bg-white border border-slate-200 hover:border-indigo-300 hover:shadow-xs transition-all group"
+          className="bg-white rounded-xl border border-[#cbd5e1] p-5 flex flex-col justify-between hover:border-[#3a5f94] transition-all shadow-xs group"
         >
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-              Field Officers
-            </span>
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-              <Users className="w-4 h-4" />
+          <div className="flex justify-between items-start mb-4">
+            <div className="w-10 h-10 rounded-full bg-indigo-50 text-[#3a5f94] flex items-center justify-center">
+              <Users className="w-5 h-5" />
             </div>
+            <span className="text-[11px] font-bold text-[#3a5f94] bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded">
+              Inspectors
+            </span>
           </div>
-          <div className="text-2xl font-extrabold text-slate-900 font-mono">
-            {data?.activeOfficersCount || 0}
+          <div>
+            <h3 className="text-2xl font-bold text-[#111c2d]">{data?.activeOfficersCount || 0}</h3>
+            <p className="text-xs text-[#414753] mt-0.5">Field Officers in Region</p>
           </div>
-          <p className="text-[11px] text-slate-500 mt-1">
-            Active inspectors on duty
-          </p>
         </Link>
       </div>
 
-      {/* Main Grid: Applications Triage & Officer Caseload */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Applications Triage Queue */}
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between">
+      {/* Main Detailed Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Applications Triage Queue (2/3 width) */}
+        <div className="lg:col-span-2 bg-white rounded-xl border border-[#cbd5e1] overflow-hidden shadow-xs">
+          <div className="p-4 border-b border-[#cbd5e1] bg-[#f8fafc] flex justify-between items-center">
             <div>
-              <h2 className="text-base font-bold text-slate-900">
-                Application Triage Queue
+              <h2 className="text-sm font-bold text-[#111c2d] flex items-center gap-2">
+                <ClipboardList className="w-4 h-4 text-[#004e9f]" /> Application Triage Queue
               </h2>
-              <p className="text-xs text-slate-500">
-                Recent verification applications submitted by businesses
-              </p>
+              <p className="text-[11px] text-[#414753]">Applications awaiting departmental review</p>
             </div>
             <Link
               href="/admin/applications"
-              className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 inline-flex items-center gap-1"
+              className="text-xs font-bold text-[#004e9f] hover:underline inline-flex items-center gap-1"
             >
-              <span>View full queue</span>
+              <span>View Full Queue</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-[#cbd5e1]">
             {recentApps.map((app) => (
               <div
                 key={app.id}
-                className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/80 rounded-xl px-2 -mx-2 transition-colors"
+                className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[#f8fafc] transition-colors"
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-slate-900">
+                    <span className="font-mono text-xs font-bold text-[#111c2d]">
                       {app.applicationNumber}
                     </span>
                     <span
                       className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                        app.state === "COMPLETED"
-                          ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                        app.state === "COMPLETED" || app.state === "VERIFIED"
+                          ? "bg-emerald-50 text-[#15803d] border border-emerald-200"
                           : app.state === "SUBMITTED"
-                          ? "bg-amber-50 text-amber-800 border border-amber-200"
-                          : "bg-blue-50 text-blue-800 border border-blue-200"
+                          ? "bg-amber-50 text-[#b45309] border border-amber-200"
+                          : "bg-blue-50 text-[#004e9f] border border-blue-200"
                       }`}
                     >
                       {app.state}
                     </span>
                   </div>
-                  <div className="text-xs text-slate-700 font-medium">
+                  <div className="text-xs text-[#111c2d] font-semibold">
                     {app.instrumentNumber} • {app.instrumentType.replace(/_/g, " ")}
                   </div>
-                  <div className="text-[11px] text-slate-500">
-                    Business: {app.businessName} • Assigned:{" "}
-                    <span className="font-semibold text-slate-700">
+                  <div className="text-[11px] text-[#414753]">
+                    Business: <span className="font-semibold text-[#111c2d]">{app.businessName}</span> • Assigned Officer:{" "}
+                    <span className="font-semibold text-[#004e9f]">
                       {app.assignedOfficerName || "Unassigned"}
                     </span>
                   </div>
@@ -247,7 +239,7 @@ export default function AdminDashboardPage() {
                 <div className="self-end sm:self-center">
                   <Link
                     href={`/admin/applications/${app.id}`}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-900 hover:bg-indigo-600 text-white text-xs font-semibold rounded-lg shadow-2xs transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#004e9f] hover:bg-[#003366] text-white text-xs font-bold rounded-lg shadow-xs transition-colors"
                   >
                     <span>Inspect</span>
                     <ArrowRight className="w-3 h-3" />
@@ -258,54 +250,54 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Officer Fleet Caseload */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-4">
-          <div className="flex items-center justify-between">
+        {/* Officer Fleet Caseload (1/3 width) */}
+        <div className="bg-white rounded-xl border border-[#cbd5e1] overflow-hidden shadow-xs flex flex-col">
+          <div className="p-4 border-b border-[#cbd5e1] bg-[#f8fafc] flex justify-between items-center">
             <div>
-              <h2 className="text-base font-bold text-slate-900">
-                Officer Caseload
+              <h2 className="text-sm font-bold text-[#111c2d] flex items-center gap-2">
+                <Users className="w-4 h-4 text-[#004e9f]" /> Officer Caseload
               </h2>
-              <p className="text-xs text-slate-500">Active workload balancing</p>
+              <p className="text-[11px] text-[#414753]">Field inspection capacity</p>
             </div>
             <Link
               href="/admin/officers"
-              className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 inline-flex items-center gap-1"
+              className="text-xs font-bold text-[#004e9f] hover:underline inline-flex items-center gap-1"
             >
-              <span>View all</span>
+              <span>View All</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
-          <div className="space-y-3.5">
+          <div className="p-4 space-y-3.5 flex-1">
             {officers.map((off) => {
               const pct = Math.round((off.activeCaseload / off.maxCaseload) * 100);
               return (
                 <div
                   key={off.id}
-                  className="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2"
+                  className="p-3 bg-[#f8fafc] rounded-lg border border-[#cbd5e1] space-y-2 hover:border-[#004e9f] transition-all"
                 >
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-900">
+                    <span className="text-xs font-bold text-[#111c2d]">
                       {off.name}
                     </span>
-                    <span className="text-[10px] font-mono text-slate-500">
+                    <span className="text-[11px] font-mono font-semibold text-[#414753]">
                       {off.activeCaseload}/{off.maxCaseload} Cases
                     </span>
                   </div>
-                  <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-[#cbd5e1] h-2 rounded-full overflow-hidden">
                     <div
                       className={`h-full rounded-full transition-all ${
                         pct > 75
-                          ? "bg-rose-500"
+                          ? "bg-[#b91c1c]"
                           : pct > 40
-                          ? "bg-amber-500"
-                          : "bg-indigo-600"
+                          ? "bg-[#b45309]"
+                          : "bg-[#004e9f]"
                       }`}
                       style={{ width: `${Math.max(pct, 5)}%` }}
                     />
                   </div>
-                  <div className="text-[10px] text-slate-500 truncate">
-                    {off.jurisdiction}
+                  <div className="text-[10px] text-[#727784] truncate">
+                    Jurisdiction: {off.jurisdiction}
                   </div>
                 </div>
               );
@@ -316,3 +308,4 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
+

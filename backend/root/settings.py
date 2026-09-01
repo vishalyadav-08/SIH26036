@@ -35,6 +35,7 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 # Core ----------------------------------------------------------------------
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-change-me-before-any-deployment")
+AI_SERVICE_TOKEN = os.getenv("AI_SERVICE_TOKEN", "ai-service-dev-token-123")
 
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
@@ -67,6 +68,7 @@ INSTALLED_APPS = [
     "notifications",
     "audit",
     "sync",
+    "ai_integration",
 ]
 
 MIDDLEWARE = [

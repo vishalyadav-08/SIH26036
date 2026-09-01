@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
 from fastapi.responses import JSONResponse
 from app.models.chat import ChatRequest, ChatResponse
 from app.services.chat_service import process_chat_message
@@ -14,11 +14,19 @@ from app.providers.base import (
 router = APIRouter()
 
 @router.post("/chat", response_model=ChatResponse)
-async def chat_endpoint(request: ChatRequest):
-    logger.info(f"Received chat request for conversation: {request.conversationId}")
+async def chat_endpoint(request: Request, chat_request: ChatRequest):
+    logger.info(f"Received chat request for conversation: {chat_request.conversationId}")
+    
+    # Extract auth header to pass to Django
+    auth_header = request.headers.get("Authorization", "")
     
     try:
-        response = process_chat_message(request.message, request.conversationId)
+        response = process_chat_message(
+            chat_request.message, 
+            chat_request.conversationId, 
+            getattr(chat_request, 'context', None),
+            auth_header
+        )
         return response
     except (ProviderConfigurationError, UnsupportedProviderError) as e:
         logger.error(f"Configuration error: {e}")

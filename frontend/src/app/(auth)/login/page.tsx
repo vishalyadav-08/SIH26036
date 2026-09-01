@@ -6,7 +6,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  Scale,
   Lock,
   Mail,
   ArrowRight,
@@ -21,6 +20,8 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { GuestGuard } from "@/components/auth/GuestGuard";
 import { loginSchema, LoginFormData } from "@/schemas/auth/auth.schema";
+import { StateEmblem } from "@/components/ui/StateEmblem";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 
 function LoginForm() {
   const router = useRouter();
@@ -86,7 +87,6 @@ function LoginForm() {
         router.replace(defaultWorkspace);
       }
     } catch {
-      // Documented generic invalid credentials error (no account enumeration)
       setAuthError(
         "Invalid email or password. Please check your credentials and try again."
       );
@@ -103,21 +103,21 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between bg-slate-50 text-slate-900 selection:bg-blue-100 selection:text-blue-900">
-      {/* Top Navbar */}
-      <header className="bg-white/95 backdrop-blur-sm border-b border-slate-200">
+    <div className="min-h-screen flex flex-col justify-between bg-[#f8fafc] text-[#111c2d]">
+      {/* Top Government Navigation */}
+      <header className="bg-white border-b border-[#cbd5e1] sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-slate-600 hover:text-blue-600 text-sm font-medium transition-colors"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-[#004e9f] hover:underline"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>Public Verification Portal</span>
+            <span>Return to Public Portal</span>
           </Link>
 
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-semibold tracking-wider uppercase px-2 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200">
-              SIH26036 Prototype
+            <span className="text-[11px] font-bold px-2 py-0.5 rounded bg-[#f0f3ff] text-[#004e9f] border border-[#004e9f]/20">
+              Department Single Sign-On
             </span>
           </div>
         </div>
@@ -128,41 +128,41 @@ function LoginForm() {
         <div className="w-full max-w-md space-y-6">
           {/* Brand Header */}
           <div className="text-center space-y-2">
-            <div className="w-12 h-12 rounded-xl bg-blue-600 text-white flex items-center justify-center mx-auto shadow-xs">
-              <Scale className="w-6 h-6" />
+            <div className="flex justify-center mb-1">
+              <StateEmblem size="md" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#004e9f] tracking-tight">
               Sign In to MapanSetu
             </h1>
-            <p className="text-sm text-slate-600">
-              Authorized access for Businesses, Officers, and Administrators
+            <p className="text-xs sm:text-sm text-[#414753]">
+              Authorized Portal Access for Businesses, Officers &amp; Administrators
             </p>
           </div>
 
           {/* Login Card Form */}
-          <div className="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200 shadow-xs space-y-5">
+          <div className="bg-white rounded-lg p-6 sm:p-8 border border-[#cbd5e1] shadow-xs space-y-5">
             {authError && (
               <div
                 role="alert"
                 aria-live="polite"
-                className="p-3.5 rounded-xl bg-rose-50 border border-rose-200 flex items-start gap-3 text-xs text-rose-800"
+                className="p-3 rounded bg-[#fff1f2] border border-[#fecdd3] flex items-start gap-2.5 text-xs text-[#9f1239]"
               >
-                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+                <AlertCircle className="w-4 h-4 text-[#e11d48] shrink-0 mt-0.5" />
                 <span>{authError}</span>
               </div>
             )}
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
               {/* Email Field */}
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <label
                   htmlFor="email"
-                  className="block text-xs font-semibold text-slate-700 uppercase tracking-wider"
+                  className="block text-xs font-semibold text-[#111c2d]"
                 >
-                  Email Address
+                  Official Email Address <span className="text-[#b91c1c]">*</span>
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#727784]">
                     <Mail className="w-4 h-4" />
                   </div>
                   <input
@@ -171,32 +171,30 @@ function LoginForm() {
                     autoComplete="email"
                     placeholder="name@organization.com"
                     {...register("email")}
-                    className={`block w-full pl-10 pr-3.5 py-2.5 text-sm rounded-xl border ${
+                    className={`block w-full pl-9 pr-3 py-2 text-xs text-[#111c2d] rounded border ${
                       errors.email
-                        ? "border-rose-500 focus:ring-rose-500 focus:border-rose-500"
-                        : "border-slate-300 focus:ring-blue-500 focus:border-blue-500"
-                    } bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 transition-all`}
+                        ? "border-[#b91c1c] focus:ring-[#b91c1c]"
+                        : "border-[#cbd5e1] focus:ring-[#004e9f]"
+                    } bg-[#f8fafc] placeholder-[#727784] focus:bg-white focus:outline-none focus:ring-2`}
                   />
                 </div>
                 {errors.email && (
-                  <p className="text-xs text-rose-600 mt-1">
+                  <p className="text-xs text-[#b91c1c] mt-0.5">
                     {errors.email.message}
                   </p>
                 )}
               </div>
 
               {/* Password Field */}
-              <div className="space-y-1.5">
-                <div className="flex justify-between items-center">
-                  <label
-                    htmlFor="password"
-                    className="block text-xs font-semibold text-slate-700 uppercase tracking-wider"
-                  >
-                    Password
-                  </label>
-                </div>
+              <div className="space-y-1">
+                <label
+                  htmlFor="password"
+                  className="block text-xs font-semibold text-[#111c2d]"
+                >
+                  Password <span className="text-[#b91c1c]">*</span>
+                </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#727784]">
                     <Lock className="w-4 h-4" />
                   </div>
                   <input
@@ -205,11 +203,11 @@ function LoginForm() {
                     autoComplete="current-password"
                     placeholder="••••••••••••"
                     {...register("password")}
-                    className={`block w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border ${
+                    className={`block w-full pl-9 pr-10 py-2 text-xs text-[#111c2d] rounded border ${
                       errors.password
-                        ? "border-rose-500 focus:ring-rose-500 focus:border-rose-500"
-                        : "border-slate-300 focus:ring-blue-500 focus:border-blue-500"
-                    } bg-slate-50 text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 transition-all font-mono`}
+                        ? "border-[#b91c1c] focus:ring-[#b91c1c]"
+                        : "border-[#cbd5e1] focus:ring-[#004e9f]"
+                    } bg-[#f8fafc] placeholder-[#727784] focus:bg-white focus:outline-none focus:ring-2 font-mono`}
                   />
                   <button
                     type="button"
@@ -217,7 +215,7 @@ function LoginForm() {
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-[#727784] hover:text-[#111c2d] cursor-pointer"
                   >
                     {showPassword ? (
                       <EyeOff className="w-4 h-4" />
@@ -227,7 +225,7 @@ function LoginForm() {
                   </button>
                 </div>
                 {errors.password && (
-                  <p className="text-xs text-rose-600 mt-1">
+                  <p className="text-xs text-[#b91c1c] mt-0.5">
                     {errors.password.message}
                   </p>
                 )}
@@ -237,39 +235,39 @@ function LoginForm() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 active:bg-blue-800 disabled:bg-blue-400 text-white font-medium text-sm rounded-xl shadow-xs transition-colors cursor-pointer disabled:cursor-not-allowed focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 mt-2"
+                className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#004e9f] hover:bg-[#003366] disabled:bg-[#004e9f]/50 text-white font-bold text-xs rounded transition-colors shadow-xs cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#004e9f] focus:ring-offset-2 mt-2"
               >
                 {isSubmitting ? (
                   <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Signing in...</span>
+                    <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <span>Verifying Credentials...</span>
                   </>
                 ) : (
                   <>
                     <span>Sign In</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </>
                 )}
               </button>
             </form>
 
-            {/* Prototype Demo Credentials Section */}
-            <div className="pt-4 border-t border-slate-100 space-y-2.5">
-              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
-                Quick 1-Click Demo Fill (SIH Prototype Evaluation):
+            {/* Demo Credentials Quick Fill */}
+            <div className="pt-3 border-t border-[#cbd5e1] space-y-2">
+              <span className="text-[11px] font-bold text-[#414753] uppercase tracking-wider block">
+                Quick 1-Click Evaluation Accounts:
               </span>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <button
                   type="button"
                   onClick={() => fillDemoCredentials("business@example.test")}
-                  className="flex items-center gap-2 p-2 rounded-lg bg-blue-50/60 hover:bg-blue-100 border border-blue-200 text-left transition-colors cursor-pointer"
+                  className="flex items-center gap-2 p-2 rounded bg-[#f0f3ff] hover:bg-[#dee8ff] border border-[#cbd5e1] text-left transition-colors cursor-pointer"
                 >
-                  <Building2 className="w-4 h-4 text-blue-600 shrink-0" />
+                  <Building2 className="w-4 h-4 text-[#004e9f] shrink-0" />
                   <div className="overflow-hidden">
-                    <div className="text-xs font-bold text-slate-900 truncate">
+                    <div className="text-xs font-bold text-[#111c2d] truncate">
                       Business
                     </div>
-                    <div className="text-[10px] text-slate-500 font-mono truncate">
+                    <div className="text-[10px] text-[#414753] font-mono truncate">
                       business@...
                     </div>
                   </div>
@@ -278,14 +276,14 @@ function LoginForm() {
                 <button
                   type="button"
                   onClick={() => fillDemoCredentials("admin@example.test")}
-                  className="flex items-center gap-2 p-2 rounded-lg bg-indigo-50/60 hover:bg-indigo-100 border border-indigo-200 text-left transition-colors cursor-pointer"
+                  className="flex items-center gap-2 p-2 rounded bg-[#f0f3ff] hover:bg-[#dee8ff] border border-[#cbd5e1] text-left transition-colors cursor-pointer"
                 >
-                  <Shield className="w-4 h-4 text-indigo-600 shrink-0" />
+                  <Shield className="w-4 h-4 text-[#3a5f94] shrink-0" />
                   <div className="overflow-hidden">
-                    <div className="text-xs font-bold text-slate-900 truncate">
+                    <div className="text-xs font-bold text-[#111c2d] truncate">
                       Admin
                     </div>
-                    <div className="text-[10px] text-slate-500 font-mono truncate">
+                    <div className="text-[10px] text-[#414753] font-mono truncate">
                       admin@...
                     </div>
                   </div>
@@ -294,61 +292,43 @@ function LoginForm() {
                 <button
                   type="button"
                   onClick={() => fillDemoCredentials("officer@example.test")}
-                  className="flex items-center gap-2 p-2 rounded-lg bg-emerald-50/60 hover:bg-emerald-100 border border-emerald-200 text-left transition-colors cursor-pointer"
+                  className="flex items-center gap-2 p-2 rounded bg-[#f0f3ff] hover:bg-[#dee8ff] border border-[#cbd5e1] text-left transition-colors cursor-pointer"
                 >
-                  <UserCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <UserCheck className="w-4 h-4 text-[#15803d] shrink-0" />
                   <div className="overflow-hidden">
-                    <div className="text-xs font-bold text-slate-900 truncate">
-                      Field Officer
+                    <div className="text-xs font-bold text-[#111c2d] truncate">
+                      Officer
                     </div>
-                    <div className="text-[10px] text-slate-500 font-mono truncate">
+                    <div className="text-[10px] text-[#414753] font-mono truncate">
                       officer@...
                     </div>
                   </div>
                 </button>
               </div>
 
-              <div className="text-[11px] text-slate-500 text-center pt-1">
-                Password:{" "}
-                <span className="font-mono font-semibold">
-                  synthetic-password
-                </span>
+              <div className="text-[11px] text-[#727784] text-center pt-0.5">
+                Password: <span className="font-mono font-semibold text-[#111c2d]">synthetic-password</span>
               </div>
             </div>
           </div>
-
-          {/* Prototype Scope Disclaimer */}
-          <p className="text-[11px] text-slate-500 text-center leading-relaxed max-w-sm mx-auto">
-            Prototype scope. Synthetic credentials only. Access authorization is
-            enforced by the backend API.
-          </p>
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="bg-white border-t border-slate-200 py-4 text-center text-xs text-slate-500">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>MapanSetu — SIH26036 Prototype</span>
-          <Link href="/" className="hover:text-blue-600 transition-colors">
-            Public Certificate Verification
-          </Link>
-        </div>
-      </footer>
     </div>
   );
 }
 
 function LoginFormSkeleton() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50">
-      <div className="w-full max-w-md p-8 bg-white rounded-2xl border border-slate-200 shadow-xs space-y-4 animate-pulse">
-        <div className="h-10 w-10 bg-slate-200 rounded-xl mx-auto" />
+    <div className="min-h-screen flex items-center justify-center bg-[#f8fafc]">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg border border-[#cbd5e1] shadow-xs space-y-4 animate-pulse">
+        <div className="h-10 w-10 bg-slate-200 rounded mx-auto" />
         <div className="h-6 w-48 bg-slate-200 rounded mx-auto" />
         <div className="h-4 w-64 bg-slate-200 rounded mx-auto" />
         <div className="space-y-3 pt-4">
-          <div className="h-10 bg-slate-200 rounded-xl" />
-          <div className="h-10 bg-slate-200 rounded-xl" />
-          <div className="h-10 bg-slate-200 rounded-xl" />
+          <div className="h-10 bg-slate-200 rounded" />
+          <div className="h-10 bg-slate-200 rounded" />
+          <div className="h-10 bg-slate-200 rounded" />
         </div>
       </div>
     </div>

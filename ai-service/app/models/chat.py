@@ -9,11 +9,19 @@ class ChatRequest(BaseModel):
 class Source(BaseModel):
     documentId: str
     title: str
-    section: str
+    source: str
+    authority: str
+    category: Optional[str] = None
+    jurisdiction: Optional[str] = None
+    section: Optional[str] = None
+    page: Optional[str] = None
+    relevanceScore: Optional[float] = None
+    sourceUrl: Optional[str] = None
 
 class SuggestedAction(BaseModel):
     label: str
     route: str
+    actionId: Optional[str] = None
 
 class ChatResponse(BaseModel):
     conversationId: uuid.UUID

@@ -17,7 +17,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { getSyncQueue } from "@/lib/offline-storage";
 
-const FIELD_NAV_ITEMS = [
+export const FIELD_NAV_ITEMS = [
   { label: "Dashboard", href: "/field", icon: LayoutDashboard },
   { label: "Inspections", href: "/field/inspections", icon: ClipboardCheck },
   { label: "Sync Center", href: "/field/sync", icon: RefreshCw },
@@ -83,35 +83,7 @@ export function FieldHeader() {
               </div>
             </Link>
 
-            {/* Desktop Navigation Links */}
-            <nav
-              aria-label="Officer field navigation"
-              className="hidden md:flex items-center gap-1"
-            >
-              {FIELD_NAV_ITEMS.map((item) => {
-                const Icon = item.icon;
-                const active = isActive(item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`inline-flex items-center gap-2 px-3 py-2 rounded text-xs font-semibold transition-colors relative ${
-                      active
-                        ? "bg-[#f0f3ff] text-[#004e9f] border-b-2 border-[#004e9f] rounded-b-none"
-                        : "text-[#414753] hover:text-[#004e9f] hover:bg-[#f0f3ff]"
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{item.label}</span>
-                    {item.href === "/field/sync" && pendingSyncCount > 0 && (
-                      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold bg-[#004e9f] text-white ml-1">
-                        {pendingSyncCount}
-                      </span>
-                    )}
-                  </Link>
-                );
-              })}
-            </nav>
+
           </div>
 
           {/* Right Area: Officer User Profile & Logout */}

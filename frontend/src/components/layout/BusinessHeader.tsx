@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
-const NAV_ITEMS = [
+export const BUSINESS_NAV_ITEMS = [
   { label: "Dashboard", href: "/app", icon: LayoutDashboard },
   { label: "Instruments", href: "/app/instruments", icon: Gauge },
   { label: "Applications", href: "/app/applications", icon: FileCheck2 },
@@ -66,30 +66,6 @@ export function BusinessHeader() {
               </div>
             </Link>
 
-            {/* Desktop Navigation Links */}
-            <nav
-              aria-label="Business workspace navigation"
-              className="hidden md:flex items-center gap-1"
-            >
-              {NAV_ITEMS.map((item) => {
-                const Icon = item.icon;
-                const active = isActive(item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${
-                      active
-                        ? "bg-blue-50 text-blue-700"
-                        : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
-                    }`}
-                  >
-                    <Icon className="w-4 h-4" />
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
-            </nav>
           </div>
 
           {/* Right Area: User Profile & Logout */}
@@ -159,7 +135,7 @@ export function BusinessHeader() {
             aria-label="Mobile workspace navigation"
             className="space-y-1 pt-1"
           >
-            {NAV_ITEMS.map((item) => {
+            {BUSINESS_NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const active = isActive(item.href);
               return (

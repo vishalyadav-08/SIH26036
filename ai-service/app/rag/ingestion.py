@@ -22,7 +22,6 @@ class IngestionPipeline:
         if not text or not text.strip():
             return IngestionResult(False, "Input text is empty.")
             
-        # Optional: large input handling
         if len(text) > 10_000_000:
             return IngestionResult(False, "Input text exceeds maximum allowed size.")
             
@@ -30,7 +29,6 @@ class IngestionPipeline:
         content_hash = calculate_content_hash(normalized)
         
         # Duplicate detection by content hash (for testing/in-memory)
-        # In a real DB this would be a query
         for existing_doc in getattr(self.vector_store, "documents", {}).values():
             if existing_doc.content_hash == content_hash:
                 return IngestionResult(True, "Document already exists (duplicate hash).", existing_doc.id)
@@ -43,7 +41,13 @@ class IngestionPipeline:
             category=metadata.get("category", "General"),
             effective_date=metadata.get("effective_date"),
             review_status=metadata.get("review_status", "DRAFT"),
-            content_hash=content_hash
+            content_hash=content_hash,
+            # AI-006 fields
+            source_url=metadata.get("source_url"),
+            publication_date=metadata.get("publication_date"),
+            retrieval_date=metadata.get("retrieval_date"),
+            jurisdiction=metadata.get("jurisdiction"),
+            jurisdiction_type=metadata.get("jurisdiction_type")
         )
         
         try:
@@ -55,7 +59,6 @@ class IngestionPipeline:
             return IngestionResult(False, "No chunks generated from text.")
             
         try:
-            # Generate embeddings in batch
             embeddings = self.embedding_provider.embed_documents(raw_chunks)
         except Exception as e:
             logger.error(f"Failed to generate embeddings: {e}")
@@ -70,11 +73,15 @@ class IngestionPipeline:
                     text=chunk_text_str,
                     section=metadata.get("section"),
                     page=metadata.get("page"),
-                    embedding=embedding
+                    embedding=embedding,
+                    # Pass extra fields to chunk metadata so retrieval logic can use them if needed
+                    metadata={
+                        "category": doc.category,
+                        "jurisdiction": doc.jurisdiction
+                    }
                 )
             )
             
-        # Store in vector store
         self.vector_store.add_document(doc)
         self.vector_store.add_chunks(knowledge_chunks)
         

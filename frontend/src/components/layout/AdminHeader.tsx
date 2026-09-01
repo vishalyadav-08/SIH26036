@@ -69,30 +69,7 @@ export function AdminHeader() {
               </div>
             </Link>
 
-            {/* Desktop Navigation */}
-            <nav
-              aria-label="Admin supervisor navigation"
-              className="hidden lg:flex items-center gap-1"
-            >
-              {ADMIN_NAV_ITEMS.map((item) => {
-                const Icon = item.icon;
-                const active = isActive(item.href);
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`inline-flex items-center gap-1.5 px-3 py-2 rounded text-xs font-semibold transition-colors ${
-                      active
-                        ? "bg-[#f0f3ff] text-[#004e9f] border-b-2 border-[#004e9f] rounded-b-none"
-                        : "text-[#414753] hover:text-[#004e9f] hover:bg-[#f0f3ff]"
-                    }`}
-                  >
-                    <Icon className="w-3.5 h-3.5" />
-                    <span>{item.label}</span>
-                  </Link>
-                );
-              })}
-            </nav>
+
           </div>
 
           {/* Right Area: Admin Profile & Sign Out */}

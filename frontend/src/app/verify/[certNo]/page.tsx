@@ -32,6 +32,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PublicHeader } from "@/components/layout/PublicHeader";
+import { SiteFooter } from "@/components/layout/SiteFooter";
 
 export default function PublicCertificateVerificationPage({
   params,
@@ -520,26 +521,10 @@ export default function PublicCertificateVerificationPage({
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 text-xs py-8 border-t border-slate-800 print:hidden mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <Scale className="w-4 h-4 text-blue-400" />
-              <span className="font-semibold text-slate-200">MapanSetu</span>
-              <span>— Smart India Hackathon (SIH26036)</span>
-            </div>
-            <div className="flex items-center gap-4">
-              <Link href="/" className="hover:text-slate-200 transition-colors">
-                Public Lookup
-              </Link>
-              <Link href="/login" className="hover:text-slate-200 transition-colors">
-                Portal Sign In
-              </Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      {/* Unified Government Footer */}
+      <div className="print:hidden">
+        <SiteFooter />
+      </div>
     </div>
   );
 }

@@ -215,7 +215,7 @@ export default function AdminDashboardPage() {
                     </span>
                     <span
                       className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${
-                        app.state === "COMPLETED" || app.state === "VERIFIED"
+                        app.state === "COMPLETED"
                           ? "bg-emerald-50 text-[#15803d] border border-emerald-200"
                           : app.state === "SUBMITTED"
                           ? "bg-amber-50 text-[#b45309] border border-amber-200"

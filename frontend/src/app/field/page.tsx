@@ -66,12 +66,12 @@ export default function FieldDashboardPage() {
   }, []);
 
   const assignedApps = applications.filter(
-    (a) => a.state === "ASSIGNED" || a.state === "SCHEDULED" || a.state === "INSPECTION_PENDING"
+    (a) => a.state === "ASSIGNED" || a.state === "SCHEDULED"
   );
   const completedApps = applications.filter(
-    (a) => a.state === "VERIFIED" || a.state === "APPROVED" || a.state === "COMPLETED"
+    (a) => a.state === "COMPLETED"
   );
-  const urgentApps = applications.filter((a) => a.state === "REJECTED" || a.state === "APPEALED");
+  const urgentApps = applications.filter((a) => a.state === "REJECTED");
 
   return (
     <div className="space-y-8 animate-in fade-in duration-300">

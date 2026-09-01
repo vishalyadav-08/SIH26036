@@ -77,7 +77,7 @@ export default function BusinessDashboard() {
       (c) => c.status === "EXPIRED" || c.status === "REVOKED" || c.status === "INVALID"
     ).length;
 
-  const scheduledInspections = applications.filter((a) => a.state === "SCHEDULED" || a.state === "INSPECTION_PENDING");
+  const scheduledInspections = applications.filter((a) => a.state === "SCHEDULED");
   const recentApplications = applications.slice(0, 5);
 
   return (
@@ -227,12 +227,12 @@ export default function BusinessDashboard() {
                         <td className="p-3.5 font-mono font-bold text-[#111c2d]">{app.applicationNumber}</td>
                         <td className="p-3.5 text-[#414753]">{app.instrumentType.replace(/_/g, " ")}</td>
                         <td className="p-3.5 text-[#414753]">
-                          {app.submittedAt ? new Date(app.submittedAt).toLocaleDateString() : "Recent"}
+                          {app.createdAt ? new Date(app.createdAt).toLocaleDateString() : "Recent"}
                         </td>
                         <td className="p-3.5">
                           <span
                             className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold ${
-                              app.state === "APPROVED" || app.state === "VERIFIED"
+                              app.state === "COMPLETED"
                                 ? "bg-emerald-50 text-[#15803d] border border-emerald-200"
                                 : app.state === "REJECTED"
                                 ? "bg-rose-50 text-[#b91c1c] border border-rose-200"
@@ -241,7 +241,7 @@ export default function BusinessDashboard() {
                           >
                             <span
                               className={`w-1.5 h-1.5 rounded-full ${
-                                app.state === "APPROVED" || app.state === "VERIFIED"
+                                app.state === "COMPLETED"
                                   ? "bg-[#15803d]"
                                   : app.state === "REJECTED"
                                   ? "bg-[#b91c1c]"

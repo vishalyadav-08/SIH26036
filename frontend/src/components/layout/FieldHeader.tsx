@@ -17,7 +17,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { getSyncQueue } from "@/lib/offline-storage";
 
-export const FIELD_NAV_ITEMS = [
+const FIELD_NAV_ITEMS = [
   { label: "Dashboard", href: "/field", icon: LayoutDashboard },
   { label: "Inspections", href: "/field/inspections", icon: ClipboardCheck },
   { label: "Sync Center", href: "/field/sync", icon: RefreshCw },

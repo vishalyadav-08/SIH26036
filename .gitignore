@@ -14,3 +14,10 @@ frontend/.next/
 
 # OS
 .DS_Store
+
+# AI Service
+ai-service/.env
+ai-service/venv/
+ai-service/.venv/
+ai-service/**/__pycache__/
+ai-service/.pytest_cache/

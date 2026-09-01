@@ -53,6 +53,7 @@ export function BusinessHeader() {
                 </span>
               </div>
             </Link>
+
           </div>
 
           {/* Right Area: User Profile & Logout */}

@@ -7,6 +7,7 @@ import { PublicHeader } from "@/components/layout/PublicHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { useLanguage } from "@/components/providers/LanguageProvider";
 import { useAuth } from "@/hooks/useAuth";
+import { AppPromoModal } from "@/components/ui/AppPromoModal";
 import {
   Search,
   ShieldCheck,
@@ -40,6 +41,7 @@ export default function LandingHomepage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#f8fafc] text-[#111c2d]">
+      <AppPromoModal />
       <PublicHeader />
 
       <main id="main-content" className="flex-1 focus:outline-none" tabIndex={-1}>

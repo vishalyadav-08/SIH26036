@@ -36,6 +36,7 @@ EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-change-me-before-any-deployment")
 AI_SERVICE_TOKEN = os.getenv("AI_SERVICE_TOKEN", "ai-service-dev-token-123")
+AI_DJANGO_USE_MOCK_DATA = os.getenv("AI_DJANGO_USE_MOCK_DATA", "False") == "True"
 
 DEBUG = os.getenv("DEBUG", "True") == "True"
 

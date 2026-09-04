@@ -13,32 +13,47 @@ export async function getAdminDashboardData(): Promise<AdminDashboardData> {
   // Real API call based on API_Contract.md
   // GET /api/v1/dashboards/admin
   // The contract response is mapped to the internal `AdminDashboardData` type.
-  const response = await api.get<{
-    applicationCountsByState: Record<string, number>;
-    certificateCountsByStatus: Record<string, number>;
-    officerWorkload?: unknown[]; // Allow optional length check
-  }>("/dashboards/admin");
-  // Assuming the UI expects specific fields, we map the response to fit our Dashboard Data UI shape.
-  // The API returns applicationCountsByState, certificateCountsByStatus, etc.
+  const [response, instRes] = await Promise.all([
+    api.get<{
+      applicationCountsByState?: Record<string, number>;
+      certificateCountsByStatus?: Record<string, number>;
+      officerWorkload?: unknown[];
+    }>("/dashboards/admin"),
+    api
+      .get<{ totalItems?: number; items?: unknown[] }>("/instruments")
+      .catch(() => ({ totalItems: 0, items: [] as unknown[] })),
+  ]);
+
+  const appCounts = response?.applicationCountsByState || {};
+  const certCounts = response?.certificateCountsByStatus || {};
+  const officerWorkload = response?.officerWorkload || [];
+  const instRecord = instRes as { totalItems?: number; items?: unknown[] } | undefined;
+  const totalInsts =
+    typeof instRecord?.totalItems === "number"
+      ? instRecord.totalItems
+      : Array.isArray(instRecord?.items)
+      ? instRecord.items.length
+      : 0;
+
   return {
     applicationCounts: {
-      submitted: response.applicationCountsByState.SUBMITTED || 0,
-      assigned: response.applicationCountsByState.ASSIGNED || 0,
-      scheduled: response.applicationCountsByState.SCHEDULED || 0,
-      inspected: response.applicationCountsByState.INSPECTED || 0,
-      completed: response.applicationCountsByState.COMPLETED || 0,
-      total: Object.values(response.applicationCountsByState as Record<string, number>).reduce((a,b) => a+b, 0)
+      submitted: appCounts.SUBMITTED || 0,
+      assigned: appCounts.ASSIGNED || 0,
+      scheduled: appCounts.SCHEDULED || 0,
+      inspected: appCounts.INSPECTED || 0,
+      completed: appCounts.COMPLETED || 0,
+      total: Object.values(appCounts).reduce((a, b) => a + (typeof b === "number" ? b : 0), 0),
     },
     certificateCounts: {
-      valid: response.certificateCountsByStatus.VALID || 0,
-      expired: response.certificateCountsByStatus.EXPIRED || 0,
-      revoked: response.certificateCountsByStatus.REVOKED || 0,
-      total: Object.values(response.certificateCountsByStatus as Record<string, number>).reduce((a,b) => a+b, 0)
+      valid: certCounts.ACTIVE || certCounts.VALID || 0,
+      expired: certCounts.EXPIRED || 0,
+      revoked: certCounts.REVOKED || 0,
+      total: Object.values(certCounts).reduce((a, b) => a + (typeof b === "number" ? b : 0), 0),
     },
-    activeOfficersCount: response.officerWorkload?.length || 0,
-    totalInstrumentsCount: 0, // Not explicitly in the dashboard contract, maybe mock only or zeroed out
-    pendingTriageCount: response.applicationCountsByState.SUBMITTED || 0,
-    scheduledTodayCount: response.applicationCountsByState.SCHEDULED || 0,
+    activeOfficersCount: officerWorkload.length,
+    totalInstrumentsCount: totalInsts,
+    pendingTriageCount: appCounts.SUBMITTED || 0,
+    scheduledTodayCount: appCounts.SCHEDULED || 0,
   };
 }
 

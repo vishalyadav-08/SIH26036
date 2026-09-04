@@ -41,10 +41,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       loggedInUser = await authRepo.login(_idController.text.trim(), _pinController.text);
     } else {
       await Future.delayed(const Duration(milliseconds: 600));
-      if (_idController.text == 'LMO-2024-088' && _pinController.text == '123456') {
-        loggedInUser = User(id: _idController.text, role: 'OFFICER');
-      } else if (_idController.text == 'BIZ-2024-001' && _pinController.text == '123456') {
-        loggedInUser = User(id: _idController.text, role: 'BUSINESS');
+      final inputId = _idController.text.trim();
+      final pin = _pinController.text.trim();
+      if (pin == 'synthetic-password' || pin == '123456') {
+        if (inputId.contains('lmo') || inputId.startsWith('LMO') || _selectedRole == 'OFFICER') {
+          loggedInUser = User(id: inputId, role: 'LMO');
+        } else {
+          loggedInUser = User(id: inputId, role: 'BUSINESS');
+        }
       }
     }
 

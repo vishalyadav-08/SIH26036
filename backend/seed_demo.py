@@ -101,6 +101,7 @@ User.objects.create_user(
 specs = [
     ("INS-GKP-001", "ES-GKP-2026-001", "ELECTRONIC_SCALE", "Essae", "DS-215", "30.000", "kg", "Gorakhpur Shop Floor"),
     ("INS-DEMO-002", "SN-PSC-1000-4421", "PLATFORM_SCALE", "Synthetic Standard Corp", "PSC-1000", "1000.000", "kg", "Loading Dock"),
+    ("INS-DEMO-003", "SN-MT-50M-8891", "MEASURING_TAPE", "Freemans Measures", "Pro-Tape 50", "50.000", "m", "Main Warehouse"),
 ]
 instruments = [
     Instrument.objects.create(
@@ -138,7 +139,22 @@ c2 = cert_svc.issue_certificate(user=officer, inspection=i2)
 cert_svc.revoke_certificate(user=admin, certificate=c2, reason="Demo revocation for showcase")
 print(f"  {c2.certificate_number}  REVOKED  (INS-DEMO-002)")
 
+# 3) A valid active certificate for public verification testing
+a3 = app_svc.create_application(user=owner, instrument_id=instruments[2].id,
+                                reason="Statutory initial verification", submit=True)
+a3 = app_svc.assign_officer(user=admin, application=a3, officer_id=officer.id)
+a3 = app_svc.schedule_application(user=admin, application=a3, scheduled_at=timezone.now() + timedelta(days=3))
+i3 = insp_svc.start_inspection(user=officer, application=a3)
+insp_svc.add_measurement(user=officer, inspection=i3, label="Graduation calibration", nominal_value=50, observed_value="50.000", unit="m")
+store_evidence(user=officer, inspection=i3, uploaded=synthetic_photo("TAPE", (40, 80, 120)),
+               evidence_type="MACHINE_PHOTO", captured_at=timezone.now(),
+               latitude=GKP_LAT, longitude=GKP_LNG, gps_accuracy_meters=5)
+i3 = insp_svc.complete_inspection(user=officer, inspection=i3, result="PASS")
+c3 = cert_svc.issue_certificate(user=officer, inspection=i3)
+print(f"  {c3.certificate_number}  VALID    (INS-DEMO-003)")
+
 ok, _ = cert_svc.verify_certificate(c2.certificate_number), None
+ok3, _ = cert_svc.verify_certificate(c3.certificate_number), None
 from audit.services import verify_chain
 chain_ok, _ = verify_chain()
 

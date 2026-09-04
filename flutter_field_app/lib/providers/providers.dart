@@ -3,10 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_field_app/data/models/models.dart';
+import 'package:flutter_field_app/data/models/user.dart';
 import 'package:flutter_field_app/data/repositories/inspection_repository.dart';
 import 'package:flutter_field_app/data/repositories/auth_repository.dart';
 import 'package:flutter_field_app/data/sync_engine.dart';
 import 'package:flutter_field_app/config/app_config.dart';
+
+final currentUserProvider = StateProvider<User?>((ref) => null);
 
 final localeProvider = StateProvider<Locale>((ref) {
   return const Locale('en');
@@ -49,26 +52,24 @@ final syncEngineProvider = Provider<SyncEngine>((ref) {
 });
 
 final inspectionsProvider = StateNotifierProvider<InspectionsNotifier, List<InspectionTask>>((ref) {
-  return InspectionsNotifier(ref.watch(repositoryProvider));
+  return InspectionsNotifier(ref.watch(repositoryProvider), ref.watch(syncEngineProvider));
 });
 
 class InspectionsNotifier extends StateNotifier<List<InspectionTask>> {
   final InspectionRepository _repository;
+  final SyncEngine _syncEngine;
 
-  InspectionsNotifier(this._repository) : super([]) {
+  InspectionsNotifier(this._repository, this._syncEngine) : super([]) {
     _loadInspections();
   }
 
-  void _loadInspections() {
+  void _loadInspections() async {
     if (!AppConfig.useMockBackend) {
-      // In a real app with backend, we would trigger a fetch here.
-      // e.g. ref.read(syncEngineProvider).fetchInspections();
-      // For now, load whatever is in Hive repository
+      await _syncEngine.fetchInspections();
       state = _repository.getAllInspections();
     } else {
       final data = _repository.getAllInspections();
       if (data.isEmpty) {
-        // Seed with dummy data
         _seedDummyData();
       } else {
         state = data;

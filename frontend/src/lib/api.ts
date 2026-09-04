@@ -6,7 +6,7 @@ import { HOST } from "@/config/host";
 // ============================================================================
 // When true, all services use local mock data implementations.
 // When false, ZERO mock fallback occurs. Actual HTTP API requests are made.
-export const USE_MOCK_API = true;
+export const USE_MOCK_API = false;
 
 const axiosInstance = axios.create({
   baseURL: HOST.api,

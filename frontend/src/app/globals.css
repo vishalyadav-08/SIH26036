@@ -40,11 +40,25 @@
   --color-on-surface-variant: #414753;
   --color-on-background: #111c2d;
 
+  /* Card & Popover */
+  --color-card: #ffffff;
+  --color-card-foreground: #111c2d;
+  --color-popover: #ffffff;
+  --color-popover-foreground: #111c2d;
+
+  /* Muted & Accent */
+  --color-muted: #f1f5f9;
+  --color-muted-foreground: #64748b;
+  --color-accent: #f1f5f9;
+  --color-accent-foreground: #0f172a;
+
   /* Outlines & Borders */
   --color-border: #cbd5e1;
   --color-border-subtle: #cbd5e1;
   --color-outline: #727784;
   --color-outline-variant: #c1c6d5;
+  --color-input: #cbd5e1;
+  --color-ring: #004e9f;
 
   /* Status Colors */
   --color-success: #15803d;
@@ -53,6 +67,8 @@
   --color-error-container: #ffdad6;
   --color-on-error: #ffffff;
   --color-on-error-container: #93000a;
+  --color-destructive: #b91c1c;
+  --color-destructive-foreground: #ffffff;
 
   /* Typography */
   --font-sans: "Noto Sans", "Noto Sans Devanagari", ui-sans-serif, system-ui, -apple-system, sans-serif;

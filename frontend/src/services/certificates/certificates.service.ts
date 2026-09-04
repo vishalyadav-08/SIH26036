@@ -141,120 +141,51 @@ export async function revokeCertificate(
   return res as unknown as Certificate;
 }
 
+export interface SampleCertificate {
+  certificateNumber: string;
+  status: string;
+  instrumentNumber: string;
+  instrumentType: string;
+}
+
+export async function getSampleCertificates(): Promise<SampleCertificate[]> {
+  try {
+    const res = await api.get<SampleCertificate[]>("/certificates/samples");
+    if (Array.isArray(res) && res.length > 0) {
+      return res;
+    }
+  } catch {
+    // Fallback if backend is restarting or unreachable
+  }
+  return [
+    {
+      certificateNumber: "CERT-DEMO-0002",
+      status: "ACTIVE",
+      instrumentNumber: "INS-DEMO-003",
+      instrumentType: "MEASURING_TAPE",
+    },
+    {
+      certificateNumber: "CERT-DEMO-0001",
+      status: "REVOKED",
+      instrumentNumber: "INS-DEMO-002",
+      instrumentType: "PLATFORM_SCALE",
+    },
+  ];
+}
+
 export async function verifyPublicCertificate(
   certNo: string
 ): Promise<PublicVerificationResponse> {
-  if (USE_MOCK_API) {
-    const certs = getStoredCertificates();
-    const found = certs.find(
-      (c) => c.certificateNumber.toLowerCase() === certNo.trim().toLowerCase()
+  // Always query the live backend API for authentic cryptographic verification
+  try {
+    const res = await api.get<PublicVerificationResponse>(
+      `/certificates/verify?certNo=${encodeURIComponent(certNo.trim())}`
     );
-
-    if (!found) {
-      return {
-        certificateNumber: certNo,
-        verificationStatus: "INVALID",
-        certificateStatus: null,
-        signatureValid: false,
-        payloadHash: null,
-        signatureAlgorithm: null,
-        issuedAt: null,
-        validUntil: null,
-        instrumentSummary: null,
-        verificationMessage:
-          "Certificate not found in registry or cryptographic digest verification failed.",
-      };
+    return res as unknown as PublicVerificationResponse;
+  } catch (err: unknown) {
+    if (err && typeof err === "object" && "verificationStatus" in err) {
+      return err as PublicVerificationResponse;
     }
-
-    if (found.status === "VALID") {
-      return {
-        certificateNumber: found.certificateNumber,
-        verificationStatus: "VALID",
-        certificateStatus: "VALID",
-        signatureValid: true,
-        payloadHash: found.payloadHash,
-        signatureAlgorithm: found.signatureAlgorithm,
-        issuedAt: found.issuedAt,
-        validUntil: found.validUntil,
-        instrumentSummary: {
-          instrumentNumber: found.instrumentNumber,
-          instrumentType: found.instrumentType,
-          manufacturer: "Precision Weights Corp",
-          model: "PWS-Retail 25",
-          capacity: 25.0,
-          capacityUnit: "kg",
-        },
-        verificationMessage:
-          "This instrument certificate is active, currently valid, and its cryptographic digital signature has been verified.",
-      };
-    }
-
-    if (found.status === "EXPIRED") {
-      return {
-        certificateNumber: found.certificateNumber,
-        verificationStatus: "EXPIRED",
-        certificateStatus: "EXPIRED",
-        signatureValid: true,
-        payloadHash: found.payloadHash,
-        signatureAlgorithm: found.signatureAlgorithm,
-        issuedAt: found.issuedAt,
-        validUntil: found.validUntil,
-        instrumentSummary: {
-          instrumentNumber: found.instrumentNumber,
-          instrumentType: found.instrumentType,
-          manufacturer: "Standard Heavy Scales Ltd",
-          model: "SHS-Platform 500",
-          capacity: 500.0,
-          capacityUnit: "kg",
-        },
-        verificationMessage:
-          "This certificate was legitimately issued and cryptographically authentic, but the statutory validity period has expired. Re-verification required.",
-      };
-    }
-
-    if (found.status === "REVOKED") {
-      return {
-        certificateNumber: found.certificateNumber,
-        verificationStatus: "REVOKED",
-        certificateStatus: "REVOKED",
-        signatureValid: false,
-        payloadHash: found.payloadHash,
-        signatureAlgorithm: found.signatureAlgorithm,
-        issuedAt: found.issuedAt,
-        validUntil: found.validUntil,
-        revokedAt: found.revokedAt,
-        revocationReason: found.revocationReason,
-        instrumentSummary: {
-          instrumentNumber: found.instrumentNumber,
-          instrumentType: found.instrumentType,
-          manufacturer: "Retail Counter Pro",
-          model: "RCP-15",
-          capacity: 15.0,
-          capacityUnit: "kg",
-        },
-        verificationMessage: `This certificate has been officially REVOKED by the Legal Metrology Department. Reason: ${
-          found.revocationReason || "Physical seal tampering or statutory non-compliance detected."
-        }`,
-      };
-    }
-
-    return {
-      certificateNumber: certNo,
-      verificationStatus: "INVALID",
-      certificateStatus: null,
-      signatureValid: false,
-      payloadHash: null,
-      signatureAlgorithm: null,
-      issuedAt: null,
-      validUntil: null,
-      instrumentSummary: null,
-      verificationMessage: "Certificate is invalid.",
-    };
+    throw err;
   }
-
-  // Real API
-  const res = await api.get<PublicVerificationResponse>(
-    `/certificates/verify?certNo=${encodeURIComponent(certNo)}`
-  );
-  return res as unknown as PublicVerificationResponse;
 }

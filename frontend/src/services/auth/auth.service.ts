@@ -25,6 +25,22 @@ export const DEMO_ACCOUNTS: Record<
       },
     },
   },
+  "info@shreebalaji.demo": {
+    password: "synthetic-password",
+    response: {
+      accessToken: "demo-jwt-business-token-sih26036",
+      tokenType: "Bearer",
+      expiresAt: "2026-08-30T12:00:00Z",
+      user: {
+        id: "usr-demo-biz-001",
+        email: "info@shreebalaji.demo",
+        displayName: "Synthetic Biz Owner",
+        role: "BUSINESS",
+        businessId: "biz-demo-001",
+        active: true,
+      },
+    },
+  },
   "admin@example.test": {
     password: "synthetic-password",
     response: {
@@ -40,6 +56,36 @@ export const DEMO_ACCOUNTS: Record<
       },
     },
   },
+  "admin@up.gov.demo": {
+    password: "synthetic-password",
+    response: {
+      accessToken: "demo-jwt-admin-token-sih26036",
+      tokenType: "Bearer",
+      expiresAt: "2026-08-30T12:00:00Z",
+      user: {
+        id: "usr-demo-adm-001",
+        email: "admin@up.gov.demo",
+        displayName: "Demo Supervisor (GATC)",
+        role: "ADMIN",
+        active: true,
+      },
+    },
+  },
+  "gatc@up.gov.demo": {
+    password: "synthetic-password",
+    response: {
+      accessToken: "demo-jwt-gatc-token-sih26036",
+      tokenType: "Bearer",
+      expiresAt: "2026-08-30T12:00:00Z",
+      user: {
+        id: "usr-demo-gatc-001",
+        email: "gatc@up.gov.demo",
+        displayName: "Demo Test Centre (GATC)",
+        role: "GATC",
+        active: true,
+      },
+    },
+  },
   "officer@example.test": {
     password: "synthetic-password",
     response: {
@@ -51,6 +97,21 @@ export const DEMO_ACCOUNTS: Record<
         email: "officer@example.test",
         displayName: "Inspector Sharma (LMO)",
         role: "OFFICER",
+        active: true,
+      },
+    },
+  },
+  "vinod.sharma@lmo.up.gov.demo": {
+    password: "synthetic-password",
+    response: {
+      accessToken: "demo-jwt-officer-token-sih26036",
+      tokenType: "Bearer",
+      expiresAt: "2026-08-30T12:00:00Z",
+      user: {
+        id: "usr-demo-off-001",
+        email: "vinod.sharma@lmo.up.gov.demo",
+        displayName: "Vinod Sharma (LMO)",
+        role: "LMO",
         active: true,
       },
     },

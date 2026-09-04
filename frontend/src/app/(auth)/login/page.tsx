@@ -58,8 +58,15 @@ function LoginForm() {
         password: data.password,
       });
 
-      if (loggedUser.role !== selectedRole) {
-        setAuthError(`Invalid credentials for ${selectedRole} role.`);
+      const roleMatches =
+        loggedUser.role === selectedRole ||
+        (selectedRole === "ADMIN" && (loggedUser.role === "ADMIN" || loggedUser.role === "GATC")) ||
+        (selectedRole === "OFFICER" && (loggedUser.role === "OFFICER" || loggedUser.role === "LMO"));
+
+      if (!roleMatches) {
+        const expectedRoleName =
+          selectedRole === "ADMIN" ? "GATCs" : selectedRole === "OFFICER" ? "LMO" : "Business";
+        setAuthError(`Invalid credentials for ${expectedRoleName} portal.`);
         setIsSubmitting(false);
         return;
       }
@@ -68,7 +75,7 @@ function LoginForm() {
       const defaultWorkspace =
         loggedUser.role === "BUSINESS"
           ? "/app"
-          : loggedUser.role === "OFFICER"
+          : loggedUser.role === "OFFICER" || loggedUser.role === "LMO"
           ? "/field"
           : "/admin";
 
@@ -79,12 +86,12 @@ function LoginForm() {
         ) {
           router.replace("/app");
         } else if (
-          loggedUser.role === "OFFICER" &&
+          (loggedUser.role === "OFFICER" || loggedUser.role === "LMO") &&
           (redirectParam.startsWith("/app") || redirectParam.startsWith("/admin"))
         ) {
           router.replace("/field");
         } else if (
-          loggedUser.role === "ADMIN" &&
+          (loggedUser.role === "ADMIN" || loggedUser.role === "GATC") &&
           (redirectParam.startsWith("/app") || redirectParam.startsWith("/field"))
         ) {
           router.replace("/admin");
@@ -107,10 +114,10 @@ function LoginForm() {
   const fillDemoCredentials = () => {
     const email =
       selectedRole === "BUSINESS"
-        ? "business@example.test"
+        ? "info@shreebalaji.demo"
         : selectedRole === "ADMIN"
-        ? "admin@example.test"
-        : "officer@example.test";
+        ? "admin@up.gov.demo"
+        : "vinod.sharma@lmo.up.gov.demo";
     setValue("email", email, { shouldValidate: true });
     setValue("password", "synthetic-password", { shouldValidate: true });
     setAuthError(null);
@@ -201,8 +208,8 @@ function LoginForm() {
                       <UserCheck className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-900 text-lg">Field Officer</h3>
-                      <p className="text-xs text-slate-500 mt-0.5">For inspectors and LMOs</p>
+                      <h3 className="font-bold text-slate-900 text-lg">LMO</h3>
+                      <p className="text-xs text-slate-500 mt-0.5">For Legal Metrology Officers</p>
                     </div>
                     <ArrowRight className="w-5 h-5 text-slate-400 ml-auto shrink-0 group-hover:text-emerald-600 transition-colors" />
                   </button>
@@ -216,8 +223,8 @@ function LoginForm() {
                       <Shield className="w-6 h-6" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-slate-900 text-lg">Administrator</h3>
-                      <p className="text-xs text-slate-500 mt-0.5">For supervisors and department heads</p>
+                      <h3 className="font-bold text-slate-900 text-lg">GATCs</h3>
+                      <p className="text-xs text-slate-500 mt-0.5">For Government Approved Test Centres & Supervisors</p>
                     </div>
                     <ArrowRight className="w-5 h-5 text-slate-400 ml-auto shrink-0 group-hover:text-indigo-600 transition-colors" />
                   </button>
@@ -239,7 +246,7 @@ function LoginForm() {
                   </button>
                   <div className="text-center mt-2">
                     <h2 className="text-3xl font-bold text-slate-900 mb-2">
-                      {selectedRole === "BUSINESS" ? "Business Login" : selectedRole === "ADMIN" ? "Admin Login" : "Officer Login"}
+                      {selectedRole === "BUSINESS" ? "Business Login" : selectedRole === "ADMIN" ? "GATC Login" : "LMO Login"}
                     </h2>
                     <p className="text-base text-slate-600">Please enter your authorized credentials.</p>
                   </div>

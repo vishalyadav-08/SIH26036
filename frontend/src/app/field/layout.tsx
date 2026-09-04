@@ -5,8 +5,8 @@ import { OfflineBanner } from "@/components/layout/OfflineBanner";
 import { AuthGuard } from "@/components/auth/AuthGuard";
 
 export const metadata = {
-  title: "MapanSetu Field Operations",
-  description: "Field Officer offline-first application.",
+  title: "MapanSetu LMO Operations",
+  description: "LMO offline-first application.",
 };
 
 export default function FieldLayout({
@@ -15,7 +15,7 @@ export default function FieldLayout({
   children: ReactNode;
 }) {
   return (
-    <AuthGuard allowedRoles={["OFFICER"]}>
+    <AuthGuard allowedRoles={["OFFICER", "LMO"]}>
       <div className="min-h-screen bg-[#f8fafc] text-[#111c2d] flex flex-col">
         <OfflineBanner />
         <FieldHeader />

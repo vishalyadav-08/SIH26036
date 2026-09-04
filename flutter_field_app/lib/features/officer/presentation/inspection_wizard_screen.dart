@@ -6,6 +6,8 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:io';
 import 'package:flutter_field_app/l10n/app_localizations.dart';
 import 'package:flutter_field_app/app/theme/app_theme.dart';
+import 'package:flutter_field_app/providers/providers.dart';
+import 'package:flutter_field_app/data/models/models.dart';
 
 class InspectionWizardScreen extends ConsumerStatefulWidget {
   const InspectionWizardScreen({super.key});
@@ -152,6 +154,25 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
   void _submitInspection() {
     final l10n = AppLocalizations.of(context);
     final isHi = l10n?.localeName == 'hi';
+
+    // Retrieve the current task from the provider
+    final tasks = ref.read(inspectionsProvider);
+    if (tasks.isNotEmpty) {
+      final task = tasks.first; // For demo, just grab the first assignment
+      task.status = 'ready_to_sync';
+      task.readings = _readings.asMap().entries.map((entry) {
+        final r = entry.value;
+        return MeasurementReading(
+          id: 'm_${entry.key}',
+          name: 'Point ${entry.key + 1}',
+          referenceWeight: double.tryParse(r.referenceController.text) ?? 0.0,
+          maxPermissibleError: 0.1, // Demo MPE
+          unit: 'kg',
+        );
+      }).toList();
+      // Optionally attach evidence, checklist, GPS data to task object here
+      ref.read(inspectionsProvider.notifier).addOrUpdateTask(task);
+    }
 
     showDialog(
       context: context,

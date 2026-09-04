@@ -35,7 +35,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     bool success = true;
     if (!AppConfig.useMockBackend) {
       final authRepo = ref.read(authRepositoryProvider);
-      success = await authRepo.login(_idController.text, _pinController.text);
+      final user = await authRepo.login(_idController.text, _pinController.text);
+      success = user != null;
     } else {
       await Future.delayed(const Duration(milliseconds: 600));
     }

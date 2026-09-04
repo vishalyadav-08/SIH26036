@@ -30,11 +30,12 @@ class _NewApplicationScreenState extends ConsumerState<NewApplicationScreen> {
             children: [
               DropdownButtonFormField<String>(
                 decoration: const InputDecoration(labelText: 'Select Instrument'),
+                // ignore: deprecated_member_use
                 value: _selectedInstrument,
                 items: instruments.map((inst) {
                   return DropdownMenuItem(
                     value: inst.id,
-                    child: Text(inst.instrumentNumber + ' - ' + inst.instrumentType),
+                    child: Text('${inst.instrumentNumber} - ${inst.instrumentType}'),
                   );
                 }).toList(),
                 onChanged: (val) => setState(() => _selectedInstrument = val),

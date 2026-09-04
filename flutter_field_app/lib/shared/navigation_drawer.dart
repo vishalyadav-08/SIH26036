@@ -3,7 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_field_app/l10n/app_localizations.dart';
 import 'package:flutter_field_app/app/theme/app_theme.dart';
 
-class CustomNavigationDrawer extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_field_app/providers/providers.dart';
+
+class CustomNavigationDrawer extends ConsumerWidget {
   final String currentRoute;
   final bool isOnline;
   final VoidCallback onToggleOnline;
@@ -16,9 +19,10 @@ class CustomNavigationDrawer extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final isHi = l10n?.localeName == 'hi';
+    final currentUser = ref.watch(currentUserProvider);
 
     return Drawer(
       backgroundColor: AppTheme.surface,
@@ -98,20 +102,21 @@ class CustomNavigationDrawer extends StatelessWidget {
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              isHi ? 'एलएमओ शर्मा' : 'LMO Sharma',
+                              currentUser?.displayName ?? (isHi ? 'अज्ञात अधिकारी' : 'Unknown Officer'),
                               style: const TextStyle(
-                                color: Colors.white,
+                                color: AppTheme.onSurface,
                                 fontWeight: FontWeight.bold,
-                                fontSize: 13,
+                                fontSize: 16,
                               ),
                             ),
                             Text(
-                              'ID: LMO-2024-088',
-                              style: TextStyle(
-                                color: Colors.white.withValues(alpha: 0.75),
-                                fontSize: 10,
+                              currentUser?.id ?? 'N/A',
+                              style: const TextStyle(
+                                color: AppTheme.secondary,
+                                fontSize: 12,
                               ),
                             ),
                           ],

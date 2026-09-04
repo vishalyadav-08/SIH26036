@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_field_app/l10n/app_localizations.dart';
 import 'package:flutter_field_app/app/theme/app_theme.dart';
+import 'package:flutter_field_app/providers/providers.dart';
 
 class InspectionsListScreen extends ConsumerStatefulWidget {
   const InspectionsListScreen({super.key});
@@ -19,48 +20,14 @@ class _InspectionsListScreenState extends ConsumerState<InspectionsListScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
-    final isHi = l10n?.localeName == 'hi';
 
-    final allInspections = [
-      {
-        'id': 'APP-DEMO-001',
-        'title': isHi ? 'काउंटर स्केल' : 'Counter Scale',
-        'subtitle': isHi ? 'डेमो मापन...' : 'Demo Measurement...',
-        'status': 'scheduled',
-        'time': isHi ? 'आज 10:00 AM' : 'Today 10:00 AM',
-        'timeIcon': Icons.calendar_today,
-      },
-      {
-        'id': 'APP-DEMO-042',
-        'title': isHi ? 'ईंधन डिस्पेंसर' : 'Fuel Dispenser',
-        'subtitle': isHi ? 'सिटी गैस स्टेशन #4' : 'City Gas Station #4',
-        'status': 'draft',
-        'time': isHi ? 'आज 11:30 AM' : 'Today 11:30 AM',
-        'timeIcon': Icons.calendar_today,
-      },
-      {
-        'id': 'APP-DEMO-088',
-        'title': isHi ? 'प्लेटफॉर्म स्केल' : 'Platform Scale',
-        'subtitle': isHi ? 'औद्योगिक रसद' : 'Industrial Logistics',
-        'status': 'ready_to_sync',
-        'time': isHi ? 'कल 14:00 PM' : 'Yesterday 14:00 PM',
-        'timeIcon': Icons.event_available,
-      },
-      {
-        'id': 'APP-DEMO-105',
-        'title': isHi ? 'टैक्सी मीटर' : 'Taxi Meter',
-        'subtitle': isHi ? 'मेट्रो कैब्स मुख्यालय' : 'Metro Cabs HQ',
-        'status': 'completed',
-        'time': isHi ? 'कल 09:00 AM' : 'Yesterday 09:00 AM',
-        'timeIcon': Icons.event_available,
-      },
-    ];
+    final rawInspections = ref.watch(inspectionsProvider);
 
-    final filteredInspections = allInspections.where((item) {
-      final idStr = item['id'] as String;
-      final titleStr = item['title'] as String;
-      final subtitleStr = item['subtitle'] as String;
-      final statusStr = item['status'] as String;
+    final filteredInspections = rawInspections.where((item) {
+      final idStr = item.appId;
+      final titleStr = item.title;
+      final subtitleStr = item.businessName;
+      final statusStr = item.status;
 
       final matchesSearch = idStr.toLowerCase().contains(_searchQuery.toLowerCase()) ||
           titleStr.toLowerCase().contains(_searchQuery.toLowerCase()) ||
@@ -158,12 +125,12 @@ class _InspectionsListScreenState extends ConsumerState<InspectionsListScreen> {
                       final item = filteredInspections[index];
                       return _buildInspectionCard(
                         context: context,
-                        id: item['id'] as String,
-                        title: item['title'] as String,
-                        subtitle: item['subtitle'] as String,
-                        status: item['status'] as String,
-                        time: item['time'] as String,
-                        timeIcon: item['timeIcon'] as IconData,
+                        id: item.appId,
+                        title: item.title,
+                        subtitle: item.businessName,
+                        status: item.status,
+                        time: item.scheduledTime,
+                        timeIcon: Icons.calendar_today,
                       );
                     },
                   );

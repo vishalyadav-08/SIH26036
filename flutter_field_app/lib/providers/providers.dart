@@ -32,7 +32,10 @@ final dioProvider = Provider<Dio>((ref) {
       return handler.next(options);
     },
     onError: (error, handler) async {
-      // Handle 401 token refresh here if needed
+      if (error.response?.statusCode == 401) {
+        // Token expired or invalid — clear it so the next launch forces re-login
+        await storage.delete(key: 'access_token');
+      }
       return handler.next(error);
     }
   ));
@@ -78,6 +81,7 @@ class InspectionsNotifier extends StateNotifier<List<InspectionTask>> {
   }
 
   void _seedDummyData() {
+    if (!AppConfig.useMockBackend) return; // double-check
     final dummy = [
       InspectionTask(
         id: 'task_001',
@@ -127,7 +131,7 @@ class TemplatesNotifier extends StateNotifier<List<InspectionTemplate>> {
 
   void _loadTemplates() {
     final data = _repository.getAllTemplates();
-    if (data.isEmpty) {
+    if (data.isEmpty && AppConfig.useMockBackend) {
       _seedDummyData();
     } else {
       state = data;
@@ -135,6 +139,7 @@ class TemplatesNotifier extends StateNotifier<List<InspectionTemplate>> {
   }
 
   void _seedDummyData() {
+    if (!AppConfig.useMockBackend) return; // double-check
     final dummy = [
       InspectionTemplate(
         id: 'tmpl_1',

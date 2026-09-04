@@ -35,10 +35,11 @@ class _SyncScreenState extends ConsumerState<SyncScreen> {
       setState(() {
         _isSyncing = false;
       });
+      final hasFailed = ref.read(repositoryProvider).getAllInspections().any((t) => t.status == 'failed' || t.status == 'conflict');
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Synchronization complete!'),
-          backgroundColor: AppTheme.success,
+        SnackBar(
+          content: Text(hasFailed ? 'Synchronization finished with errors.' : 'Synchronization complete!'),
+          backgroundColor: hasFailed ? AppTheme.error : AppTheme.success,
         ),
       );
     }

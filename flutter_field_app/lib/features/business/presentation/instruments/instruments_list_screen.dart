@@ -88,7 +88,7 @@ class _InstrumentsListScreenState extends ConsumerState<InstrumentsListScreen> {
                         side: BorderSide(color: AppTheme.outlineVariant.withValues(alpha: 0.5)),
                       ),
                       child: InkWell(
-                        onTap: () => context.go('/business/instruments/' + inst.id),
+                        onTap: () => context.go('/business/instruments/${inst.id}'),
                         borderRadius: BorderRadius.circular(AppTheme.radiusMd),
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
@@ -103,9 +103,9 @@ class _InstrumentsListScreenState extends ConsumerState<InstrumentsListScreen> {
                                 ],
                               ),
                               const SizedBox(height: 8),
-                              Text(inst.instrumentType + ' - ' + inst.manufacturer),
+                              Text('${inst.instrumentType} - ${inst.manufacturer}'),
                               const SizedBox(height: 4),
-                              Text('Location: ' + inst.location, style: const TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 12)),
+                              Text('Location: ${inst.location}', style: const TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 12)),
                             ],
                           ),
                         ),

@@ -39,6 +39,18 @@ class AuthRepository {
     await _storage.delete(key: _userKey);
   }
 
+  Future<User?> fetchUser() async {
+    try {
+      final response = await _dio.get('/users/me');
+      if (response.statusCode == 200) {
+        return User.fromJson(response.data as Map<String, dynamic>);
+      }
+      return null;
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future<bool> isAuthenticated() async {
     final token = await _storage.read(key: _accessTokenKey);
     return token != null && token.isNotEmpty;

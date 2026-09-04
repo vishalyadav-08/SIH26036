@@ -61,8 +61,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         } else if (loggedInUser.role == 'BUSINESS') {
           context.go('/business');
         } else {
-          // Default for demo if role is unmapped
-          context.go('/dashboard');
+          ref.read(currentUserProvider.notifier).state = null;
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Unauthorized role for mobile application.')),
+          );
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -84,8 +86,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
 
         if (didAuthenticate && mounted) {
-          _idController.text = _selectedRole == 'OFFICER' ? 'vinod.sharma@lmo.up.gov.demo' : 'info@shreebalaji.demo';
-          _pinController.text = 'synthetic-password';
+          // Fallback biometrics not handled without backend session, just showing login flow normally or need token.
           _handleLogin();
         }
       }
@@ -173,8 +174,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ElevatedButton(
           onPressed: () => setState(() {
             _selectedRole = 'OFFICER';
-            _idController.text = 'vinod.sharma@lmo.up.gov.demo';
-            _pinController.text = 'synthetic-password';
+            _idController.text = '';
+            _pinController.text = '';
           }),
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.all(24),
@@ -193,8 +194,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         ElevatedButton(
           onPressed: () => setState(() {
             _selectedRole = 'BUSINESS';
-            _idController.text = 'info@shreebalaji.demo';
-            _pinController.text = 'synthetic-password';
+            _idController.text = '';
+            _pinController.text = '';
           }),
           style: ElevatedButton.styleFrom(
             padding: const EdgeInsets.all(24),

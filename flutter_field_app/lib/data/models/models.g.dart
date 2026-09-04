@@ -29,13 +29,19 @@ class InspectionTaskAdapter extends TypeAdapter<InspectionTask> {
       checklists: (fields[9] as List).cast<ChecklistItem>(),
       readings: (fields[10] as List).cast<MeasurementReading>(),
       evidence: (fields[11] as List).cast<EvidenceItem>(),
+      gpsLatitude: fields[12] as double?,
+      gpsLongitude: fields[13] as double?,
+      gpsAccuracy: fields[14] as double?,
+      capturedAt: fields[15] as String?,
+      notes: fields[16] as String?,
+      result: fields[17] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, InspectionTask obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -59,7 +65,19 @@ class InspectionTaskAdapter extends TypeAdapter<InspectionTask> {
       ..writeByte(10)
       ..write(obj.readings)
       ..writeByte(11)
-      ..write(obj.evidence);
+      ..write(obj.evidence)
+      ..writeByte(12)
+      ..write(obj.gpsLatitude)
+      ..writeByte(13)
+      ..write(obj.gpsLongitude)
+      ..writeByte(14)
+      ..write(obj.gpsAccuracy)
+      ..writeByte(15)
+      ..write(obj.capturedAt)
+      ..writeByte(16)
+      ..write(obj.notes)
+      ..writeByte(17)
+      ..write(obj.result);
   }
 
   @override

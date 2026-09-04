@@ -17,8 +17,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final TextEditingController _idController = TextEditingController(text: 'LMO-2024-088');
-  final TextEditingController _pinController = TextEditingController(text: '123456');
+  final TextEditingController _idController = TextEditingController();
+  final TextEditingController _pinController = TextEditingController();
   bool _obscurePin = true;
   bool _isLoading = false;
   final LocalAuthentication _localAuth = LocalAuthentication();
@@ -33,31 +33,32 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   Future<void> _handleLogin() async {
     setState(() => _isLoading = true);
     
-    bool isOfficer = false;
-    bool isBusiness = false;
+    User? loggedInUser;
     
     if (!AppConfig.useMockBackend) {
       final authRepo = ref.read(authRepositoryProvider);
-      bool success = await authRepo.login(_idController.text, _pinController.text);
-      if (success) {
-        // In real backend, authRepo would return the role
-        // Defaulting to officer for now if successful
-        isOfficer = true;
-      }
+      loggedInUser = await authRepo.login(_idController.text.trim(), _pinController.text);
     } else {
       await Future.delayed(const Duration(milliseconds: 600));
-      isOfficer = _idController.text == 'LMO-2024-088' && _pinController.text == '123456';
-      isBusiness = _idController.text == 'BIZ-2024-001' && _pinController.text == '123456';
+      if (_idController.text == 'LMO-2024-088' && _pinController.text == '123456') {
+        loggedInUser = User(id: _idController.text, role: 'OFFICER');
+      } else if (_idController.text == 'BIZ-2024-001' && _pinController.text == '123456') {
+        loggedInUser = User(id: _idController.text, role: 'BUSINESS');
+      }
     }
 
     if (mounted) {
       setState(() => _isLoading = false);
-      if (isOfficer) {
-        ref.read(currentUserProvider.notifier).state = User(id: _idController.text, role: 'OFFICER');
-        context.go('/dashboard');
-      } else if (isBusiness) {
-        ref.read(currentUserProvider.notifier).state = User(id: _idController.text, role: 'BUSINESS');
-        context.go('/business');
+      if (loggedInUser != null) {
+        ref.read(currentUserProvider.notifier).state = loggedInUser;
+        if (loggedInUser.role == 'OFFICER' || loggedInUser.role == 'LMO') {
+          context.go('/dashboard');
+        } else if (loggedInUser.role == 'BUSINESS') {
+          context.go('/business');
+        } else {
+          // Default for demo if role is unmapped
+          context.go('/dashboard');
+        }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login failed. Please check your credentials.')),

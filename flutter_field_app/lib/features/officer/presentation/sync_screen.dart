@@ -17,36 +17,16 @@ class _SyncScreenState extends ConsumerState<SyncScreen> {
   bool _isSyncing = false;
   bool _isSimulatedOffline = false;
 
-  final List<Map<String, dynamic>> _pendingOps = [
-    {
-      'id': 'APP-DEMO-001',
-      'type': 'draft',
-      'title': 'APP-DEMO-001',
-      'subtitle': 'Local Draft',
-      'status': 'pending',
-    },
-    {
-      'id': 'EVD-042',
-      'type': 'evidence',
-      'title': 'Evidence Photo (2.1 MB)',
-      'subtitle': 'Ready to Sync',
-      'status': 'queue',
-    },
-    {
-      'id': 'APP-DEMO-002',
-      'type': 'failed',
-      'title': 'APP-DEMO-002',
-      'subtitle': 'Failed: Connection timeout during upload.',
-      'status': 'failed',
-    },
-  ];
-
   Future<void> _handleSyncAll() async {
     setState(() => _isSyncing = true);
 
     if (!AppConfig.useMockBackend) {
       final syncEngine = ref.read(syncEngineProvider);
       await syncEngine.syncAll();
+      // Reload from DB after sync
+      ref.read(inspectionsProvider.notifier).addOrUpdateTask(
+        ref.read(repositoryProvider).getAllInspections().first
+      );
     } else {
       await Future.delayed(const Duration(seconds: 2));
     }
@@ -54,30 +34,28 @@ class _SyncScreenState extends ConsumerState<SyncScreen> {
     if (mounted) {
       setState(() {
         _isSyncing = false;
-        _pendingOps.removeWhere((item) => item['status'] != 'failed');
       });
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Synchronization complete! 2 items uploaded.'),
+          content: Text('Synchronization complete!'),
           backgroundColor: AppTheme.success,
         ),
       );
     }
   }
 
-  void _retryItem(int index) {
-    setState(() {
-      _pendingOps[index]['subtitle'] = 'Retrying upload...';
-      _pendingOps[index]['status'] = 'queue';
-    });
-    Future.delayed(const Duration(seconds: 1), () {
-      if (mounted) {
-        setState(() {
-          _pendingOps[index]['subtitle'] = 'Synced successfully.';
-          _pendingOps[index]['status'] = 'synced';
-        });
-      }
-    });
+  void _retryItem(String id) async {
+    setState(() => _isSyncing = true);
+    if (!AppConfig.useMockBackend) {
+      final syncEngine = ref.read(syncEngineProvider);
+      await syncEngine.syncAll(); // Can be optimized to single sync
+      ref.read(inspectionsProvider.notifier).addOrUpdateTask(
+        ref.read(repositoryProvider).getAllInspections().first
+      );
+    }
+    if (mounted) {
+      setState(() => _isSyncing = false);
+    }
   }
 
   @override
@@ -85,6 +63,18 @@ class _SyncScreenState extends ConsumerState<SyncScreen> {
     final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context);
     final isHi = l10n?.localeName == 'hi';
+    
+    final tasks = ref.watch(inspectionsProvider);
+    final pendingOps = tasks
+        .where((t) => t.status == 'ready_to_sync' || t.status == 'syncing' || t.status == 'failed' || t.status == 'conflict')
+        .map((t) => {
+              'id': t.appId,
+              'type': t.status == 'failed' || t.status == 'conflict' ? 'failed' : 'draft',
+              'title': t.description.isNotEmpty ? t.description : t.appId,
+              'subtitle': t.status == 'ready_to_sync' ? 'Ready to Sync' : (t.status == 'failed' ? 'Failed' : t.status),
+              'status': t.status == 'failed' || t.status == 'conflict' ? 'failed' : (t.status == 'syncing' ? 'queue' : 'pending'),
+            })
+        .toList();
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppTheme.standard),
@@ -213,7 +203,7 @@ class _SyncScreenState extends ConsumerState<SyncScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                '${_pendingOps.length} ${l10n?.itemsReady ?? 'Items Ready'}',
+                                '${pendingOps.length} ${l10n?.itemsReady ?? 'Items Ready'}',
                                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                               ),
                               Text(
@@ -231,7 +221,7 @@ class _SyncScreenState extends ConsumerState<SyncScreen> {
                     final button = SizedBox(
                       height: 42,
                       child: ElevatedButton.icon(
-                        onPressed: (_isSimulatedOffline || _pendingOps.isEmpty || _isSyncing)
+                        onPressed: (_isSimulatedOffline || pendingOps.isEmpty || _isSyncing)
                             ? null
                             : _handleSyncAll,
                         icon: _isSyncing
@@ -288,7 +278,7 @@ class _SyncScreenState extends ConsumerState<SyncScreen> {
               ),
               const SizedBox(height: 12),
 
-              if (_pendingOps.isEmpty)
+              if (pendingOps.isEmpty)
                 Container(
                   padding: const EdgeInsets.all(32),
                   alignment: Alignment.center,
@@ -309,8 +299,8 @@ class _SyncScreenState extends ConsumerState<SyncScreen> {
                   ),
                 )
               else
-                ...List.generate(_pendingOps.length, (index) {
-                  final item = _pendingOps[index];
+                ...List.generate(pendingOps.length, (index) {
+                  final item = pendingOps[index];
                   final isFailed = item['status'] == 'failed';
                   final isQueue = item['status'] == 'queue';
 
@@ -373,7 +363,7 @@ class _SyncScreenState extends ConsumerState<SyncScreen> {
                         const SizedBox(width: 8),
                         if (isFailed)
                           OutlinedButton.icon(
-                            onPressed: () => _retryItem(index),
+                            onPressed: () => _retryItem(item['id'] as String),
                             icon: const Icon(Icons.refresh, size: 14, color: AppTheme.error),
                             label: Text(
                               l10n?.retry ?? 'Retry',

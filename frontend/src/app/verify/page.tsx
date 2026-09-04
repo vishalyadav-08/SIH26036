@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PublicHeader } from "@/components/layout/PublicHeader";
@@ -10,18 +10,51 @@ import {
   ChevronRight,
   Search,
   ShieldCheck,
-  Info
+  Info,
+  Sparkles,
+  CheckCircle2,
+  AlertOctagon,
+  Radio,
 } from "lucide-react";
+import { getSampleCertificates, SampleCertificate } from "@/services/certificates/certificates.service";
 
 export default function VerifySearchPage() {
   const [certNo, setCertNo] = useState("");
+  const [samples, setSamples] = useState<SampleCertificate[]>([]);
+  const [loadingSamples, setLoadingSamples] = useState(true);
   const router = useRouter();
   const { t } = useLanguage();
+
+  useEffect(() => {
+    let isMounted = true;
+    getSampleCertificates()
+      .then((data) => {
+        if (isMounted) {
+          setSamples(data);
+          setLoadingSamples(false);
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setLoadingSamples(false);
+        }
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (certNo.trim()) {
       router.push(`/verify/${encodeURIComponent(certNo.trim())}`);
+    }
+  };
+
+  const handleAutofill = (selectedNo: string, autoSubmit = false) => {
+    setCertNo(selectedNo);
+    if (autoSubmit) {
+      router.push(`/verify/${encodeURIComponent(selectedNo)}`);
     }
   };
 
@@ -77,9 +110,65 @@ export default function VerifySearchPage() {
                     required
                   />
                 </div>
-                <p className="text-[11px] text-[#727784] mt-1.5">
-                  Example formats: <button type="button" onClick={() => setCertNo("CERT-DEMO-001")} className="text-[#004e9f] hover:underline font-mono">CERT-DEMO-001</button>, <button type="button" onClick={() => setCertNo("CERT-2024-8849")} className="text-[#004e9f] hover:underline font-mono">CERT-2024-8849</button>
-                </p>
+                {/* Live Prototype Certificate Autofill Bar */}
+                <div className="mt-3 p-3 bg-slate-50 border border-slate-200 rounded-md">
+                  <div className="flex items-center justify-between gap-2 mb-2">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                      <span>Autofill Prototype Certificates (Live Backend):</span>
+                    </div>
+                    <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 font-medium">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      Live Registry
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    {samples.map((s) => {
+                      const isValid = s.status === "ACTIVE" || s.status === "VALID";
+                      return (
+                        <button
+                          key={s.certificateNumber}
+                          type="button"
+                          onClick={() => handleAutofill(s.certificateNumber)}
+                          className={`flex items-start justify-between gap-2 p-2.5 rounded border text-left text-xs transition-all cursor-pointer ${
+                            certNo === s.certificateNumber
+                              ? "border-[#004e9f] bg-blue-50/70 ring-1 ring-[#004e9f]"
+                              : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/80"
+                          }`}
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="flex items-center gap-1.5 mb-0.5">
+                              {isValid ? (
+                                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                              ) : (
+                                <AlertOctagon className="w-3.5 h-3.5 text-rose-600 shrink-0" />
+                              )}
+                              <span className="font-mono font-bold text-slate-900 truncate">
+                                {s.certificateNumber}
+                              </span>
+                            </div>
+                            <p className="text-[11px] text-slate-500 truncate">
+                              {s.instrumentType.replace(/_/g, " ")} ({s.instrumentNumber})
+                            </p>
+                          </div>
+                          <span
+                            className={`shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${
+                              isValid
+                                ? "bg-emerald-100 text-emerald-800"
+                                : "bg-rose-100 text-rose-800"
+                            }`}
+                          >
+                            {isValid ? "VALID" : "REVOKED"}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="text-[10px] text-slate-400 mt-2 text-center">
+                    Click any prototype certificate above to instantly autofill and verify via live Django API.
+                  </p>
+                </div>
               </div>
 
               <button

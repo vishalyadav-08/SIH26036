@@ -24,6 +24,8 @@ class InspectionError(Exception):
 
 
 def is_assigned_officer(user, application):
+    if user.role in (User.Role.ADMIN, User.Role.GATC):
+        return True
     assignment = application.active_assignment
 
     return assignment is not None and assignment.officer_id == user.id
@@ -32,7 +34,7 @@ def is_assigned_officer(user, application):
 def visible_inspections(user):
     queryset = Inspection.objects.select_related("application", "officer")
 
-    if user.role == User.Role.ADMIN:
+    if user.role in (User.Role.ADMIN, User.Role.GATC):
         return queryset
 
     if user.role in User.FIELD_STAFF_ROLES:
@@ -46,7 +48,11 @@ def visible_inspections(user):
 
 @transaction.atomic
 def start_inspection(*, user, application):
-    """SCHEDULED -> INSPECTION_IN_PROGRESS, by the assigned officer only."""
+    """SCHEDULED / ASSIGNED -> INSPECTION_IN_PROGRESS, by the assigned officer or GATC."""
+    existing = Inspection.objects.filter(application=application).first()
+    if existing:
+        return existing
+
     if not is_assigned_officer(user, application):
         raise InspectionError("You are not assigned to this application.")
 

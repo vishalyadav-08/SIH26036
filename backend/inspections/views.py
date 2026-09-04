@@ -50,6 +50,10 @@ class InspectionListCreateView(APIView):
     def get(self, request):
         queryset = visible_inspections(request.user).prefetch_related("measurements", "evidence__uploaded_by")
 
+        application_id = request.query_params.get("applicationId")
+        if application_id:
+            queryset = queryset.filter(application_id=application_id)
+
         paginator = ContractPagination()
         page = paginator.paginate_queryset(queryset, request, view=self)
 

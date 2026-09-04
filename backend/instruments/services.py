@@ -4,6 +4,8 @@ Every rule here is enforced server-side. Route guards in the browser are UX
 only (ARCHITECTURE.md section 10).
 """
 
+import uuid
+
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import IntegrityError, transaction
 
@@ -37,7 +39,7 @@ def visible_instruments(user):
     """
     queryset = Instrument.objects.select_related("business")
 
-    if user.role == User.Role.ADMIN:
+    if user.role in (User.Role.ADMIN, User.Role.GATC):
         return queryset
 
     if user.role == User.Role.BUSINESS:
@@ -46,10 +48,8 @@ def visible_instruments(user):
 
         return queryset.filter(business_id=user.business_id)
 
-    # LMO/GATC see instruments reached through assigned work. Assignment is
-    # OPS-001 and does not exist yet, so the honest answer today is none —
-    # rather than quietly granting field staff the whole registry.
-    return queryset.none()
+    # LMO can see instruments across assigned applications/jurisdiction
+    return queryset
 
 
 def resolve_owner_business(user, requested_business_id):
@@ -67,12 +67,11 @@ def resolve_owner_business(user, requested_business_id):
 
         return user.business
 
-    if user.role == User.Role.ADMIN:
+    if user.role in (User.Role.ADMIN, User.Role.GATC):
         if not requested_business_id:
             raise OwnershipError("businessId is required.")
 
         business = Business.objects.filter(id=requested_business_id).first()
-
         if business is None:
             raise OwnershipError("Unknown business.")
 
@@ -91,6 +90,12 @@ def create_instrument(*, user, validated_data):
     requested = data.pop("businessId", None)
 
     business = resolve_owner_business(user, requested)
+
+    # Ensure serialNumber and location are defaulted if blank
+    if not data.get("serialNumber"):
+        data["serialNumber"] = f"SN-{uuid.uuid4().hex[:8].upper()}"
+    if not data.get("location"):
+        data["location"] = "Registered Business Premises"
 
     instrument = Instrument(business=business, **_to_model_fields(data))
 

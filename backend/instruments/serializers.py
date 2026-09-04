@@ -11,6 +11,7 @@ class InstrumentSerializer(serializers.ModelSerializer):
     """Canonical read shape."""
 
     businessId = serializers.UUIDField(source="business_id", read_only=True)
+    businessName = serializers.CharField(source="business.legal_name", read_only=True)
     instrumentNumber = serializers.CharField(source="instrument_number", read_only=True)
     serialNumber = serializers.CharField(source="serial_number", read_only=True)
     instrumentType = serializers.CharField(source="instrument_type", read_only=True)
@@ -28,6 +29,7 @@ class InstrumentSerializer(serializers.ModelSerializer):
         fields = [
             "id",
             "businessId",
+            "businessName",
             "instrumentNumber",
             "serialNumber",
             "instrumentType",
@@ -76,7 +78,7 @@ class InstrumentCreateSerializer(serializers.Serializer):
     """
 
     instrumentNumber = serializers.CharField(max_length=50)
-    serialNumber = serializers.CharField(max_length=50)
+    serialNumber = serializers.CharField(max_length=50, required=False, allow_blank=True)
     instrumentType = serializers.ChoiceField(choices=Instrument.InstrumentType.choices)
     manufacturer = serializers.CharField(max_length=100)
     model = serializers.CharField(max_length=100)
@@ -84,7 +86,7 @@ class InstrumentCreateSerializer(serializers.Serializer):
         max_digits=12, decimal_places=3, min_value=Decimal("0.001")
     )
     capacityUnit = serializers.CharField(max_length=10)
-    location = serializers.CharField(max_length=200)
+    location = serializers.CharField(max_length=200, required=False, allow_blank=True)
     businessId = serializers.UUIDField(required=False)
 
     def validate_instrumentNumber(self, value):

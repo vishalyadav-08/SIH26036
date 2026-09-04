@@ -17,7 +17,7 @@ S = Application.State
 ALLOWED = {
     S.DRAFT: {S.SUBMITTED, S.CANCELLED},
     S.SUBMITTED: {S.ASSIGNED, S.REJECTED, S.CANCELLED},
-    S.ASSIGNED: {S.SCHEDULED, S.CANCELLED},
+    S.ASSIGNED: {S.SCHEDULED, S.INSPECTION_IN_PROGRESS, S.CANCELLED},
     S.SCHEDULED: {S.INSPECTION_IN_PROGRESS, S.CANCELLED},
     S.INSPECTION_IN_PROGRESS: {S.COMPLETED, S.CANCELLED},
     S.COMPLETED: set(),
@@ -26,18 +26,19 @@ ALLOWED = {
 }
 
 INITIATOR = {
-    (S.DRAFT, S.SUBMITTED): {User.Role.BUSINESS, User.Role.ADMIN},
-    (S.DRAFT, S.CANCELLED): {User.Role.BUSINESS, User.Role.ADMIN},
-    (S.SUBMITTED, S.ASSIGNED): {User.Role.ADMIN},
-    (S.SUBMITTED, S.REJECTED): {User.Role.ADMIN},
-    (S.SUBMITTED, S.CANCELLED): {User.Role.BUSINESS, User.Role.ADMIN},
-    # The assigned officer books their own visit; an admin may also do it.
-    (S.ASSIGNED, S.SCHEDULED): {User.Role.ADMIN, *User.FIELD_STAFF_ROLES},
-    (S.ASSIGNED, S.CANCELLED): {User.Role.ADMIN},
-    (S.SCHEDULED, S.INSPECTION_IN_PROGRESS): {*User.FIELD_STAFF_ROLES},
-    (S.SCHEDULED, S.CANCELLED): {User.Role.ADMIN, *User.FIELD_STAFF_ROLES},
-    (S.INSPECTION_IN_PROGRESS, S.COMPLETED): {*User.FIELD_STAFF_ROLES},
-    (S.INSPECTION_IN_PROGRESS, S.CANCELLED): {User.Role.ADMIN},
+    (S.DRAFT, S.SUBMITTED): {User.Role.BUSINESS, User.Role.ADMIN, User.Role.GATC},
+    (S.DRAFT, S.CANCELLED): {User.Role.BUSINESS, User.Role.ADMIN, User.Role.GATC},
+    (S.SUBMITTED, S.ASSIGNED): {User.Role.ADMIN, User.Role.GATC},
+    (S.SUBMITTED, S.REJECTED): {User.Role.ADMIN, User.Role.GATC},
+    (S.SUBMITTED, S.CANCELLED): {User.Role.BUSINESS, User.Role.ADMIN, User.Role.GATC},
+    # The assigned officer books their own visit; an admin or GATC may also do it.
+    (S.ASSIGNED, S.SCHEDULED): {User.Role.ADMIN, User.Role.GATC, *User.FIELD_STAFF_ROLES},
+    (S.ASSIGNED, S.INSPECTION_IN_PROGRESS): {User.Role.ADMIN, User.Role.GATC, *User.FIELD_STAFF_ROLES},
+    (S.ASSIGNED, S.CANCELLED): {User.Role.ADMIN, User.Role.GATC},
+    (S.SCHEDULED, S.INSPECTION_IN_PROGRESS): {User.Role.ADMIN, User.Role.GATC, *User.FIELD_STAFF_ROLES},
+    (S.SCHEDULED, S.CANCELLED): {User.Role.ADMIN, User.Role.GATC, *User.FIELD_STAFF_ROLES},
+    (S.INSPECTION_IN_PROGRESS, S.COMPLETED): {User.Role.ADMIN, User.Role.GATC, *User.FIELD_STAFF_ROLES},
+    (S.INSPECTION_IN_PROGRESS, S.CANCELLED): {User.Role.ADMIN, User.Role.GATC},
 }
 
 
@@ -68,7 +69,7 @@ def next_application_number():
 def visible_applications(user):
     queryset = Application.objects.select_related("instrument", "business", "submitted_by")
 
-    if user.role == User.Role.ADMIN:
+    if user.role in (User.Role.ADMIN, User.Role.GATC):
         return queryset
 
     if user.role == User.Role.BUSINESS:
@@ -77,7 +78,7 @@ def visible_applications(user):
 
         return queryset.filter(business_id=user.business_id)
 
-    # LMO/GATC: only work actually assigned to them.
+    # LMO/Field staff: only work actually assigned to them.
     return queryset.filter(
         assignments__officer=user, assignments__unassigned_at__isnull=True
     ).distinct()

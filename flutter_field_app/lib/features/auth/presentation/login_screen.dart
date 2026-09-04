@@ -108,75 +108,246 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.card, vertical: 24),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 440),
-                        l10n?.biometricQuickSignIn ?? 'Quick Biometric Sign In',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.primary,
-                        ),
-                      ),
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: AppTheme.primary, width: 1.5),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: AppTheme.section),
-
-                  // Language Switcher Dropdown
-                  Center(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppTheme.surfaceContainerLow,
-                        borderRadius: BorderRadius.circular(AppTheme.radiusFull),
-                        border: Border.all(color: AppTheme.outlineVariant.withValues(alpha: 0.6)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(Icons.language, size: 18, color: AppTheme.onSurfaceVariant),
-                          const SizedBox(width: 8),
-                          DropdownButtonHideUnderline(
-                            child: DropdownButton<String>(
-                              value: ['en', 'hi'].contains(currentLocale.languageCode) ? currentLocale.languageCode : 'en',
-                              dropdownColor: AppTheme.surfaceContainerLowest,
-                              icon: const Icon(Icons.arrow_drop_down, color: AppTheme.onSurfaceVariant),
-                              style: const TextStyle(
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: AppTheme.onSurface,
-                              ),
-                              items: const [
-                                DropdownMenuItem(value: 'en', child: Text('English (US)')),
-                                DropdownMenuItem(value: 'hi', child: Text('हिन्दी (Hindi)')),
-                              ],
-                              onChanged: (String? newLang) {
-                                if (newLang != null) {
-                                  ref.read(localeProvider.notifier).state = Locale(newLang);
-                                }
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Legal Metrology Footer
-                  const Text(
-                    'Legal Metrology Division • Department of Consumer Affairs',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 11, color: AppTheme.onSurfaceVariant),
-                  ),
-                ],
-              ),
+              child: _selectedRole == null 
+                  ? _buildRoleSelection(theme, l10n, currentLocale) 
+                  : _buildLoginForm(theme, l10n, currentLocale),
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildRoleSelection(ThemeData theme, AppLocalizations? l10n, Locale currentLocale) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Center(
+          child: Column(
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: AppTheme.primary,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusXl),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.primary.withValues(alpha: 0.25),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.shield,
+                  size: 44,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l10n?.appTitle ?? 'MapanSetu',
+                style: theme.textTheme.displaySmall?.copyWith(
+                  color: AppTheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Select Your Role',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: AppTheme.secondary,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 48),
+        ElevatedButton(
+          onPressed: () => setState(() {
+            _selectedRole = 'OFFICER';
+            _idController.text = 'vinod.sharma@lmo.up.gov.demo';
+            _pinController.text = 'synthetic-password';
+          }),
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(24),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
+          ),
+          child: const Column(
+            children: [
+              Icon(Icons.badge, size: 48),
+              SizedBox(height: 16),
+              Text('LMO Officer', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text('Field Inspector Portal', style: TextStyle(fontSize: 12)),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        ElevatedButton(
+          onPressed: () => setState(() {
+            _selectedRole = 'BUSINESS';
+            _idController.text = 'info@shreebalaji.demo';
+            _pinController.text = 'synthetic-password';
+          }),
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.all(24),
+            backgroundColor: AppTheme.secondaryContainer,
+            foregroundColor: AppTheme.onSecondaryContainer,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
+          ),
+          child: const Column(
+            children: [
+              Icon(Icons.storefront, size: 48),
+              SizedBox(height: 16),
+              Text('Business Owner', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text('Manage Certificates & Applications', style: TextStyle(fontSize: 12)),
+            ],
+          ),
+        ),
+        const SizedBox(height: 32),
+        _buildLanguageSelector(currentLocale),
+      ],
+    );
+  }
+
+  Widget _buildLoginForm(ThemeData theme, AppLocalizations? l10n, Locale currentLocale) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Back Button
+        Align(
+          alignment: Alignment.centerLeft,
+          child: TextButton.icon(
+            onPressed: () => setState(() {
+              _selectedRole = null;
+              _idController.clear();
+              _pinController.clear();
+            }),
+            icon: const Icon(Icons.arrow_back),
+            label: const Text('Change Role'),
+          ),
+        ),
+        const SizedBox(height: 16),
+        
+        // Logo Section
+        Center(
+          child: Column(
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: AppTheme.primary,
+                  borderRadius: BorderRadius.circular(AppTheme.radiusXl),
+                ),
+                child: const Icon(Icons.shield, size: 44, color: Colors.white),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                l10n?.appTitle ?? 'MapanSetu',
+                style: theme.textTheme.displaySmall?.copyWith(
+                  color: AppTheme.primary,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                _selectedRole == 'OFFICER' ? (l10n?.fieldOfficerPortal ?? 'LMO Portal') : 'Business Portal',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  color: AppTheme.secondary,
+                ),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 32),
+
+        // Email / ID Input Field
+        TextField(
+          controller: _idController,
+          decoration: InputDecoration(
+            labelText: _selectedRole == 'OFFICER' ? (l10n?.officerId ?? 'LMO Email / ID') : 'Business Email',
+            filled: true,
+            fillColor: AppTheme.surfaceContainerHighest,
+            prefixIcon: const Icon(Icons.badge_outlined, color: AppTheme.onSurfaceVariant),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd), borderSide: BorderSide.none),
+          ),
+        ),
+        const SizedBox(height: 16),
+
+        // Password Input Field
+        TextField(
+          controller: _pinController,
+          obscureText: _obscurePin,
+          decoration: InputDecoration(
+            labelText: l10n?.password ?? 'Password / PIN',
+            filled: true,
+            fillColor: AppTheme.surfaceContainerHighest,
+            prefixIcon: const Icon(Icons.lock_outline, color: AppTheme.onSurfaceVariant),
+            suffixIcon: IconButton(
+              icon: Icon(_obscurePin ? Icons.visibility_off : Icons.visibility, color: AppTheme.onSurfaceVariant),
+              onPressed: () => setState(() => _obscurePin = !_obscurePin),
+            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd), borderSide: BorderSide.none),
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Login Button
+        SizedBox(
+          height: 52,
+          child: ElevatedButton(
+            onPressed: _isLoading ? null : _handleLogin,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primary,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
+            ),
+            child: _isLoading
+                ? const CircularProgressIndicator(color: Colors.white)
+                : Text(l10n?.signIn ?? 'Sign In', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        // Biometrics Button
+        SizedBox(
+          height: 48,
+          child: OutlinedButton.icon(
+            onPressed: _handleBiometricAuth,
+            icon: const Icon(Icons.fingerprint, color: AppTheme.primary, size: 24),
+            label: Text(
+              l10n?.biometricQuickSignIn ?? 'Quick Biometric Sign In',
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: AppTheme.primary),
+            ),
+            style: OutlinedButton.styleFrom(
+              side: const BorderSide(color: AppTheme.primary, width: 1.5),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
+            ),
+          ),
+        ),
+        const SizedBox(height: AppTheme.section),
+        _buildLanguageSelector(currentLocale),
+      ],
+    );
+  }
+
+  Widget _buildLanguageSelector(Locale currentLocale) {
+    return Center(
+      child: SegmentedButton<String>(
+        segments: const [
+          ButtonSegment(value: 'en', label: Text('English')),
+          ButtonSegment(value: 'hi', label: Text('हिन्दी')),
+        ],
+        selected: {currentLocale.languageCode},
+        onSelectionChanged: (Set<String> newSelection) {
+          ref.read(localeProvider.notifier).state = Locale(newSelection.first);
+        },
+        style: SegmentedButton.styleFrom(visualDensity: VisualDensity.compact),
       ),
     );
   }

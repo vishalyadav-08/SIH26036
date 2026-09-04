@@ -7,16 +7,9 @@ import 'package:flutter_field_app/theme/app_theme.dart';
 import 'package:flutter_field_app/presentation/shared/top_app_bar.dart';
 import 'package:flutter_field_app/presentation/shared/bottom_nav_bar.dart';
 import 'package:flutter_field_app/presentation/shared/navigation_drawer.dart';
-import 'package:flutter_field_app/presentation/screens/dashboard_screen.dart';
-import 'package:flutter_field_app/presentation/screens/login_screen.dart';
-import 'package:flutter_field_app/presentation/screens/inspections_list_screen.dart';
-import 'package:flutter_field_app/presentation/screens/inspection_templates_screen.dart';
-import 'package:flutter_field_app/presentation/screens/inspection_wizard_screen.dart';
-import 'package:flutter_field_app/presentation/screens/sync_screen.dart';
-import 'package:flutter_field_app/presentation/screens/profile_screen.dart';
-import 'package:flutter_field_app/presentation/screens/conflict_resolution_screen.dart';
 import 'package:flutter_field_app/providers/providers.dart';
 import 'package:flutter_field_app/data/repositories/inspection_repository.dart';
+import 'package:flutter_field_app/app/router/app_router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,53 +25,6 @@ void main() async {
     child: const MyApp(),
   ));
 }
-
-final _router = GoRouter(
-  initialLocation: '/login',
-  routes: [
-    GoRoute(
-      path: '/login',
-      builder: (context, state) => const LoginScreen(),
-    ),
-    GoRoute(
-      path: '/wizard',
-      builder: (context, state) => const InspectionWizardScreen(),
-    ),
-    GoRoute(
-      path: '/conflict',
-      builder: (context, state) => const ConflictResolutionScreen(),
-    ),
-    ShellRoute(
-      builder: (context, state, child) {
-        final path = state.uri.path;
-        final currentRoute = path.startsWith('/') ? path.substring(1) : path;
-        return ScaffoldShell(currentRoute: currentRoute, child: child);
-      },
-      routes: [
-        GoRoute(
-          path: '/dashboard',
-          builder: (context, state) => const DashboardScreen(),
-        ),
-        GoRoute(
-          path: '/inspections',
-          builder: (context, state) => const InspectionsListScreen(),
-        ),
-        GoRoute(
-          path: '/templates',
-          builder: (context, state) => const InspectionTemplatesScreen(),
-        ),
-        GoRoute(
-          path: '/sync',
-          builder: (context, state) => const SyncScreen(),
-        ),
-        GoRoute(
-          path: '/profile',
-          builder: (context, state) => const ProfileScreen(),
-        ),
-      ],
-    ),
-  ],
-);
 
 class ScaffoldShell extends StatefulWidget {
   final Widget child;
@@ -122,11 +68,12 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
+    final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
       title: 'MapanSetu',
       theme: AppTheme.lightTheme,
-      routerConfig: _router,
+      routerConfig: router,
       debugShowCheckedModeBanner: false,
       locale: locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,

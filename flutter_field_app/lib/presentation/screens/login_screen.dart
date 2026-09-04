@@ -16,8 +16,8 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final TextEditingController _idController = TextEditingController(text: 'LMO-2024-088');
-  final TextEditingController _pinController = TextEditingController(text: '123456');
+  final TextEditingController _idController = TextEditingController(text: 'vinod.sharma@lmo.up.gov.demo');
+  final TextEditingController _pinController = TextEditingController(text: 'synthetic-password');
   bool _obscurePin = true;
   bool _isLoading = false;
   final LocalAuthentication _localAuth = LocalAuthentication();

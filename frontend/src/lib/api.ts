@@ -16,6 +16,13 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
+  if (config.url) {
+    const [path, query] = config.url.split("?");
+    if (!path.endsWith("/")) {
+      config.url = `${path}/${query ? `?${query}` : ""}`;
+    }
+  }
+
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("mapansetu_access_token");
     if (token && config.headers) {

@@ -55,6 +55,14 @@ DEBUG = os.getenv("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = [h for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h]
 
+# Render.com & deployed frontend origins (needed for CSRF + secure cookies)
+CSRF_TRUSTED_ORIGINS = [
+    o for o in os.getenv(
+        "CSRF_TRUSTED_ORIGINS",
+        "http://localhost:3000",
+    ).split(",") if o
+]
+
 AUTH_USER_MODEL = "authentication.User"
 
 INSTALLED_APPS = [
@@ -89,6 +97,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -154,6 +163,7 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Where uploads land when object storage is not configured (see below).
 # Files are never served from here directly: /api/v1/evidence/{id}/file/

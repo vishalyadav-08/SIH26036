@@ -227,10 +227,10 @@ REST_FRAMEWORK = {
     # Public certificate verification is unauthenticated (ADR-017), so it is
     # rate-limited by scope rather than left open.
     "DEFAULT_THROTTLE_RATES": {
-        "public_verify": "30/min",
-        "login": "10/min",
-        "google_login": "10/min",
-        "signup": "5/min",
+        "public_verify": "300/min" if DEBUG else "30/min",
+        "login": "600/min" if DEBUG else "10/min",
+        "google_login": "300/min" if DEBUG else "10/min",
+        "signup": "300/min" if DEBUG else "5/min",
     },
 }
 

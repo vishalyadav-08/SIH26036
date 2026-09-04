@@ -169,7 +169,7 @@ EVIDENCE_MAX_BYTES = 10 * 1024 * 1024
 # DEMO/CONFIGURABLE (ADR-016): an inspection needs at least one evidence item
 # before a decision can be recorded. Off only for environments that have no
 # way to attach files.
-INSPECTION_REQUIRE_EVIDENCE = os.getenv("INSPECTION_REQUIRE_EVIDENCE", "true").lower() in (
+INSPECTION_REQUIRE_EVIDENCE = os.getenv("INSPECTION_REQUIRE_EVIDENCE", "false" if DEBUG else "true").lower() in (
     "1", "true", "yes",
 )
 
@@ -202,8 +202,13 @@ if MINIO_ENDPOINT:
 CORS_ALLOWED_ORIGINS = [
     o for o in os.getenv(
         "CORS_ALLOWED_ORIGINS",
-        "http://localhost:3000,http://localhost:3001",
+        "http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,http://127.0.0.1:3001",
     ).split(",") if o
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://localhost:\d+$",
+    r"^http://127\.0\.0\.1:\d+$",
 ]
 
 CORS_ALLOW_CREDENTIALS = True

@@ -55,7 +55,7 @@ def build_payload(*, certificate_number, application, instrument, issued_at, val
 def visible_certificates(user):
     queryset = Certificate.objects.select_related("instrument", "business", "application")
 
-    if user.role == User.Role.ADMIN:
+    if user.role in (User.Role.ADMIN, User.Role.GATC):
         return queryset
 
     if user.role == User.Role.BUSINESS and user.business_id:
@@ -82,7 +82,7 @@ def issue_certificate(*, user, inspection):
     if user.role in User.FIELD_STAFF_ROLES:
         if inspection.officer_id != user.id:
             raise CertificateError("Only the inspecting officer may issue this certificate.")
-    elif user.role != User.Role.ADMIN:
+    elif user.role not in (User.Role.ADMIN, User.Role.GATC):
         raise CertificateError("Your role cannot issue certificates.")
 
     if inspection.result != Inspection.Result.PASS:

@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 
 from common.exceptions import Conflict, InvalidCredentials
 from common.pagination import ContractPagination
-from common.permissions import IsAdmin
+from common.permissions import IsAdmin, IsAdminOrFieldStaff
 
 from .models import User
 from .serializers import (
@@ -220,11 +220,14 @@ class MeView(APIView):
 class UserListView(APIView):
     """GET /api/v1/users — the account directory.
 
-    Administrators only. This is how the assignment screen finds officers, and
+    Staff only. This is how the assignment screen finds officers, and
     it is not something a business user has any reason to enumerate.
     """
 
-    permission_classes = [IsAdmin]
+    def get_permissions(self):
+        if self.request.method == "GET":
+            return [IsAdminOrFieldStaff()]
+        return [IsAdmin()]
 
     @extend_schema(request=UserCreateSerializer, responses={201: UserSerializer})
     def post(self, request):

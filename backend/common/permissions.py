@@ -27,7 +27,7 @@ class HasRole(BasePermission):
 
 
 class IsAdmin(HasRole):
-    allowed_roles = (User.Role.ADMIN,)
+    allowed_roles = (User.Role.ADMIN, User.Role.GATC)
 
 
 class IsFieldStaff(HasRole):
@@ -47,4 +47,4 @@ class IsAdminOrFieldStaff(HasRole):
 class IsBusinessOrAdmin(HasRole):
     """Registry and request actions: the owner acts, an admin may act for them."""
 
-    allowed_roles = (User.Role.BUSINESS, User.Role.ADMIN)
+    allowed_roles = (User.Role.BUSINESS, User.Role.ADMIN, User.Role.GATC)

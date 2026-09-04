@@ -1,5 +1,10 @@
-"""Routes for the instruments module, mounted under /api/v1/ by root/urls.py."""
+"""Instrument routes, mounted at /api/v1/instruments/ by root/urls.py."""
 
-from django.urls import path  # noqa: F401
+from django.urls import path
 
-urlpatterns = []
+from .views import InstrumentDetailView, InstrumentListCreateView
+
+urlpatterns = [
+    path("", InstrumentListCreateView.as_view(), name="instrument-list-create"),
+    path("<uuid:instrument_id>/", InstrumentDetailView.as_view(), name="instrument-detail"),
+]

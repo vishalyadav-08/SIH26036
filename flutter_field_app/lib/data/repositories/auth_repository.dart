@@ -1,40 +1,42 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_field_app/data/models/user.dart';
 
 class AuthRepository {
   final Dio _dio;
   final FlutterSecureStorage _storage;
   
   static const String _accessTokenKey = 'access_token';
-  static const String _refreshTokenKey = 'refresh_token';
+  static const String _userKey = 'user_data';
 
   AuthRepository(this._dio, this._storage);
 
-  Future<bool> login(String username, String password) async {
+  Future<User?> login(String email, String password) async {
     try {
       final response = await _dio.post('/auth/login', data: {
-        'username': username,
+        'email': email,
         'password': password,
       });
 
-      if (response.statusCode == 200) {
-        final accessToken = response.data['access'];
-        final refreshToken = response.data['refresh'];
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final accessToken = response.data['accessToken'];
+        final userData = response.data['user'];
         
         await _storage.write(key: _accessTokenKey, value: accessToken);
-        await _storage.write(key: _refreshTokenKey, value: refreshToken);
-        return true;
+        
+        if (userData != null) {
+          return User.fromJson(userData as Map<String, dynamic>);
+        }
       }
-      return false;
+      return null;
     } catch (e) {
-      // In a real scenario, handle specific DioExceptions
-      return false;
+      return null;
     }
   }
 
   Future<void> logout() async {
     await _storage.delete(key: _accessTokenKey);
-    await _storage.delete(key: _refreshTokenKey);
+    await _storage.delete(key: _userKey);
   }
 
   Future<bool> isAuthenticated() async {

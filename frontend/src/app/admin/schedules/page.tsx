@@ -81,18 +81,18 @@ export default function AdminSchedulesPage() {
                   </div>
 
                   <div className="text-xs font-semibold text-slate-800">
-                    {item.instrumentNumber} • {item.instrumentType.replace(/_/g, " ")}
+                    {item.instrumentNumber || "Instrument"} • {(item.instrumentType || "Scale").replace(/_/g, " ")}
                   </div>
 
                   <div className="flex flex-wrap items-center gap-3 text-xs text-slate-600">
                     <div className="flex items-center gap-1">
                       <Building2 className="w-3.5 h-3.5 text-slate-400" />
-                      <span>{item.businessName}</span>
+                      <span>{item.businessName || "Business"}</span>
                     </div>
                     <span>•</span>
                     <div className="flex items-center gap-1 text-indigo-900 font-medium">
                       <User className="w-3.5 h-3.5 text-indigo-600" />
-                      <span>Officer: {item.assignedOfficerName || "Inspector Sharma"}</span>
+                      <span>LMO: {item.assignedOfficerName || "Vinod Sharma"}</span>
                     </div>
                     <span>•</span>
                     <div className="flex items-center gap-1 text-slate-900 font-bold font-mono">

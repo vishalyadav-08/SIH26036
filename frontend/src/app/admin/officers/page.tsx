@@ -62,10 +62,10 @@ export default function AdminOfficersPage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-          Legal Metrology Officers Fleet & Roster
+          LMO (Legal Metrology Officers) Fleet & Roster
         </h1>
         <p className="text-xs text-slate-600">
-          Monitor inspector assignments, jurisdictional zones, and real-time caseload distribution
+          Monitor LMO assignments, jurisdictional zones, and real-time caseload distribution
         </p>
       </div>
 
@@ -78,7 +78,7 @@ export default function AdminOfficersPage() {
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search officer name, badge number, zone..."
+          placeholder="Search LMO name, badge number, zone..."
           className="block w-full pl-10 pr-4 py-2.5 bg-white text-sm rounded-xl border border-slate-300 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 text-slate-900 placeholder:text-slate-400 shadow-2xs"
         />
       </div>
@@ -86,7 +86,9 @@ export default function AdminOfficersPage() {
       {/* Officers Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filtered.map((off) => {
-          const pct = Math.round((off.activeCaseload / off.maxCaseload) * 100);
+          const activeCases = off.activeCaseload || 0;
+          const maxCases = off.maxCaseload || 8;
+          const pct = Math.round((activeCases / maxCases) * 100);
           return (
             <div
               key={off.id}
@@ -118,7 +120,7 @@ export default function AdminOfficersPage() {
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-500 font-medium">Active Caseload:</span>
                   <span className="font-mono font-bold text-slate-900">
-                    {off.activeCaseload} / {off.maxCaseload} Cases
+                    {activeCases} / {maxCases} Cases
                   </span>
                 </div>
                 <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
@@ -130,7 +132,7 @@ export default function AdminOfficersPage() {
                         ? "bg-amber-500"
                         : "bg-indigo-600"
                     }`}
-                    style={{ width: `${Math.max(pct, 5)}%` }}
+                    style={{ width: `${Math.min(Math.max(pct, 5), 100)}%` }}
                   />
                 </div>
               </div>

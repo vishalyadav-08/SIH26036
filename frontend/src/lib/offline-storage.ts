@@ -117,6 +117,16 @@ export function updateSyncOperationStatus(
   }
 }
 
+/**
+ * Drop one operation from the device queue. Used after a conflict has been
+ * resolved: the server keeps its SyncRecord, so the history is not lost.
+ */
+export function removeSyncOperation(clientOperationId: string): void {
+  if (typeof window === "undefined") return;
+  const current = getSyncQueue().filter((op) => op.clientOperationId !== clientOperationId);
+  localStorage.setItem(SYNC_QUEUE_KEY, JSON.stringify(current));
+}
+
 export function clearSyncedOperations(): void {
   if (typeof window === "undefined") return;
   const current = getSyncQueue().filter((op) => op.status !== "SYNCED");

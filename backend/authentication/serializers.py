@@ -64,9 +64,9 @@ class LoginResponseSerializer(serializers.Serializer):
 class UserCreateSerializer(serializers.Serializer):
     """Administrator-provisioned account.
 
-    Role is chosen here by an administrator — this is the only way an OFFICER
-    or ADMIN account comes into existence. Nothing self-provisions into a
-    privileged role.
+    Role is chosen here by an administrator — this is the only way an LMO,
+    GATC, or ADMIN account comes into existence. Nothing self-provisions into
+    a privileged role.
     """
 
     email = serializers.EmailField()
@@ -86,7 +86,7 @@ class UserCreateSerializer(serializers.Serializer):
 
     def validate(self, attrs):
         # DATA_MODEL.md: businessId is required for BUSINESS users and absent
-        # for ADMIN/OFFICER.
+        # for ADMIN/LMO/GATC.
         if attrs["role"] == User.Role.BUSINESS and not attrs.get("businessId"):
             raise serializers.ValidationError(
                 {"businessId": "Required for a BUSINESS account."}
@@ -113,8 +113,9 @@ class SignupSerializer(serializers.Serializer):
     """Self-registration for a shop owner.
 
     Role is not a field. Self-signup always produces a BUSINESS account —
-    OFFICER and ADMIN are authorised roles an administrator grants, and letting
-    a signup form choose one would be the whole authorization model undone.
+    LMO, GATC and ADMIN are authorised roles an administrator grants, and
+    letting a signup form choose one would be the whole authorization model
+    undone.
 
     Business details are required because a BUSINESS user without a business
     cannot register instruments; collecting them here avoids a dead-end account.

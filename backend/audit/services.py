@@ -46,8 +46,6 @@ def record_event(*, actor, action, entity_type, entity_id, metadata=None):
         previous_hash=previous_hash,
     )
 
-    # auto_now_add has not fired yet, so take the timestamp explicitly and use
-    # the same value for both the hash and the stored row.
     from django.utils import timezone as dj_timezone
 
     now = dj_timezone.now()

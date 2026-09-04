@@ -47,7 +47,7 @@ class InstrumentTestCase(APITestCase):
         self.owner_a = self._user("a@example.test", User.Role.BUSINESS, self.business_a)
         self.owner_b = self._user("b@example.test", User.Role.BUSINESS, self.business_b)
         self.admin = self._user("admin@example.test", User.Role.ADMIN)
-        self.officer = self._user("officer@example.test", User.Role.OFFICER)
+        self.officer = self._user("officer@example.test", User.Role.LMO)
 
     def _user(self, email, role, business=None):
         return User.objects.create_user(

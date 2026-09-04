@@ -4,10 +4,11 @@ import { ReactNode } from "react";
 import { AuthGuard } from "@/components/auth/AuthGuard";
 import { FieldHeader } from "@/components/layout/FieldHeader";
 import { OfflineBanner } from "@/components/layout/OfflineBanner";
+import { FIELD_STAFF_ROLES } from "@/lib/roleRouting";
 
 export default function FieldLayout({ children }: { children: ReactNode }) {
   return (
-    <AuthGuard allowedRoles={["OFFICER"]}>
+    <AuthGuard allowedRoles={FIELD_STAFF_ROLES}>
       <div className="min-h-screen flex flex-col bg-slate-50 text-slate-900 selection:bg-emerald-100 selection:text-emerald-900">
         <OfflineBanner />
         <FieldHeader />

@@ -2,6 +2,8 @@
 
 from rest_framework import serializers
 
+from evidence.serializers import EvidenceSerializer
+
 from .models import Inspection, Measurement
 
 
@@ -36,13 +38,14 @@ class InspectionSerializer(serializers.ModelSerializer):
         source="gps_accuracy_meters", read_only=True
     )
     measurements = MeasurementSerializer(many=True, read_only=True)
+    evidence = EvidenceSerializer(many=True, read_only=True)
 
     class Meta:
         model = Inspection
         fields = [
             "id", "applicationId", "officerUserId", "startedAt", "completedAt",
             "result", "notes", "gpsLatitude", "gpsLongitude", "gpsAccuracyMeters",
-            "capturedAt", "version", "measurements",
+            "capturedAt", "version", "measurements", "evidence",
         ]
         read_only_fields = fields
 

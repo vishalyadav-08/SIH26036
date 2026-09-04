@@ -30,16 +30,18 @@ class IsAdmin(HasRole):
     allowed_roles = (User.Role.ADMIN,)
 
 
-class IsOfficer(HasRole):
-    allowed_roles = (User.Role.OFFICER,)
+class IsFieldStaff(HasRole):
+    """LMO and GATC: authorization-equivalent field roles."""
+
+    allowed_roles = User.FIELD_STAFF_ROLES
 
 
 class IsBusiness(HasRole):
     allowed_roles = (User.Role.BUSINESS,)
 
 
-class IsAdminOrOfficer(HasRole):
-    allowed_roles = (User.Role.ADMIN, User.Role.OFFICER)
+class IsAdminOrFieldStaff(HasRole):
+    allowed_roles = (User.Role.ADMIN, *User.FIELD_STAFF_ROLES)
 
 
 class IsBusinessOrAdmin(HasRole):

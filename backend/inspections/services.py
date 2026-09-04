@@ -2,7 +2,8 @@
 
 from decimal import Decimal, InvalidOperation
 
-from django.db import transaction
+from django.conf import settings
+from django.db import models, transaction
 from django.utils import timezone
 
 from applications.models import Application
@@ -10,6 +11,7 @@ from applications.services import assert_transition
 from audit.services import record_event
 from authentication.models import User
 from instruments.models import Instrument
+from notifications import services as notify
 
 from .models import Inspection, Measurement
 
@@ -33,7 +35,7 @@ def visible_inspections(user):
     if user.role == User.Role.ADMIN:
         return queryset
 
-    if user.role == User.Role.OFFICER:
+    if user.role in User.FIELD_STAFF_ROLES:
         return queryset.filter(officer=user)
 
     if user.role == User.Role.BUSINESS and user.business_id:
@@ -62,6 +64,9 @@ def start_inspection(*, user, application):
         entity_id=inspection.id,
         metadata={"applicationNumber": application.application_number},
     )
+
+    if created:
+        notify.inspection_started(inspection)
 
     return inspection
 
@@ -96,7 +101,7 @@ def add_measurement(*, user, inspection, label, nominal_value, observed_value, u
     if inspection.completed_at is not None:
         raise InspectionError("This inspection is already complete.")
 
-    return Measurement.objects.create(
+    measurement = Measurement.objects.create(
         inspection=inspection,
         label=label,
         nominal_value=nominal_value,
@@ -104,6 +109,13 @@ def add_measurement(*, user, inspection, label, nominal_value, observed_value, u
         unit=unit,
         within_tolerance=evaluate_tolerance(nominal_value, observed_value),
     )
+
+    # Every change to the record bumps its version, so an offline client's
+    # expectedServerVersion can detect that the server moved on without it.
+    Inspection.objects.filter(pk=inspection.pk).update(version=models.F("version") + 1)
+    inspection.version += 1
+
+    return measurement
 
 
 @transaction.atomic
@@ -122,6 +134,11 @@ def complete_inspection(*, user, inspection, result, notes="", gps=None):
     if not inspection.measurements.exists():
         raise InspectionError("Record at least one reading before deciding.")
 
+    if settings.INSPECTION_REQUIRE_EVIDENCE and not inspection.evidence.exists():
+        raise InspectionError(
+            "Attach at least one evidence photo or document before deciding."
+        )
+
     application = inspection.application
 
     assert_transition(application, Application.State.COMPLETED, user)
@@ -129,6 +146,7 @@ def complete_inspection(*, user, inspection, result, notes="", gps=None):
     inspection.result = result
     inspection.notes = notes
     inspection.completed_at = timezone.now()
+    inspection.version += 1
 
     if gps:
         inspection.gps_latitude = gps.get("latitude")
@@ -156,5 +174,7 @@ def complete_inspection(*, user, inspection, result, notes="", gps=None):
         actor=user, action="INSPECTION_COMPLETED", entity_type="INSPECTION",
         entity_id=inspection.id, metadata={"result": result},
     )
+
+    notify.inspection_completed(inspection)
 
     return inspection

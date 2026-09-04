@@ -7,14 +7,15 @@ import { Officer } from "@/types/officer";
  * Officer directory for the admin assignment screen.
  *
  * There is no dedicated officers endpoint yet — OPS-001 owns workload counts —
- * so this reads the user directory filtered by role and maps it onto the shape
- * the screen renders. Caseload fields are reported as 0 rather than invented;
- * they become real when OPS-001 lands.
+ * so this reads the user directory filtered by role (both field-staff roles,
+ * LMO and GATC, are assignable) and maps it onto the shape the screen
+ * renders. Caseload fields are reported as 0 rather than invented; they
+ * become real when OPS-001 lands.
  */
 export const officersService = {
   async list(): Promise<Paginated<User>> {
     const { data } = await api.get<Paginated<User>>("/users/", {
-      params: { role: "OFFICER" },
+      params: { role: "LMO,GATC" },
     });
 
     return data;

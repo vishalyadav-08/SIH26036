@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   RefreshCw,
   CheckCircle2,
+  AlertTriangle,
   ArrowLeft,
   Trash2,
   Layers,
@@ -16,11 +17,12 @@ import {
 import { processOfflineSync } from "@/services/sync/sync.service";
 import { SyncOperation } from "@/types/sync";
 import { SyncStatusBadge } from "@/components/field/SyncStatusBadge";
+import { ConflictResolver } from "@/components/field/ConflictResolver";
 
 export default function SyncCenterPage() {
   const [queue, setQueue] = useState<SyncOperation[]>([]);
   const [syncing, setSyncing] = useState(false);
-  const [feedback, setFeedback] = useState<string | null>(null);
+  const [feedback, setFeedback] = useState<{ text: string; ok: boolean } | null>(null);
 
   const loadQueue = () => {
     setQueue(getSyncQueue());
@@ -35,7 +37,10 @@ export default function SyncCenterPage() {
     setFeedback(null);
     try {
       const res = await processOfflineSync();
-      setFeedback(res.message);
+      setFeedback({
+        text: res.message,
+        ok: res.failedCount === 0 && res.conflictCount === 0,
+      });
       loadQueue();
     } finally {
       setSyncing(false);
@@ -47,8 +52,16 @@ export default function SyncCenterPage() {
     loadQueue();
   };
 
-  const pendingCount = queue.filter((q) => q.status === "READY_TO_SYNC").length;
+  const pendingCount = queue.filter(
+    (q) => q.status === "READY_TO_SYNC" || q.status === "FAILED"
+  ).length;
   const syncedCount = queue.filter((q) => q.status === "SYNCED").length;
+  const conflictCount = queue.filter((q) => q.status === "CONFLICT").length;
+
+  const handleResolved = (message: string) => {
+    setFeedback({ text: message, ok: true });
+    loadQueue();
+  };
 
   return (
     <div className="space-y-6">
@@ -97,10 +110,18 @@ export default function SyncCenterPage() {
       {feedback && (
         <div
           role="status"
-          className="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs flex items-center gap-2"
+          className={`p-4 rounded-xl border text-xs flex items-center gap-2 ${
+            feedback.ok
+              ? "bg-emerald-50 border-emerald-200 text-emerald-900"
+              : "bg-amber-50 border-amber-200 text-amber-900"
+          }`}
         >
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-          <span>{feedback}</span>
+          {feedback.ok ? (
+            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          ) : (
+            <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+          )}
+          <span>{feedback.text}</span>
         </div>
       )}
 
@@ -113,6 +134,7 @@ export default function SyncCenterPage() {
           </div>
           <span className="text-xs text-slate-500 font-mono">
             {queue.length} total operations
+            {conflictCount > 0 && ` • ${conflictCount} need a decision`}
           </span>
         </div>
 
@@ -131,8 +153,9 @@ export default function SyncCenterPage() {
             {queue.map((op) => (
               <div
                 key={op.clientOperationId}
-                className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/70 transition-colors"
+                className="p-4 sm:p-5 hover:bg-slate-50/70 transition-colors"
               >
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <SyncStatusBadge status={op.status} />
@@ -150,7 +173,11 @@ export default function SyncCenterPage() {
                   <div className="text-[10px] text-slate-400 font-mono">
                     ID: {op.clientOperationId} • Created:{" "}
                     {new Date(op.createdAt).toLocaleTimeString()}
+                    {op.attemptCount > 0 && ` • Attempts: ${op.attemptCount}`}
                   </div>
+                  {op.lastError && op.status !== "SYNCED" && (
+                    <div className="text-[11px] text-rose-700">{op.lastError}</div>
+                  )}
                 </div>
 
                 {op.inspectionSummary?.result && (
@@ -166,6 +193,11 @@ export default function SyncCenterPage() {
                     </span>
                   </div>
                 )}
+              </div>
+
+              {op.status === "CONFLICT" && (
+                <ConflictResolver operation={op} onResolved={handleResolved} />
+              )}
               </div>
             ))}
           </div>

@@ -13,14 +13,18 @@ import {
   Menu,
   X,
   UserCheck,
+  Bell,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
+import { UnreadBadge } from "@/components/notifications/UnreadBadge";
 import { getSyncQueue } from "@/lib/offline-storage";
 
 const FIELD_NAV_ITEMS = [
   { label: "Dashboard", href: "/field", icon: LayoutDashboard },
   { label: "Inspections", href: "/field/inspections", icon: ClipboardCheck },
   { label: "Sync Center", href: "/field/sync", icon: RefreshCw },
+  { label: "Notifications", href: "/field/notifications", icon: Bell },
   { label: "Profile", href: "/field/profile", icon: User },
 ];
 
@@ -30,11 +34,15 @@ export function FieldHeader() {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [pendingSyncCount, setPendingSyncCount] = useState(0);
+  // Only when online: the badge is a server fact, not something to guess at.
+  const unread = useUnreadNotifications(Boolean(user));
 
   useEffect(() => {
     const updateCount = () => {
       const queue = getSyncQueue();
-      const pending = queue.filter((q) => q.status === "READY_TO_SYNC");
+      const pending = queue.filter(
+        (q) => q.status === "READY_TO_SYNC" || q.status === "FAILED" || q.status === "CONFLICT"
+      );
       setPendingSyncCount(pending.length);
     };
 
@@ -52,6 +60,11 @@ export function FieldHeader() {
     logout();
     router.replace("/login");
   };
+
+  const fieldRoleLabel =
+    user?.role === "GATC"
+      ? "Government Approved Test Centre"
+      : "Legal Metrology Officer";
 
   const isActive = (href: string) => {
     if (href === "/field") {
@@ -108,6 +121,9 @@ export function FieldHeader() {
                         {pendingSyncCount}
                       </span>
                     )}
+                    {item.href === "/field/notifications" && (
+                      <UnreadBadge count={unread} className="bg-emerald-600 text-white" />
+                    )}
                   </Link>
                 );
               })}
@@ -125,7 +141,7 @@ export function FieldHeader() {
                   {user?.displayName || "Inspector Sharma"}
                 </div>
                 <div className="text-[10px] text-slate-500 font-mono mt-0.5">
-                  OFFICER (LMO)
+                  {user?.role ?? "LMO"} ({fieldRoleLabel})
                 </div>
               </div>
             </div>
@@ -171,7 +187,7 @@ export function FieldHeader() {
                 {user?.displayName || "Inspector Sharma"}
               </div>
               <div className="text-[10px] text-slate-500 font-mono">
-                {user?.email} • Legal Metrology Officer
+                {user?.email} • {fieldRoleLabel}
               </div>
             </div>
           </div>
@@ -199,6 +215,9 @@ export function FieldHeader() {
                     <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500 text-slate-950">
                       {pendingSyncCount} pending
                     </span>
+                  )}
+                  {item.href === "/field/notifications" && (
+                    <UnreadBadge count={unread} className="bg-emerald-600 text-white" />
                   )}
                 </Link>
               );

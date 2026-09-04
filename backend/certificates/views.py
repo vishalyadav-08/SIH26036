@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from common.exceptions import Conflict
 from common.pagination import ContractPagination
-from common.permissions import IsAdmin, IsAdminOrOfficer
+from common.permissions import IsAdmin, IsAdminOrFieldStaff
 from inspections.services import visible_inspections
 
 from .serializers import (
@@ -29,7 +29,7 @@ class CertificateListCreateView(APIView):
         # Defence in depth: the service also refuses anyone who is not the
         # inspecting officer or an administrator.
         if self.request.method == "POST":
-            return [IsAdminOrOfficer()]
+            return [IsAdminOrFieldStaff()]
 
         return super().get_permissions()
 

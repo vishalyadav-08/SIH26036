@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from applications.services import IllegalTransition, OwnershipError, visible_applications
 from common.exceptions import Conflict
 from common.pagination import ContractPagination
-from common.permissions import IsOfficer
+from common.permissions import IsFieldStaff
 
 from .serializers import (
     CompleteInspectionSerializer,
@@ -42,13 +42,13 @@ class InspectionListCreateView(APIView):
         # Starting an inspection is the officer's act. Owners and admins may
         # read the record, but performing the work is not delegable.
         if self.request.method == "POST":
-            return [IsOfficer()]
+            return [IsFieldStaff()]
 
         return super().get_permissions()
 
     @extend_schema(responses={200: InspectionSerializer(many=True)})
     def get(self, request):
-        queryset = visible_inspections(request.user).prefetch_related("measurements")
+        queryset = visible_inspections(request.user).prefetch_related("measurements", "evidence__uploaded_by")
 
         paginator = ContractPagination()
         page = paginator.paginate_queryset(queryset, request, view=self)
@@ -78,7 +78,7 @@ class InspectionDetailView(APIView):
     @extend_schema(responses={200: InspectionSerializer})
     def get(self, request, inspection_id):
         inspection = get_object_or_404(
-            visible_inspections(request.user).prefetch_related("measurements"),
+            visible_inspections(request.user).prefetch_related("measurements", "evidence__uploaded_by"),
             id=inspection_id,
         )
 
@@ -86,7 +86,7 @@ class InspectionDetailView(APIView):
 
 
 class MeasurementView(APIView):
-    permission_classes = [IsOfficer]
+    permission_classes = [IsFieldStaff]
 
     @extend_schema(request=MeasurementCreateSerializer, responses={201: MeasurementSerializer})
     def post(self, request, inspection_id):
@@ -113,7 +113,7 @@ class MeasurementView(APIView):
 
 
 class CompleteInspectionView(APIView):
-    permission_classes = [IsOfficer]
+    permission_classes = [IsFieldStaff]
 
     @extend_schema(request=CompleteInspectionSerializer, responses={200: InspectionSerializer})
     def post(self, request, inspection_id):

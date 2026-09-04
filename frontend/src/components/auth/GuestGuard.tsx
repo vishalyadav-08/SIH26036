@@ -3,6 +3,7 @@
 import { useEffect, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { getDefaultRouteForRole } from "@/lib/roleRouting";
 
 export function GuestGuard({ children }: { children: ReactNode }) {
   const { user, isAuthenticated, isLoading } = useAuth();
@@ -10,13 +11,7 @@ export function GuestGuard({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated && user) {
-      if (user.role === "BUSINESS") {
-        router.replace("/app");
-      } else if (user.role === "OFFICER") {
-        router.replace("/field");
-      } else {
-        router.replace("/admin");
-      }
+      router.replace(getDefaultRouteForRole(user.role));
     }
   }, [isAuthenticated, isLoading, user, router]);
 

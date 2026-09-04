@@ -6,6 +6,7 @@ from django.utils import timezone
 from audit.services import record_event
 from authentication.models import User
 from instruments.models import Instrument
+from notifications import services as notify
 
 from .models import Application, ApplicationAssignment
 
@@ -31,11 +32,11 @@ INITIATOR = {
     (S.SUBMITTED, S.REJECTED): {User.Role.ADMIN},
     (S.SUBMITTED, S.CANCELLED): {User.Role.BUSINESS, User.Role.ADMIN},
     # The assigned officer books their own visit; an admin may also do it.
-    (S.ASSIGNED, S.SCHEDULED): {User.Role.ADMIN, User.Role.OFFICER},
+    (S.ASSIGNED, S.SCHEDULED): {User.Role.ADMIN, *User.FIELD_STAFF_ROLES},
     (S.ASSIGNED, S.CANCELLED): {User.Role.ADMIN},
-    (S.SCHEDULED, S.INSPECTION_IN_PROGRESS): {User.Role.OFFICER},
-    (S.SCHEDULED, S.CANCELLED): {User.Role.ADMIN, User.Role.OFFICER},
-    (S.INSPECTION_IN_PROGRESS, S.COMPLETED): {User.Role.OFFICER},
+    (S.SCHEDULED, S.INSPECTION_IN_PROGRESS): {*User.FIELD_STAFF_ROLES},
+    (S.SCHEDULED, S.CANCELLED): {User.Role.ADMIN, *User.FIELD_STAFF_ROLES},
+    (S.INSPECTION_IN_PROGRESS, S.COMPLETED): {*User.FIELD_STAFF_ROLES},
     (S.INSPECTION_IN_PROGRESS, S.CANCELLED): {User.Role.ADMIN},
 }
 
@@ -76,7 +77,7 @@ def visible_applications(user):
 
         return queryset.filter(business_id=user.business_id)
 
-    # OFFICER: only work actually assigned to them.
+    # LMO/GATC: only work actually assigned to them.
     return queryset.filter(
         assignments__officer=user, assignments__unassigned_at__isnull=True
     ).distinct()
@@ -117,6 +118,9 @@ def create_application(*, user, instrument_id, reason, submit):
         metadata={"applicationNumber": application.application_number, "state": application.state},
     )
 
+    if submit:
+        notify.application_submitted(application)
+
     return application
 
 
@@ -139,6 +143,8 @@ def submit_application(*, user, application):
         entity_id=application.id, metadata={"state": application.state},
     )
 
+    notify.application_submitted(application)
+
     return application
 
 
@@ -147,7 +153,7 @@ def assign_officer(*, user, application, officer_id, note=""):
     assert_transition(application, S.ASSIGNED, user)
 
     officer = User.objects.filter(
-        id=officer_id, role=User.Role.OFFICER, is_active=True
+        id=officer_id, role__in=User.FIELD_STAFF_ROLES, is_active=True
     ).first()
 
     if officer is None:
@@ -166,31 +172,21 @@ def assign_officer(*, user, application, officer_id, note=""):
         entity_id=application.id, metadata={"officerUserId": str(officer.id)},
     )
 
+    notify.application_assigned(application, officer)
+
     return application
 
 
-@transaction.atomic
-def schedule_application(*, user, application, scheduled_at):
-    assert_transition(application, S.SCHEDULED, user)
+def schedule_application(*, user, application, scheduled_at, note=""):
+    """ASSIGNED -> SCHEDULED. The scheduling module owns the booking itself
+    (appointment history, officer double-booking policy); this keeps the
+    transition callable from the application's own service surface.
 
-    # An officer may schedule only the work actually assigned to them.
-    if user.role == User.Role.OFFICER:
-        assignment = application.active_assignment
+    Imported lazily: scheduling depends on this module for assert_transition.
+    """
+    from scheduling.services import book_visit
 
-        if assignment is None or assignment.officer_id != user.id:
-            raise OwnershipError("You are not assigned to this application.")
-
-    if scheduled_at <= timezone.now():
-        raise IllegalTransition("Schedule a visit in the future.")
-
-    application.state = S.SCHEDULED
-    application.scheduled_at = scheduled_at
-    application.save(update_fields=["state", "scheduled_at", "updated_at"])
-
-    record_event(
-        actor=user, action="APPLICATION_SCHEDULED", entity_type="APPLICATION",
-        entity_id=application.id, metadata={"scheduledAt": scheduled_at.isoformat()},
-    )
+    book_visit(user=user, application=application, scheduled_at=scheduled_at, note=note)
 
     return application
 
@@ -211,6 +207,8 @@ def reject_application(*, user, application, reason):
         entity_id=application.id, metadata={"reason": reason},
     )
 
+    notify.application_rejected(application)
+
     return application
 
 
@@ -221,13 +219,23 @@ def cancel_application(*, user, application, reason):
     if not reason:
         raise IllegalTransition("A cancellation reason is required.")
 
+    was_scheduled = application.state == S.SCHEDULED
+
     application.state = S.CANCELLED
     application.cancellation_reason = reason
     application.save(update_fields=["state", "cancellation_reason", "updated_at"])
+
+    if was_scheduled:
+        # Free the officer's slot; the cancellation itself is the audited act.
+        from scheduling.services import cancel_active_schedule
+
+        cancel_active_schedule(application=application, reason=reason)
 
     record_event(
         actor=user, action="APPLICATION_CANCELLED", entity_type="APPLICATION",
         entity_id=application.id, metadata={"reason": reason},
     )
+
+    notify.application_cancelled(application, actor=user)
 
     return application

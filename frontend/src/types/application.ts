@@ -20,6 +20,15 @@ export interface Application {
   state: ApplicationState;
   reason: string;
   scheduledDate?: string;
+  /** The current CONFIRMED appointment; null until scheduled. */
+  schedule?: {
+    id: string;
+    officerUserId: string;
+    officerName: string;
+    scheduledAt: string;
+    scheduleNote: string;
+    status: "CONFIRMED";
+  } | null;
   assignedOfficerId?: string;
   assignedOfficerName?: string;
   certificateId?: string;

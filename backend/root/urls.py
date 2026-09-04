@@ -21,7 +21,9 @@ urlpatterns = [
     path(f"{API}applications/", include("applications.urls")),
     path(f"{API}schedules/", include("scheduling.urls")),
     path(f"{API}inspections/", include("inspections.urls")),
-    path(f"{API}evidence/", include("evidence.urls")),
+    # Evidence owns both /inspections/{id}/evidence/ and /evidence/{id}/, so
+    # it mounts at the API root like the other cross-prefix modules below.
+    path(f"{API}", include("evidence.urls")),
     # Public verification first: it must stay unauthenticated even though
     # it lives under the /certificates/ prefix.
     path(f"{API}", include("verification.urls")),

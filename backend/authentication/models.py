@@ -19,8 +19,15 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     class Role(models.TextChoices):
         ADMIN = "ADMIN", "Administrator"
-        OFFICER = "OFFICER", "Legal Metrology Officer"
+        LMO = "LMO", "Legal Metrology Officer"
+        GATC = "GATC", "Government Approved Test Centre"
         BUSINESS = "BUSINESS", "Business / Instrument Owner"
+
+    # Field staff: assignable to applications/inspections and scoped to only
+    # their own assigned work. LMO and GATC are authorization-equivalent
+    # everywhere this appears — the distinction is organizational, not a
+    # difference in what the API lets either of them do.
+    FIELD_STAFF_ROLES = (Role.LMO, Role.GATC)
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
@@ -30,7 +37,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     role = models.CharField(max_length=10, choices=Role.choices)
 
-    # Required for BUSINESS users, absent for ADMIN/OFFICER (DATA_MODEL.md).
+    # Required for BUSINESS users, absent for ADMIN/LMO/GATC (DATA_MODEL.md).
     # PROTECT: deleting a Business must not silently orphan its users.
     business = models.ForeignKey(
         "businesses.Business",

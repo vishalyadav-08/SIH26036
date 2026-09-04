@@ -16,6 +16,8 @@ import {
   Building2,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
+import { UnreadBadge } from "@/components/notifications/UnreadBadge";
 
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/app", icon: LayoutDashboard },
@@ -30,6 +32,7 @@ export function BusinessHeader() {
   const router = useRouter();
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const unread = useUnreadNotifications(Boolean(user));
 
   const handleLogout = () => {
     logout();
@@ -86,6 +89,9 @@ export function BusinessHeader() {
                   >
                     <Icon className="w-4 h-4" />
                     <span>{item.label}</span>
+                    {item.href === "/app/notifications" && (
+                      <UnreadBadge count={unread} className="bg-blue-600 text-white" />
+                    )}
                   </Link>
                 );
               })}

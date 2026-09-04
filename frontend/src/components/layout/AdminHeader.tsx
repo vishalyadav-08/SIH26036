@@ -19,6 +19,8 @@ import {
   Bell,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
+import { useUnreadNotifications } from "@/hooks/useUnreadNotifications";
+import { UnreadBadge } from "@/components/notifications/UnreadBadge";
 
 const ADMIN_NAV_ITEMS = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -35,6 +37,7 @@ export function AdminHeader() {
   const router = useRouter();
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const unread = useUnreadNotifications(Boolean(user));
 
   const handleLogout = () => {
     logout();
@@ -106,7 +109,11 @@ export function AdminHeader() {
               aria-label="Departmental Notifications"
             >
               <Bell className="w-4 h-4" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-indigo-600 ring-2 ring-white" />
+              {unread > 0 && (
+                <span className="absolute -top-1 -right-1">
+                  <UnreadBadge count={unread} className="bg-indigo-600 text-white" />
+                </span>
+              )}
             </Link>
 
             <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200">
@@ -199,6 +206,7 @@ export function AdminHeader() {
             >
               <Bell className="w-3.5 h-3.5" />
               <span>Notifications</span>
+              <UnreadBadge count={unread} className="bg-indigo-600 text-white" />
             </Link>
 
             <button

@@ -1,9 +1,37 @@
 "use client";
 
 import Script from "next/script";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useCallback, useId, useRef, useState } from "react";
 
 const CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+
+/** The subset of Google Identity Services this component touches. */
+interface GoogleIdentity {
+  accounts?: {
+    id?: {
+      initialize: (config: {
+        client_id: string;
+        callback: (response: { credential?: string }) => void;
+      }) => void;
+      renderButton: (
+        parent: HTMLElement,
+        options: {
+          theme: "outline" | "filled_blue" | "filled_black";
+          size: "large" | "medium" | "small";
+          width?: number;
+          text?: "signin_with" | "signup_with" | "continue_with";
+          shape?: "rectangular" | "pill" | "circle" | "square";
+        }
+      ) => void;
+    };
+  };
+}
+
+declare global {
+  interface Window {
+    google?: GoogleIdentity;
+  }
+}
 
 interface GoogleAuthButtonProps {
   /** Receives the Google ID token. The caller decides sign-in vs sign-up. */
@@ -39,33 +67,30 @@ export function GoogleAuthButton({
     [onCredential]
   );
 
-  useEffect(() => {
-    if (!scriptReady || !CLIENT_ID || !containerRef.current) return;
+  // Runs from the script's onLoad (an event, not an effect): the SDK is
+  // present exactly once, and the container is already mounted.
+  const initialize = useCallback(() => {
+    const identity = window.google?.accounts?.id;
 
-    const google = (window as unknown as { google?: any }).google;
-
-    if (!google?.accounts?.id) {
+    if (!CLIENT_ID || !identity || !containerRef.current) {
       setFailed(true);
       return;
     }
 
     try {
-      google.accounts.id.initialize({
-        client_id: CLIENT_ID,
-        callback: handleCredential,
-      });
-
-      google.accounts.id.renderButton(containerRef.current, {
+      identity.initialize({ client_id: CLIENT_ID, callback: handleCredential });
+      identity.renderButton(containerRef.current, {
         theme: "outline",
         size: "large",
         width: 320,
         text,
         shape: "rectangular",
       });
+      setScriptReady(true);
     } catch {
       setFailed(true);
     }
-  }, [scriptReady, handleCredential, text]);
+  }, [handleCredential, text]);
 
   if (!CLIENT_ID) {
     return (
@@ -82,7 +107,7 @@ export function GoogleAuthButton({
       <Script
         src="https://accounts.google.com/gsi/client"
         strategy="afterInteractive"
-        onLoad={() => setScriptReady(true)}
+        onLoad={initialize}
         onError={() => setFailed(true)}
       />
 

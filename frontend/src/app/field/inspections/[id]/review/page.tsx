@@ -36,6 +36,7 @@ export default function InspectionReviewPage({
   const [submittedStatus, setSubmittedStatus] = useState<{
     queuedOffline: boolean;
   } | null>(null);
+  const [rejection, setRejection] = useState<string | null>(null);
 
   useEffect(() => {
     Promise.resolve().then(() => {
@@ -65,6 +66,10 @@ export default function InspectionReviewPage({
           instrumentNumber: app?.instrumentNumber || "INS-DEMO",
         }
       );
+      if (!outcome.success) {
+        setRejection(outcome.message ?? "The server rejected the decision.");
+        return;
+      }
       setSubmittedStatus({ queuedOffline: outcome.queuedOffline });
     } finally {
       setIsSubmitting(false);
@@ -74,6 +79,8 @@ export default function InspectionReviewPage({
   const checklistPassedCount = draft?.checklist.filter((c) => c.passed).length || 0;
   const readingsCount = draft?.measurements.length || 0;
   const evidenceCount = draft?.evidence.length || 0;
+  const evidencePending =
+    draft?.evidence.filter((e) => !e.serverId && e.uploadState !== "UPLOADED").length || 0;
 
   if (submittedStatus) {
     return (
@@ -175,15 +182,40 @@ export default function InspectionReviewPage({
           </div>
         </div>
 
-        <div className="p-4 rounded-xl bg-white border border-slate-200 space-y-1">
+        <div
+          className={`p-4 rounded-xl bg-white border space-y-1 ${
+            evidenceCount === 0 ? "border-amber-300" : "border-slate-200"
+          }`}
+        >
           <div className="text-xs font-bold text-slate-500 uppercase">
             3. Photo Evidence
           </div>
           <div className="text-base font-extrabold text-slate-900">
-            {evidenceCount} Blobs Attached
+            {evidenceCount} Attached
           </div>
+          {evidencePending > 0 && (
+            <div className="text-[11px] text-amber-800">
+              {evidencePending} on this device; sent with the decision.
+            </div>
+          )}
         </div>
       </div>
+
+      {evidenceCount === 0 && (
+        <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 flex items-start gap-2">
+          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+          <span>
+            No evidence attached. The server refuses a decision without at least one photo or
+            document.{" "}
+            <Link
+              href={`/field/inspections/${resolvedParams.id}/evidence`}
+              className="font-semibold underline"
+            >
+              Add evidence
+            </Link>
+          </span>
+        </div>
+      )}
 
       {/* Decision Card */}
       <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-xs space-y-6">
@@ -261,6 +293,16 @@ export default function InspectionReviewPage({
             className="block w-full p-3 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
           />
         </div>
+
+        {rejection && (
+          <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-xs text-rose-900 flex items-start gap-2">
+            <XCircle className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+            <span>
+              Rejected by the server: {rejection} The operation is kept in the Sync Center with
+              this reason.
+            </span>
+          </div>
+        )}
 
         {/* Submit Button */}
         <div className="pt-4 border-t border-slate-100 flex justify-end">

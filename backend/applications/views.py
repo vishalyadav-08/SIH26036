@@ -154,6 +154,7 @@ class ScheduleView(ApplicationActionView):
             user=request.user,
             application=self.get_application(request, application_id),
             scheduled_at=serializer.validated_data["scheduledAt"],
+            note=serializer.validated_data.get("scheduleNote", ""),
         )
 
         return Response(ApplicationSerializer(application).data)

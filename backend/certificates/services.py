@@ -11,6 +11,7 @@ from audit.services import record_event
 from authentication.models import User
 from common.canonical import canonical_json, sha256_hex
 from inspections.models import Inspection
+from notifications import services as notify
 
 from .crypto import sign_payload, verify_payload
 from .models import Certificate
@@ -60,7 +61,7 @@ def visible_certificates(user):
     if user.role == User.Role.BUSINESS and user.business_id:
         return queryset.filter(business_id=user.business_id)
 
-    if user.role == User.Role.OFFICER:
+    if user.role in User.FIELD_STAFF_ROLES:
         return queryset.filter(inspection__officer=user)
 
     return queryset.none()
@@ -78,7 +79,7 @@ def issue_certificate(*, user, inspection):
     # their own inspection, so gating issuance on visibility alone would have
     # let them issue their own certificate. Only the officer who performed the
     # inspection, or an administrator, may issue one.
-    if user.role == User.Role.OFFICER:
+    if user.role in User.FIELD_STAFF_ROLES:
         if inspection.officer_id != user.id:
             raise CertificateError("Only the inspecting officer may issue this certificate.")
     elif user.role != User.Role.ADMIN:
@@ -139,6 +140,8 @@ def issue_certificate(*, user, inspection):
         entity_id=certificate.id,
         metadata={"certificateNumber": certificate_number, "payloadHash": payload_hash},
     )
+
+    notify.certificate_issued(certificate)
 
     return certificate
 
@@ -232,5 +235,7 @@ def revoke_certificate(*, user, certificate, reason):
         actor=user, action="CERTIFICATE_REVOKED", entity_type="CERTIFICATE",
         entity_id=certificate.id, metadata={"reason": reason},
     )
+
+    notify.certificate_revoked(certificate)
 
     return certificate

@@ -155,6 +155,24 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
+# Where uploads land when object storage is not configured (see below).
+# Files are never served from here directly: /api/v1/evidence/{id}/file/
+# checks access on every request.
+MEDIA_URL = "media/"
+# Overridable so a throwaway database run (seed checks, CI) can point its
+# files somewhere throwaway too.
+MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT", BASE_DIR / "media"))
+
+# Per-item evidence limit (DATA_MODEL.md "Evidence limits"). Prototype value.
+EVIDENCE_MAX_BYTES = 10 * 1024 * 1024
+
+# DEMO/CONFIGURABLE (ADR-016): an inspection needs at least one evidence item
+# before a decision can be recorded. Off only for environments that have no
+# way to attach files.
+INSPECTION_REQUIRE_EVIDENCE = os.getenv("INSPECTION_REQUIRE_EVIDENCE", "true").lower() in (
+    "1", "true", "yes",
+)
+
 # Object storage (ADR-007) --------------------------------------------------
 # Evidence images and certificate PDFs go to MinIO via the S3 API. Left on the
 # local filesystem until MINIO_ENDPOINT is set, so nothing breaks before the

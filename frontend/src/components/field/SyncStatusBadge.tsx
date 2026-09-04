@@ -1,4 +1,4 @@
-import { CheckCircle2, Clock, AlertTriangle, CloudOff } from "lucide-react";
+import { CheckCircle2, Clock, AlertTriangle, CloudOff, RefreshCw } from "lucide-react";
 import { SyncStatus } from "@/types/sync";
 
 export function SyncStatusBadge({ status }: { status: SyncStatus | "LOCAL_DRAFT" }) {
@@ -15,6 +15,13 @@ export function SyncStatusBadge({ status }: { status: SyncStatus | "LOCAL_DRAFT"
         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-50 text-amber-800 border border-amber-200">
           <Clock className="w-3 h-3" />
           <span>READY TO SYNC</span>
+        </span>
+      );
+    case "SYNCING":
+      return (
+        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700 border border-slate-200">
+          <RefreshCw className="w-3 h-3 animate-spin" />
+          <span>SYNCING</span>
         </span>
       );
     case "LOCAL_DRAFT":

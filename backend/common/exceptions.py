@@ -22,6 +22,26 @@ class Conflict(APIException):
     default_code = "CONFLICT"
 
 
+class FileTooLarge(APIException):
+    """413 — an upload exceeds the per-item evidence limit."""
+
+    status_code = status.HTTP_413_REQUEST_ENTITY_TOO_LARGE
+    default_detail = "The file is too large."
+    default_code = "FILE_TOO_LARGE"
+
+
+class UnsupportedMediaType(APIException):
+    """415 — the bytes are not an allowlisted evidence format.
+
+    Not DRF's own UnsupportedMediaType: that one is about the request body's
+    Content-Type and needs the media type as an argument.
+    """
+
+    status_code = status.HTTP_415_UNSUPPORTED_MEDIA_TYPE
+    default_detail = "Unsupported file type."
+    default_code = "UNSUPPORTED_MEDIA_TYPE"
+
+
 class InvalidCredentials(APIException):
     """Login failed — for any reason.
 
@@ -52,6 +72,8 @@ DEFAULT_MESSAGES = {
     "FORBIDDEN": "You do not have access to this resource.",
     "NOT_FOUND": "The requested resource does not exist.",
     "CONFLICT": "The request conflicts with the current state.",
+    "FILE_TOO_LARGE": "The file is too large.",
+    "UNSUPPORTED_MEDIA_TYPE": "Unsupported file type.",
     "RATE_LIMITED": "Too many requests. Try again later.",
     "INTERNAL_ERROR": "Something went wrong.",
 }

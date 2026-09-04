@@ -46,9 +46,9 @@ def visible_instruments(user):
 
         return queryset.filter(business_id=user.business_id)
 
-    # OFFICER sees instruments reached through assigned work. Assignment is
+    # LMO/GATC see instruments reached through assigned work. Assignment is
     # OPS-001 and does not exist yet, so the honest answer today is none —
-    # rather than quietly granting officers the whole registry.
+    # rather than quietly granting field staff the whole registry.
     return queryset.none()
 
 

@@ -13,6 +13,8 @@ from applications.models import Application, ApplicationAssignment
 from authentication.models import User
 from certificates.models import Certificate
 from inspections.models import Inspection
+from scheduling.models import Schedule
+from sync.models import SyncRecord
 
 
 def _counts(queryset, field):
@@ -58,6 +60,23 @@ def admin_dashboard():
         "beyond90Days": active.filter(valid_until__gte=now + timedelta(days=90)).count(),
     }
 
+    sync_counts = _counts(SyncRecord.objects.all(), "status")
+
+    today = timezone.localdate()
+    confirmed = Schedule.objects.filter(status=Schedule.Status.CONFIRMED)
+
+    visits = {
+        "today": confirmed.filter(scheduled_at__date=today).count(),
+        "next7Days": confirmed.filter(
+            scheduled_at__date__gt=today,
+            scheduled_at__date__lte=today + timedelta(days=7),
+        ).count(),
+        # A confirmed visit whose time has passed with no inspection started.
+        "overdue": confirmed.filter(
+            scheduled_at__lt=now, application__state=Application.State.SCHEDULED
+        ).count(),
+    }
+
     officer_workload = [
         {
             "officerUserId": str(officer.id),
@@ -75,8 +94,11 @@ def admin_dashboard():
             "completedInspections": officer.inspections.filter(
                 completed_at__isnull=False
             ).count(),
+            "upcomingVisits": officer.schedules.filter(
+                status=Schedule.Status.CONFIRMED, scheduled_at__gte=now
+            ).count(),
         }
-        for officer in User.objects.filter(role=User.Role.OFFICER, is_active=True)
+        for officer in User.objects.filter(role__in=User.FIELD_STAFF_ROLES, is_active=True)
     ]
 
     return {
@@ -84,9 +106,15 @@ def admin_dashboard():
         "inspectionCountsByResult": inspection_counts,
         "certificateCountsByStatus": certificate_counts,
         "expiryBuckets": expiry_buckets,
-        # The offline sync module is not implemented yet, so this is honestly
-        # zero rather than a fabricated figure.
-        "syncExceptions": 0,
+        "visits": visits,
+        # Offline operations the server refused or could not reconcile; each
+        # is something an officer or admin still has to look at.
+        "syncExceptions": SyncRecord.objects.filter(
+            status__in=[SyncRecord.Status.FAILED, SyncRecord.Status.CONFLICT]
+        ).count(),
+        "syncCountsByStatus": {
+            status: sync_counts.get(status, 0) for status, _ in SyncRecord.Status.choices
+        },
         "officerWorkload": officer_workload,
         "generatedAt": now,
     }

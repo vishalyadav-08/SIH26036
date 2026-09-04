@@ -88,7 +88,7 @@ class GoogleLoginView(APIView):
     """POST /api/v1/auth/google — sign in with a Google ID token.
 
     Google is a sign-in method only. An unrecognised Google identity is
-    rejected rather than provisioned: OFFICER and ADMIN are authorised roles
+    rejected rather than provisioned: LMO, GATC and ADMIN are authorised roles
     granted by an administrator, and no consumer identity provider decides who
     holds one.
     """
@@ -246,7 +246,9 @@ class UserListView(APIView):
 
         role = request.query_params.get("role")
         if role:
-            queryset = queryset.filter(role=role)
+            queryset = queryset.filter(
+                role__in=[r.strip() for r in role.split(",") if r.strip()]
+            )
 
         active = request.query_params.get("active")
         if active is not None:

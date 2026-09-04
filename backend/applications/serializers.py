@@ -42,6 +42,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
     certificateId = serializers.SerializerMethodField()
     certificateNumber = serializers.SerializerMethodField()
     assignment = serializers.SerializerMethodField()
+    schedule = serializers.SerializerMethodField()
 
     class Meta:
         model = Application
@@ -49,7 +50,7 @@ class ApplicationSerializer(serializers.ModelSerializer):
             "id", "applicationNumber", "instrumentId", "instrumentNumber",
             "businessId", "submittedByUserId", "state", "reason",
             "requestedAt", "assignedAt", "scheduledAt", "completedAt",
-            "rejectionReason", "cancellationReason", "assignment",
+            "rejectionReason", "cancellationReason", "assignment", "schedule",
             "instrumentType", "businessName", "scheduledDate",
             "assignedOfficerId", "assignedOfficerName",
             "certificateId", "certificateNumber",
@@ -82,6 +83,22 @@ class ApplicationSerializer(serializers.ModelSerializer):
 
         return AssignmentSerializer(active).data if active else None
 
+    def get_schedule(self, obj):
+        """The current appointment, if any. Full history is under /schedules/."""
+        current = obj.schedules.filter(status="CONFIRMED").select_related("officer").first()
+
+        if current is None:
+            return None
+
+        return {
+            "id": str(current.id),
+            "officerUserId": str(current.officer_id),
+            "officerName": current.officer.display_name,
+            "scheduledAt": current.scheduled_at.isoformat(),
+            "scheduleNote": current.schedule_note,
+            "status": current.status,
+        }
+
 
 class ApplicationCreateSerializer(serializers.Serializer):
     instrumentId = serializers.UUIDField()
@@ -96,6 +113,7 @@ class AssignSerializer(serializers.Serializer):
 
 class ScheduleSerializer(serializers.Serializer):
     scheduledAt = serializers.DateTimeField()
+    scheduleNote = serializers.CharField(max_length=500, required=False, allow_blank=True)
 
 
 class ReasonSerializer(serializers.Serializer):

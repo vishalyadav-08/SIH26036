@@ -3,6 +3,7 @@
 import { useEffect, ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
+import { getDefaultRouteForRole } from "@/lib/roleRouting";
 import { UserRole } from "@/types/auth";
 
 export interface AuthGuardProps {
@@ -28,13 +29,7 @@ export function AuthGuard({
     }
 
     if (allowedRoles && !allowedRoles.includes(user.role)) {
-      if (user.role === "BUSINESS") {
-        router.replace("/app");
-      } else if (user.role === "OFFICER") {
-        router.replace("/field");
-      } else {
-        router.replace("/admin");
-      }
+      router.replace(getDefaultRouteForRole(user.role));
     }
   }, [isAuthenticated, isLoading, user, router, pathname, allowedRoles]);
 

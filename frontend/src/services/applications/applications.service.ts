@@ -48,9 +48,10 @@ export const applicationsService = {
     return data;
   },
 
-  async schedule(id: string, scheduledAt: string) {
+  async schedule(id: string, scheduledAt: string, scheduleNote = "") {
     const { data } = await api.post<Application>(`/applications/${id}/schedule/`, {
       scheduledAt,
+      scheduleNote,
     });
 
     return data;
@@ -112,7 +113,7 @@ export async function assignOfficerToApplication(
 export async function scheduleApplicationVisit(
   id: string,
   scheduledAt: string,
-  _note?: string
+  note?: string
 ) {
-  return applicationsService.schedule(id, scheduledAt);
+  return applicationsService.schedule(id, scheduledAt, note ?? "");
 }

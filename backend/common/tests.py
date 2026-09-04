@@ -7,6 +7,7 @@ refused. TESTING_SECURITY.md critical tests 1-4 live here.
 from datetime import timedelta
 
 from django.core.cache import cache
+from django.test import override_settings
 from django.urls import reverse
 from django.utils import timezone
 from rest_framework import status
@@ -22,6 +23,8 @@ from instruments.models import Instrument
 PASSWORD = "synthetic-password-123"
 
 
+# The role matrix is about who may do what; the evidence rule has its own tests.
+@override_settings(INSPECTION_REQUIRE_EVIDENCE=False)
 class MatrixTestCase(APITestCase):
     def setUp(self):
         cache.clear()
@@ -30,8 +33,8 @@ class MatrixTestCase(APITestCase):
             legal_name="Alpha Ltd", contact_name="A", email="a@x.test", address="addr"
         )
         self.owner = self._user("owner@x.test", User.Role.BUSINESS, self.biz)
-        self.officer = self._user("officer@x.test", User.Role.OFFICER)
-        self.other_officer = self._user("officer2@x.test", User.Role.OFFICER)
+        self.officer = self._user("officer@x.test", User.Role.LMO)
+        self.other_officer = self._user("officer2@x.test", User.Role.LMO)
         self.admin = self._user("admin@x.test", User.Role.ADMIN)
 
         self.instrument = Instrument.objects.create(
@@ -150,7 +153,7 @@ class ShopOwnerTests(MatrixTestCase):
 
 
 class OfficerTests(MatrixTestCase):
-    """View assigned requests · schedule · perform inspections · generate certificates."""
+    """LMO: view assigned requests · schedule · perform inspections · generate certificates."""
 
     def _assigned_application(self):
         a = app_svc.create_application(
@@ -242,11 +245,11 @@ class AdminTests(MatrixTestCase):
 
         response = self.client.post(reverse("user-list"), {
             "email": "new.officer@x.test", "displayName": "New Officer",
-            "role": "OFFICER", "password": "synthetic-password-123",
+            "role": "LMO", "password": "synthetic-password-123",
         })
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["role"], "OFFICER")
+        self.assertEqual(response.data["role"], "LMO")
         self.assertNotIn("password", str(response.data).lower())
 
     def test_business_account_requires_a_business(self):
@@ -312,3 +315,63 @@ class AdminTests(MatrixTestCase):
         self.assertEqual(dashboard.status_code, status.HTTP_200_OK)
         self.assertEqual(dashboard.data["inspectionCountsByResult"]["PASS"], 1)
         self.assertEqual(len(dashboard.data["officerWorkload"]), 2)
+
+
+class GatcTests(MatrixTestCase):
+    """GATC is authorization-equivalent to LMO: same field-staff powers, own scope only."""
+
+    def setUp(self):
+        super().setUp()
+        self.gatc = self._user("gatc@x.test", User.Role.GATC)
+
+    def _assigned_application(self):
+        a = app_svc.create_application(
+            user=self.owner, instrument_id=self.instrument.id, reason="r", submit=True
+        )
+
+        return app_svc.assign_officer(user=self.admin, application=a, officer_id=self.gatc.id)
+
+    def test_sees_only_assigned_requests(self):
+        self._assigned_application()
+
+        self.auth(self.gatc)
+        mine = self.client.get(reverse("application-list-create"))
+        self.assertEqual(mine.data["totalItems"], 1)
+
+        self.auth(self.officer)
+        theirs = self.client.get(reverse("application-list-create"))
+        self.assertEqual(theirs.data["totalItems"], 0)
+
+    def test_can_perform_inspection_and_generate_certificate(self):
+        a = self._assigned_application()
+        a = app_svc.schedule_application(
+            user=self.admin, application=a, scheduled_at=timezone.now() + timedelta(days=1)
+        )
+        i = insp_svc.start_inspection(user=self.gatc, application=a)
+        insp_svc.add_measurement(
+            user=self.gatc, inspection=i, label="L", nominal_value=10,
+            observed_value="10.010", unit="kg",
+        )
+        inspection = insp_svc.complete_inspection(user=self.gatc, inspection=i, result="PASS")
+
+        self.auth(self.gatc)
+        response = self.client.post(
+            reverse("certificate-list-create"), {"inspectionId": str(inspection.id)}
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(response.data["certificateNumber"])
+
+    def test_cannot_register_instruments_or_manage_users(self):
+        self.auth(self.gatc)
+
+        registration = self.client.post(reverse("instrument-list-create"), {
+            "instrumentNumber": "INS-9", "serialNumber": "SN-9",
+            "instrumentType": "COUNTER_SCALE", "manufacturer": "M", "model": "Y",
+            "capacity": "5.000", "capacityUnit": "kg", "location": "X",
+        })
+        self.assertEqual(registration.status_code, status.HTTP_403_FORBIDDEN)
+
+        self.assertEqual(
+            self.client.get(reverse("user-list")).status_code, status.HTTP_403_FORBIDDEN
+        )

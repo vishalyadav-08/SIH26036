@@ -1,6 +1,6 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { AlertCircle, ArrowLeft, CheckCircle2, Gauge, Save } from "lucide-react";
@@ -35,11 +35,14 @@ export default function EditInstrumentPage({
 
   const saving = update.isPending;
 
-  useEffect(() => {
-    if (!instrument) return;
+  // Pre-fill from the server record once it arrives, so an untouched field
+  // is submitted exactly as stored rather than blanked. Done as a state
+  // adjustment during render (keyed on the record id) instead of an effect,
+  // so the form never paints a frame empty and then refills.
+  const [seededFor, setSeededFor] = useState<string | null>(null);
 
-    // Pre-fill from the server record so an untouched field is submitted
-    // exactly as stored, rather than blanked.
+  if (instrument && seededFor !== instrument.id) {
+    setSeededFor(instrument.id);
     setFormData({
       instrumentNumber: instrument.instrumentNumber,
       serialNumber: instrument.serialNumber ?? "",
@@ -50,7 +53,7 @@ export default function EditInstrumentPage({
       capacityUnit: instrument.capacityUnit,
       location: instrument.location ?? "",
     });
-  }, [instrument]);
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

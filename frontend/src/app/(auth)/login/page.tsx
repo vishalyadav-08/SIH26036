@@ -21,6 +21,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { GoogleAuthButton } from "@/components/auth/GoogleAuthButton";
 import { readApiError } from "@/lib/api-error";
+import { getDefaultRouteForRole } from "@/lib/roleRouting";
 import { GuestGuard } from "@/components/auth/GuestGuard";
 import { loginSchema, LoginFormData } from "@/schemas/auth/auth.schema";
 
@@ -58,41 +59,29 @@ function LoginForm() {
       });
 
       // Handle post-login redirection based on role & query param
-      const defaultWorkspace =
-        loggedUser.role === "BUSINESS"
-          ? "/app"
-          : loggedUser.role === "OFFICER"
-          ? "/field"
-          : "/admin";
+      const workspace = getDefaultRouteForRole(loggedUser.role);
 
-      if (redirectParam && redirectParam.startsWith("/")) {
-        if (
-          loggedUser.role === "BUSINESS" &&
-          (redirectParam.startsWith("/admin") || redirectParam.startsWith("/field"))
-        ) {
-          router.replace("/app");
-        } else if (
-          loggedUser.role === "OFFICER" &&
-          (redirectParam.startsWith("/app") || redirectParam.startsWith("/admin"))
-        ) {
-          router.replace("/field");
-        } else if (
-          loggedUser.role === "ADMIN" &&
-          (redirectParam.startsWith("/app") || redirectParam.startsWith("/field"))
-        ) {
-          router.replace("/admin");
-        } else {
-          router.replace(redirectParam);
-        }
-      } else {
-        router.replace(defaultWorkspace);
-      }
-    } catch {
-      // Documented generic invalid credentials error (no account enumeration)
-      setAuthError(
-        "Invalid email or password. Please check your credentials and try again."
+      router.replace(
+        redirectParam && redirectParam.startsWith(workspace)
+          ? redirectParam
+          : workspace
       );
-      setValue("password", "");
+    } catch (err) {
+      const status = (err as { response?: { status?: number } })?.response?.status;
+
+      if (status === 401) {
+        // Documented generic invalid credentials error (no account enumeration)
+        setAuthError(
+          "Invalid email or password. Please check your credentials and try again."
+        );
+        setValue("password", "");
+      } else if (status === 429) {
+        setAuthError("Too many sign-in attempts. Wait a minute and try again.");
+      } else {
+        // Anything else is not the user's fault: server down, wrong backend
+        // URL, validation. Say so instead of blaming the password.
+        setAuthError(readApiError(err, "Sign-in failed. Please try again."));
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -109,13 +98,7 @@ function LoginForm() {
     try {
       const signedIn = await loginWithGoogle(idToken);
 
-      router.push(
-        signedIn.role === "BUSINESS"
-          ? "/app"
-          : signedIn.role === "OFFICER"
-          ? "/field"
-          : "/admin"
-      );
+      router.push(getDefaultRouteForRole(signedIn.role));
     } catch (err) {
       setAuthError(readApiError(err, "Google sign-in failed."));
     }
@@ -232,11 +215,14 @@ function LoginForm() {
                   />
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
+                    onClick={() => setShowPassword((v) => !v)}
+                    // Keep focus (and the caret) in the field while toggling.
+                    onMouseDown={(e) => e.preventDefault()}
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                    aria-pressed={showPassword}
+                    className="absolute inset-y-0 right-0 z-10 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
                   >
                     {showPassword ? (
                       <EyeOff className="w-4 h-4" />

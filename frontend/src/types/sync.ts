@@ -5,9 +5,15 @@ export type SyncOperationType =
   | "UPLOAD_EVIDENCE"
   | "RECORD_DECISION";
 
-export type SyncStatus = "READY_TO_SYNC" | "SYNCED" | "FAILED" | "CONFLICT";
+/**
+ * Client-side queue states (DATA_MODEL.md "Offline local states"). SYNCED,
+ * FAILED and CONFLICT are only ever set from a server result; the client
+ * never promotes itself to SYNCED.
+ */
+export type SyncStatus = "READY_TO_SYNC" | "SYNCING" | "SYNCED" | "FAILED" | "CONFLICT";
 
 export interface SyncOperation {
+  /** A UUID. The server keys idempotency on it, so retries must reuse it. */
   clientOperationId: string;
   createdAt: string;
   entityType: "INSPECTION" | "APPLICATION";
@@ -18,6 +24,7 @@ export interface SyncOperation {
   lastError?: string | null;
   status: SyncStatus;
   expectedServerVersion?: number;
+  /** Display only; the server ignores it. */
   inspectionSummary?: {
     applicationNumber: string;
     instrumentNumber: string;
@@ -32,9 +39,11 @@ export interface SyncBatchRequest {
 export interface SyncOperationResult {
   clientOperationId: string;
   status: "SYNCED" | "FAILED" | "CONFLICT";
-  entityId: string;
-  serverVersion?: number;
-  message?: string;
+  /** The server-side id the operation resolved to (inspection or evidence). */
+  entityId: string | null;
+  serverVersion: number | null;
+  message: string;
+  applicationState?: string | null;
 }
 
 export interface SyncBatchResponse {

@@ -8,6 +8,40 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  /* Loaded in app/layout.tsx via next/font; these make `font-sans` and
+     `font-mono` utilities resolve to them, with system fallbacks. */
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, "Cascadia Mono", "Segoe UI Mono",
+    Consolas, "Liberation Mono", monospace;
+
+  /* Type scale. The screens were written against Tailwind's defaults with
+     `text-xs` as the workhorse body size (12px); that is too small and too
+     light for a portal people read for hours. Every step is lifted here so
+     the 400+ existing utilities pick it up without touching each screen. */
+  --text-xs: 0.8125rem;         /* 13px, was 12px */
+  --text-xs--line-height: 1.5;
+  --text-sm: 0.9375rem;         /* 15px, was 14px */
+  --text-sm--line-height: 1.5;
+  --text-base: 1rem;            /* 16px */
+  --text-base--line-height: 1.6;
+  --text-lg: 1.125rem;          /* 18px */
+  --text-lg--line-height: 1.5;
+  --text-xl: 1.25rem;           /* 20px */
+  --text-xl--line-height: 1.4;
+  --text-2xl: 1.625rem;         /* 26px, was 24px */
+  --text-2xl--line-height: 1.25;
+  --text-3xl: 2rem;             /* 32px */
+  --text-3xl--line-height: 1.2;
+
+  /* Weights. Manrope is loaded at 500-800; the named utilities map one step
+     heavier than Tailwind's defaults so "medium" already has presence. */
+  --font-weight-normal: 500;
+  --font-weight-medium: 600;
+  --font-weight-semibold: 700;
+  --font-weight-bold: 800;
+  --font-weight-extrabold: 800;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,4 +54,52 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Codes and readings line up column-wise and never look like prose. */
+.font-mono {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+/* The screens also use hand-picked tiny sizes for captions and badges.
+   Lift those too, in step with the scale above. */
+.text-\[10px\] {
+  font-size: 0.6875rem; /* 11px */
+  line-height: 1.4;
+}
+
+.text-\[11px\] {
+  font-size: 0.75rem;   /* 12px */
+  line-height: 1.45;
+}
+
+/* Uppercase tracked labels need a touch more air at the heavier weight. */
+.uppercase.tracking-wider {
+  letter-spacing: 0.08em;
+}
+
+/*
+ * Edge and Chrome on Windows draw their own "reveal password" eye inside
+ * password fields. It sits under our toggle, so the page shows two eyes and
+ * the native one can flip the field back without our button knowing. We
+ * render our own toggle, so the native controls are hidden.
+ */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+
+input::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
 }

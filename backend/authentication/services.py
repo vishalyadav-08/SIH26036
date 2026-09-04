@@ -79,7 +79,7 @@ def authenticate_google_user(raw_token):
     """Resolve a Google ID token to an existing MapanSetu account.
 
     Google is a sign-in method, not a sign-up method: this never creates a
-    user. OFFICER and ADMIN are authorised roles that an administrator grants,
+    user. LMO, GATC and ADMIN are authorised roles that an administrator grants,
     so self-provisioning from a consumer identity provider is not available at
     any role.
 
@@ -240,7 +240,7 @@ def google_signup(*, raw_token, validated_data):
     """Provision a BUSINESS account from a verified Google identity.
 
     Separate from authenticate_google_user, which stays link-only: plain
-    sign-in must never create an account, or the OFFICER/ADMIN provisioning
+    sign-in must never create an account, or the LMO/GATC/ADMIN provisioning
     rule would be bypassable by anyone with a Google account.
     """
     from .models import User

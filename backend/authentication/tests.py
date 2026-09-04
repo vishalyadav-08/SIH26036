@@ -173,7 +173,7 @@ class RoleTests(AuthTestCase):
     """The role matrix: each role reports itself correctly and distinctly."""
 
     def test_each_role_is_reported_on_its_own_profile(self):
-        for role in [User.Role.ADMIN, User.Role.OFFICER, User.Role.BUSINESS]:
+        for role in [User.Role.ADMIN, User.Role.LMO, User.Role.GATC, User.Role.BUSINESS]:
             with self.subTest(role=role):
                 email = f"{role.lower()}@example.test"
                 make_user(email, role=role)
@@ -426,7 +426,7 @@ class SignupTests(AuthTestCase):
 
     def test_signup_cannot_choose_a_privileged_role(self):
         """The whole authorization model rests on this."""
-        for role in ["ADMIN", "OFFICER"]:
+        for role in ["ADMIN", "LMO", "GATC"]:
             with self.subTest(role=role):
                 response = self.client.post(
                     self.url,

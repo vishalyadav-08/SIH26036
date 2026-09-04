@@ -26,6 +26,11 @@ export function OfficerProfilePage() {
   });
   const [feedback, setFeedback] = useState<string | null>(null);
 
+  const fieldRoleLabel =
+    user?.role === "GATC"
+      ? "Government Approved Test Centre (GATC)"
+      : "Legal Metrology Officer (LMO)";
+
   const loadMetrics = () => {
     setMetrics(getOfflineStorageMetrics());
   };
@@ -80,7 +85,7 @@ export function OfficerProfilePage() {
             </h2>
             <div className="flex items-center gap-2 text-xs text-slate-500">
               <Shield className="w-3.5 h-3.5 text-emerald-600" />
-              <span>Legal Metrology Officer (LMO)</span>
+              <span>{fieldRoleLabel}</span>
             </div>
           </div>
         </div>
@@ -101,7 +106,7 @@ export function OfficerProfilePage() {
           <div>
             <span className="text-slate-500 font-medium block">Role:</span>
             <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-800 border border-emerald-200 uppercase">
-              {user?.role || "OFFICER"}
+              {user?.role || "LMO"}
             </span>
           </div>
           <div>

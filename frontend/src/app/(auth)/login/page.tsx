@@ -111,14 +111,22 @@ function LoginForm() {
     }
   };
 
+  const demoEmail =
+    selectedRole === "BUSINESS"
+      ? "info@shreebalaji.demo"
+      : selectedRole === "ADMIN"
+      ? "gatc@up.gov.demo"
+      : "vinod.sharma@lmo.up.gov.demo";
+
+  const alternateEmail =
+    selectedRole === "BUSINESS"
+      ? "business@mapansetu.in"
+      : selectedRole === "ADMIN"
+      ? "admin@up.gov.demo"
+      : "lmo@mapansetu.in";
+
   const fillDemoCredentials = () => {
-    const email =
-      selectedRole === "BUSINESS"
-        ? "info@shreebalaji.demo"
-        : selectedRole === "ADMIN"
-        ? "admin@up.gov.demo"
-        : "vinod.sharma@lmo.up.gov.demo";
-    setValue("email", email, { shouldValidate: true });
+    setValue("email", demoEmail, { shouldValidate: true });
     setValue("password", "synthetic-password", { shouldValidate: true });
     setAuthError(null);
   };
@@ -228,6 +236,69 @@ function LoginForm() {
                     </div>
                     <ArrowRight className="w-5 h-5 text-slate-400 ml-auto shrink-0 group-hover:text-indigo-600 transition-colors" />
                   </button>
+                </div>
+
+                {/* Backend Generated Demo Accounts Card */}
+                <div className="mt-8 p-4 bg-slate-50 border border-slate-200 rounded-xl text-left">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse" />
+                      Backend Generated Demo Accounts
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                      Live Backend
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-600 mb-3">
+                    Default Password: <code className="font-mono bg-white px-1.5 py-0.5 rounded border border-slate-300 font-bold text-slate-900">synthetic-password</code>
+                  </p>
+                  <div className="space-y-1.5 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedRole("BUSINESS");
+                        setValue("email", "info@shreebalaji.demo", { shouldValidate: true });
+                        setValue("password", "synthetic-password", { shouldValidate: true });
+                      }}
+                      className="w-full flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 hover:border-blue-400 hover:bg-blue-50/50 cursor-pointer transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-blue-700">Business:</span>
+                        <code className="font-mono text-slate-800">info@shreebalaji.demo</code>
+                      </div>
+                      <span className="text-[11px] text-blue-600 font-semibold">1-Click Sign In →</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedRole("OFFICER");
+                        setValue("email", "vinod.sharma@lmo.up.gov.demo", { shouldValidate: true });
+                        setValue("password", "synthetic-password", { shouldValidate: true });
+                      }}
+                      className="w-full flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 hover:border-emerald-400 hover:bg-emerald-50/50 cursor-pointer transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-emerald-700">LMO:</span>
+                        <code className="font-mono text-slate-800">vinod.sharma@lmo.up.gov.demo</code>
+                      </div>
+                      <span className="text-[11px] text-emerald-600 font-semibold">1-Click Sign In →</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedRole("ADMIN");
+                        setValue("email", "gatc@up.gov.demo", { shouldValidate: true });
+                        setValue("password", "synthetic-password", { shouldValidate: true });
+                      }}
+                      className="w-full flex items-center justify-between p-2 rounded-lg bg-white border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/50 cursor-pointer transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-indigo-700">GATCs:</span>
+                        <code className="font-mono text-slate-800">gatc@up.gov.demo</code>
+                      </div>
+                      <span className="text-[11px] text-indigo-600 font-semibold">1-Click Sign In →</span>
+                    </button>
+                  </div>
                 </div>
               </>
             ) : (
@@ -345,10 +416,28 @@ function LoginForm() {
                 </form>
 
                 {/* Demo Credentials Quick Fill */}
-                <div className="mt-8 pt-6 border-t border-slate-200 text-center">
-                  <p className="text-sm text-slate-600 mb-4">
-                    Prototype evaluation?
-                  </p>
+                <div className="mt-8 pt-6 border-t border-slate-200">
+                  <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 mb-3 text-left">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600">
+                        {selectedRole === "BUSINESS" ? "Business" : selectedRole === "ADMIN" ? "GATCs" : "LMO"} Demo Credentials
+                      </span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold border border-emerald-300">
+                        Live Backend
+                      </span>
+                    </div>
+                    <div className="text-xs font-mono text-slate-800 space-y-1">
+                      <div>
+                        <span className="text-slate-500 font-sans">Email: </span>
+                        <strong>{demoEmail}</strong>
+                        <span className="text-[10px] text-slate-400 font-sans ml-1.5">(or {alternateEmail})</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-500 font-sans">Password: </span>
+                        <strong>synthetic-password</strong>
+                      </div>
+                    </div>
+                  </div>
                   <button
                     type="button"
                     onClick={fillDemoCredentials}
@@ -358,7 +447,7 @@ function LoginForm() {
                       "bg-emerald-50 hover:bg-emerald-100 border-emerald-200 text-emerald-700"
                     }`}
                   >
-                    Use Demo Credentials
+                    Auto-Fill Demo Credentials
                   </button>
                 </div>
               </>

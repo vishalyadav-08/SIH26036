@@ -71,7 +71,7 @@ export async function loginUser(
   }
 
   // Real API
-  const res = await api.post<LoginResponse>("/auth/login", {
+  const res = await api.post<LoginResponse>("/auth/login/", {
     email: normalizedEmail,
     password: credentials.password,
   });
@@ -88,7 +88,7 @@ export async function fetchCurrentUser(): Promise<User> {
   }
 
   // Real API
-  const res = await api.get<User>("/users/me");
+  const res = await api.get<User>("/users/me/");
   return res as unknown as User;
 }
 

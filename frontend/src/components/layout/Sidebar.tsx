@@ -54,14 +54,14 @@ export function Sidebar({ role }: SidebarProps) {
         };
       case "ADMIN":
         return {
-          code: "AD",
+          code: "GATC",
           codeBg: "bg-[#3a5f94] text-white",
-          title: "Administration",
-          subtitle: "Directorate Control Hub",
+          title: "GATCs",
+          subtitle: "Test Centre & Admin Hub",
           items: [
             { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
             { label: "Applications", href: "/admin/applications", icon: ClipboardList },
-            { label: "Officers", href: "/admin/officers", icon: Users },
+            { label: "LMOs", href: "/admin/officers", icon: Users },
             { label: "Instruments", href: "/admin/instruments", icon: Gauge },
             { label: "Certificates", href: "/admin/certificates", icon: Award },
             { label: "Schedules", href: "/admin/schedules", icon: CalendarCheck },
@@ -71,15 +71,15 @@ export function Sidebar({ role }: SidebarProps) {
         };
       case "OFFICER":
         return {
-          code: "FO",
+          code: "LMO",
           codeBg: "bg-[#15803d] text-white",
-          title: "Field Operations",
+          title: "LMO Operations",
           subtitle: "Legal Metrology Officer",
           items: [
             { label: "Dashboard", href: "/field", icon: LayoutDashboard },
             { label: "Inspections", href: "/field/inspections", icon: CheckCircle2 },
             { label: "Sync Center", href: "/field/sync", icon: RefreshCw },
-            { label: "Officer Profile", href: "/field/profile", icon: User },
+            { label: "LMO Profile", href: "/field/profile", icon: User },
           ],
         };
     }

@@ -22,6 +22,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _obscurePin = true;
   bool _isLoading = false;
   final LocalAuthentication _localAuth = LocalAuthentication();
+  String? _selectedRole; // null means asking for role
 
   @override
   void dispose() {
@@ -67,31 +68,28 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
   }
 
-  Future<void> _handleBiometrics() async {
+  Future<void> _handleBiometricAuth() async {
     try {
       final bool canAuthenticateWithBiometrics = await _localAuth.canCheckBiometrics;
       final bool canAuthenticate = canAuthenticateWithBiometrics || await _localAuth.isDeviceSupported();
 
-      if (!canAuthenticate) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Biometric authentication is not supported or enrolled on this device.')),
-          );
+      if (canAuthenticate) {
+        final bool didAuthenticate = await _localAuth.authenticate(
+          localizedReason: 'Please authenticate to access your field officer dashboard',
+          options: const AuthenticationOptions(stickyAuth: true, biometricOnly: false),
+        );
+
+        if (didAuthenticate && mounted) {
+          _idController.text = _selectedRole == 'OFFICER' ? 'vinod.sharma@lmo.up.gov.demo' : 'info@shreebalaji.demo';
+          _pinController.text = 'synthetic-password';
+          _handleLogin();
         }
-        return;
-      }
-
-      final bool didAuthenticate = await _localAuth.authenticate(
-        localizedReason: 'Please authenticate to access MapanSetu Field Portal',
-        options: const AuthenticationOptions(biometricOnly: true, stickyAuth: true),
-      );
-
-      if (didAuthenticate && mounted) {
-        context.go('/dashboard');
       }
     } catch (e) {
       if (mounted) {
-        context.go('/dashboard');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Biometric auth failed: $e')),
+        );
       }
     }
   }
@@ -110,171 +108,6 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             padding: const EdgeInsets.symmetric(horizontal: AppTheme.card, vertical: 24),
             child: ConstrainedBox(
               constraints: const BoxConstraints(maxWidth: 440),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Logo / Shield Section
-                  Center(
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            color: AppTheme.primary,
-                            borderRadius: BorderRadius.circular(AppTheme.radiusXl),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppTheme.primary.withValues(alpha: 0.25),
-                                blurRadius: 16,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.shield,
-                            size: 44,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Text(
-                          l10n?.appTitle ?? 'MapanSetu',
-                          style: theme.textTheme.displaySmall?.copyWith(
-                            color: AppTheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          l10n?.fieldOfficerPortal ?? 'Field Officer Portal',
-                          style: theme.textTheme.titleMedium?.copyWith(
-                            color: AppTheme.secondary,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: AppTheme.secondaryContainer,
-                            borderRadius: BorderRadius.circular(AppTheme.radiusFull),
-                          ),
-                          child: Text(
-                            l10n?.sihPrototype ?? 'SIH 2026 PROTOTYPE',
-                            style: const TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.onSecondaryContainer,
-                              letterSpacing: 0.8,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: AppTheme.section),
-
-                  // Officer ID Input Field
-                  TextField(
-                    controller: _idController,
-                    decoration: InputDecoration(
-                      labelText: l10n?.officerId ?? 'Officer ID',
-                      filled: true,
-                      fillColor: AppTheme.surfaceContainerHighest,
-                      prefixIcon: const Icon(Icons.badge_outlined, color: AppTheme.onSurfaceVariant),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                        borderSide: const BorderSide(color: AppTheme.primary, width: 2),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  // Password/PIN Input Field
-                  TextField(
-                    controller: _pinController,
-                    obscureText: _obscurePin,
-                    decoration: InputDecoration(
-                      labelText: l10n?.password ?? 'Password / PIN',
-                      filled: true,
-                      fillColor: AppTheme.surfaceContainerHighest,
-                      prefixIcon: const Icon(Icons.lock_outline, color: AppTheme.onSurfaceVariant),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _obscurePin ? Icons.visibility_off : Icons.visibility,
-                          color: AppTheme.onSurfaceVariant,
-                        ),
-                        onPressed: () => setState(() => _obscurePin = !_obscurePin),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                        borderSide: BorderSide.none,
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                        borderSide: const BorderSide(color: AppTheme.primary, width: 2),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-
-                  // Forgot Password Link
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Contact your regional supervisor to reset your field credentials.')),
-                        );
-                      },
-                      child: Text(
-                        l10n?.forgotPassword ?? 'Forgot Password?',
-                        style: const TextStyle(fontSize: 13, color: AppTheme.primary),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Sign In Button
-                  SizedBox(
-                    height: 50,
-                    child: ElevatedButton(
-                      onPressed: _isLoading ? null : _handleLogin,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppTheme.primary,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(AppTheme.radiusMd),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: _isLoading
-                          ? const SizedBox(
-                              width: 22,
-                              height: 22,
-                              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
-                            )
-                          : Text(
-                              l10n?.signIn ?? 'Sign In',
-                              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                            ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Biometric Login Button
-                  SizedBox(
-                    height: 48,
-                    child: OutlinedButton.icon(
-                      onPressed: _handleBiometrics,
-                      icon: const Icon(Icons.fingerprint, color: AppTheme.primary, size: 24),
-                      label: Text(
                         l10n?.biometricQuickSignIn ?? 'Quick Biometric Sign In',
                         style: const TextStyle(
                           fontSize: 14,

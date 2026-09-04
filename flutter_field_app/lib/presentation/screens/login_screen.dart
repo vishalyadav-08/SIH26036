@@ -134,7 +134,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ),
                         const SizedBox(height: 4),
                         Text(
-                          l10n?.fieldOfficerPortal ?? 'Field Officer Portal',
+                          l10n?.fieldOfficerPortal ?? 'LMO Portal',
                           style: theme.textTheme.titleMedium?.copyWith(
                             color: AppTheme.secondary,
                             fontWeight: FontWeight.normal,

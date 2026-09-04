@@ -13,13 +13,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appTitle => 'MapanSetu';
 
   @override
-  String get fieldOfficerPortal => 'Field Officer Portal';
+  String get fieldOfficerPortal => 'LMO Portal';
 
   @override
   String get sihPrototype => 'SIH 2026 PROTOTYPE';
 
   @override
-  String get officerId => 'Officer ID';
+  String get officerId => 'LMO ID';
 
   @override
   String get password => 'Password';
@@ -43,7 +43,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get hindi => 'हिन्दी';
 
   @override
-  String get loginFailed => 'Invalid Officer ID or Password';
+  String get loginFailed => 'Invalid LMO ID or Password';
 
   @override
   String get dashboard => 'Dashboard';
@@ -252,7 +252,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get correctionResult => 'REQUIRES CORRECTION';
 
   @override
-  String get officerNotes => 'Officer Notes';
+  String get officerNotes => 'LMO Notes';
 
   @override
   String get officerNotesPlaceholder => 'Add any final observations...';
@@ -325,7 +325,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile => 'Profile';
 
   @override
-  String get legalMetrologyOfficer => 'Legal Metrology Officer';
+  String get legalMetrologyOfficer => 'Legal Metrology Officer (LMO)';
 
   @override
   String get operationalStats => 'Operational Stats';

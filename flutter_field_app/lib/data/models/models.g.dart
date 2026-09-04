@@ -132,13 +132,14 @@ class MeasurementReadingAdapter extends TypeAdapter<MeasurementReading> {
       referenceWeight: fields[2] as double,
       maxPermissibleError: fields[3] as double,
       unit: fields[4] as String,
+      indicatedWeight: fields[5] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, MeasurementReading obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -148,7 +149,9 @@ class MeasurementReadingAdapter extends TypeAdapter<MeasurementReading> {
       ..writeByte(3)
       ..write(obj.maxPermissibleError)
       ..writeByte(4)
-      ..write(obj.unit);
+      ..write(obj.unit)
+      ..writeByte(5)
+      ..write(obj.indicatedWeight);
   }
 
   @override

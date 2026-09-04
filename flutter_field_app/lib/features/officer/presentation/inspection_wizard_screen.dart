@@ -168,9 +168,16 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
           referenceWeight: double.tryParse(r.referenceController.text) ?? 0.0,
           maxPermissibleError: 0.1, // Demo MPE
           unit: 'kg',
+          indicatedWeight: double.tryParse(r.indicatedController.text) ?? 0.0,
         );
       }).toList();
-      // Optionally attach evidence, checklist, GPS data to task object here
+      task.evidence = _capturedImages.asMap().entries.map((entry) {
+        return EvidenceItem(
+          id: 'ev_${DateTime.now().millisecondsSinceEpoch}_${entry.key}',
+          title: 'Evidence ${entry.key + 1}',
+          imagePath: entry.value['path']!,
+        );
+      }).toList();
       ref.read(inspectionsProvider.notifier).addOrUpdateTask(task);
     }
 

@@ -104,6 +104,8 @@ class MeasurementReading {
   double maxPermissibleError;
   @HiveField(4)
   String unit;
+  @HiveField(5)
+  double indicatedWeight;
 
   MeasurementReading({
     required this.id,
@@ -111,6 +113,7 @@ class MeasurementReading {
     required this.referenceWeight,
     required this.maxPermissibleError,
     required this.unit,
+    this.indicatedWeight = 0.0,
   });
 }
 

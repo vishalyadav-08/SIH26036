@@ -73,7 +73,7 @@ class CustomNavigationDrawer extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    l10n?.fieldOfficerPortal ?? 'Field Officer Portal',
+                    l10n?.fieldOfficerPortal ?? 'LMO Portal',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.white.withValues(alpha: 0.8),
@@ -100,7 +100,7 @@ class CustomNavigationDrawer extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              isHi ? 'अधिकारी शर्मा' : 'Officer Sharma',
+                              isHi ? 'एलएमओ शर्मा' : 'LMO Sharma',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold,

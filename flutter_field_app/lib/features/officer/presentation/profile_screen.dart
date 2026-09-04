@@ -110,7 +110,7 @@ class ProfileScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              isHi ? 'अधिकारी शर्मा' : 'Officer Sharma',
+                              isHi ? 'एलएमओ शर्मा' : 'LMO Sharma',
                               style: theme.textTheme.headlineSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: AppTheme.onSurface,
@@ -118,7 +118,7 @@ class ProfileScreen extends ConsumerWidget {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              l10n?.legalMetrologyOfficer ?? 'Legal Metrology Officer',
+                              l10n?.legalMetrologyOfficer ?? 'Legal Metrology Officer (LMO)',
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: AppTheme.secondary,
                               ),

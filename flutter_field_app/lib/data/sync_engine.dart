@@ -1,24 +1,46 @@
 import 'package:dio/dio.dart';
-import 'package:uuid/uuid.dart';
 import 'package:flutter_field_app/data/repositories/inspection_repository.dart';
 import 'package:flutter_field_app/data/models/models.dart';
 
 class SyncEngine {
   final Dio _dio;
   final InspectionRepository _repository;
-  final Uuid _uuid = const Uuid();
   
   SyncEngine(this._dio, this._repository);
   
   Future<void> syncAll() async {
     final tasks = _repository.getAllInspections();
-    final readyToSync = tasks.where((t) => t.status == 'ready_to_sync').toList();
+    final readyToSync = tasks.where((t) => t.status == 'ready_to_sync' || t.status == 'failed').toList();
     
     for (var task in readyToSync) {
       try {
         task.status = 'syncing';
         await _repository.saveInspection(task);
         
+        // --- 1. Upload Evidence ---
+        bool evidenceSuccess = true;
+        for (var ev in task.evidence) {
+          try {
+            final formData = FormData.fromMap({
+              'clientOperationId': ev.id,
+              'capturedAt': DateTime.now().toUtc().toIso8601String(),
+              'evidenceType': 'photo',
+              'file': await MultipartFile.fromFile(ev.imagePath, filename: ev.imagePath.split('/').last),
+            });
+            await _dio.post('/inspections/${task.appId}/evidence/', data: formData);
+          } catch (e) {
+            evidenceSuccess = false;
+            break; // Stop uploading if one fails
+          }
+        }
+        
+        if (!evidenceSuccess) {
+          task.status = 'failed';
+          await _repository.saveInspection(task);
+          continue; // Skip decision sync if evidence fails
+        }
+
+        // --- 2. Sync Decision ---
         final payload = {
           'operations': [{
             'clientOperationId': task.id, // Stable across retries since it's tied to the entity
@@ -34,7 +56,7 @@ class SyncEngine {
               'measurements': task.readings.map((r) => {
                  'testPoint': r.name,
                  'referenceValue': r.referenceWeight,
-                 'indicatedValue': r.referenceWeight, // Fake indicated for demo if it wasn't saved properly
+                 'indicatedValue': r.indicatedWeight, // Now using actual indicated weight from Hive model!
                  'unit': r.unit
               }).toList(),
             },

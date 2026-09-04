@@ -70,7 +70,7 @@ export default function AdminApplicationsQueuePage() {
           Application Triage & Workload Queue
         </h1>
         <p className="text-xs text-slate-600">
-          Review verification applications, assign Legal Metrology Officers, and schedule on-site inspections
+          Review verification applications, assign LMOs, and schedule on-site inspections
         </p>
       </div>
 
@@ -122,7 +122,7 @@ export default function AdminApplicationsQueuePage() {
                   <th className="py-3 px-4">Commercial Entity</th>
                   <th className="py-3 px-4">Instrument ID</th>
                   <th className="py-3 px-4">Status</th>
-                  <th className="py-3 px-4">Assigned Officer</th>
+                  <th className="py-3 px-4">Assigned LMO</th>
                   <th className="py-3 px-4">Schedule</th>
                   <th className="py-3 px-4 text-right">Action</th>
                 </tr>
@@ -141,7 +141,7 @@ export default function AdminApplicationsQueuePage() {
                         {app.instrumentNumber}
                       </div>
                       <div className="text-[10px] text-slate-500">
-                        {app.instrumentType.replace(/_/g, " ")}
+                        {(app.instrumentType || "Scale").replace(/_/g, " ")}
                       </div>
                     </td>
                     <td className="py-3.5 px-4">

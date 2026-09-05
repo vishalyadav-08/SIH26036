@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_field_app/app/theme/app_theme.dart';
+import 'package:flutter_field_app/config/app_config.dart';
 
 class CustomTopAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -123,6 +124,30 @@ class CustomTopAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
         ),
+        const SizedBox(width: 8),
+
+        // Demo Mode Badge
+        if (AppConfig.useMockBackend)
+          Container(
+            margin: const EdgeInsets.symmetric(vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+            decoration: BoxDecoration(
+              color: Colors.orange.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(AppTheme.radiusFull),
+              border: Border.all(color: Colors.orange),
+            ),
+            child: const Center(
+              child: Text(
+                'DEMO MODE',
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.6,
+                  color: Colors.deepOrange,
+                ),
+              ),
+            ),
+          ),
         const SizedBox(width: 8),
 
         // Profile Avatar Button

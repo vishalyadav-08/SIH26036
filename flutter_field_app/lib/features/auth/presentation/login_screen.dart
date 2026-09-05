@@ -45,9 +45,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final pin = _pinController.text.trim();
       if (pin == 'synthetic-password' || pin == '123456') {
         if (inputId.contains('lmo') || inputId.startsWith('LMO') || _selectedRole == 'OFFICER') {
-          loggedInUser = User(id: inputId, role: 'LMO');
+          loggedInUser = User(id: 'DEMO-LMO-001', displayName: 'Demo LMO Officer', role: 'OFFICER');
         } else {
-          loggedInUser = User(id: inputId, role: 'BUSINESS');
+          loggedInUser = User(id: 'DEMO-BIZ-001', displayName: 'Demo Business User', role: 'BUSINESS');
         }
       }
     }

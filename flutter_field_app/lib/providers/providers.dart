@@ -84,26 +84,26 @@ class InspectionsNotifier extends StateNotifier<List<InspectionTask>> {
     if (!AppConfig.useMockBackend) return; // double-check
     final dummy = [
       InspectionTask(
-        id: 'task_001',
-        appId: 'APP-2024-001',
-        title: 'Routine Weights Check',
-        businessName: 'Global Traders',
-        sector: 'North Delhi Market',
+        id: 'demo_task_001',
+        appId: 'APP-DEMO-2026-001',
+        title: 'Class III Electronic Weighing Scale',
+        businessName: 'Demo Retail Grocery (Synthetic)',
+        sector: 'Demo District Sector 4',
         status: 'scheduled',
-        scheduledTime: '10:00 AM Today',
+        scheduledTime: 'Today, 10:00 AM',
         urgency: 'normal',
-        description: 'Verify 50kg standard weights.',
+        description: 'Demo Application Ref: DEMO-APP-001. Verification of 30kg commercial retail scale.',
       ),
       InspectionTask(
-        id: 'task_002',
-        appId: 'APP-2024-002',
-        title: 'Unannounced Audit: Retail Scales',
-        businessName: 'South Delhi Market',
-        sector: 'South Delhi Market',
+        id: 'demo_task_002',
+        appId: 'APP-DEMO-2026-002',
+        title: 'Fuel Dispenser Volumetric Verification',
+        businessName: 'Demo Energy Station (Synthetic)',
+        sector: 'Demo District Highway',
         status: 'urgent',
-        scheduledTime: '11:30 AM Today',
+        scheduledTime: 'Today, 11:30 AM',
         urgency: 'urgent',
-        description: 'Surprise check of retail scales.',
+        description: 'Demo Application Ref: DEMO-APP-002. Surprise check of liquid petroleum dispensers.',
       ),
     ];
     for (var task in dummy) {
@@ -115,6 +115,12 @@ class InspectionsNotifier extends StateNotifier<List<InspectionTask>> {
   void addOrUpdateTask(InspectionTask task) {
     _repository.saveInspection(task);
     state = _repository.getAllInspections();
+  }
+
+  Future<void> resetDemoData() async {
+    if (!AppConfig.useMockBackend) return;
+    await _repository.clearAll();
+    _seedDummyData();
   }
 }
 

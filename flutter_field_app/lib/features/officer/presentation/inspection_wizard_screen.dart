@@ -8,6 +8,7 @@ import 'package:flutter_field_app/l10n/app_localizations.dart';
 import 'package:flutter_field_app/app/theme/app_theme.dart';
 import 'package:flutter_field_app/providers/providers.dart';
 import 'package:flutter_field_app/data/models/models.dart';
+import 'package:flutter_field_app/config/app_config.dart';
 
 class InspectionWizardScreen extends ConsumerStatefulWidget {
   const InspectionWizardScreen({super.key});
@@ -72,47 +73,64 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
   }
 
   Future<void> _pickImage() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please enable device location services first.')),
-        );
-      }
-      return;
-    }
-    
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
+    String coords = _gpsCoords;
+    if (!AppConfig.useMockBackend) {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permission denied.')),
+            const SnackBar(content: Text('Please enable device location services first.')),
           );
         }
         return;
       }
-    }
-    
-    if (permission == LocationPermission.deniedForever) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location permission permanently denied.')),
-        );
+      
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Location permission denied.')),
+            );
+          }
+          return;
+        }
       }
-      return;
+      
+      if (permission == LocationPermission.deniedForever) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permission permanently denied.')),
+          );
+        }
+        return;
+      }
+      try {
+        final pos = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+        );
+        coords = '${pos.latitude.toStringAsFixed(4)}° N, ${pos.longitude.toStringAsFixed(4)}° E';
+        setState(() {
+          _gpsCoords = coords;
+        });
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to access location.')),
+          );
+        }
+      }
+    } else {
+      if (coords.isEmpty) {
+        coords = '26.7606° N, 83.3732° E [Demo Data]';
+        setState(() {
+          _gpsCoords = coords;
+        });
+      }
     }
 
     try {
-      final pos = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-      );
-      final coords = '${pos.latitude.toStringAsFixed(4)}° N, ${pos.longitude.toStringAsFixed(4)}° E';
-      setState(() {
-        _gpsCoords = coords;
-      });
-
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(source: ImageSource.camera);
       if (image != null) {
@@ -123,7 +141,7 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to access camera or location.')),
+          const SnackBar(content: Text('Failed to access camera.')),
         );
       }
     }
@@ -132,6 +150,13 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
   Future<void> _captureLocation() async {
     setState(() => _isCapturingGps = true);
     try {
+      if (AppConfig.useMockBackend) {
+        await Future.delayed(const Duration(milliseconds: 800));
+        setState(() {
+          _gpsCoords = '26.7606° N, 83.3732° E (Accuracy: ±10.0m) [Demo Data]';
+        });
+        return;
+      }
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();

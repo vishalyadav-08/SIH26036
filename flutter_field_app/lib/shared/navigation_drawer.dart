@@ -5,6 +5,7 @@ import 'package:flutter_field_app/app/theme/app_theme.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_field_app/providers/providers.dart';
+import 'package:flutter_field_app/config/app_config.dart';
 
 class CustomNavigationDrawer extends ConsumerWidget {
   final String currentRoute;
@@ -221,6 +222,23 @@ class CustomNavigationDrawer extends ConsumerWidget {
                     icon: Icons.person_outline,
                     route: 'profile',
                   ),
+                  if (AppConfig.useMockBackend) ...[
+                    const Divider(height: 32),
+                    ListTile(
+                      dense: true,
+                      leading: const Icon(Icons.restore, color: AppTheme.primary, size: 20),
+                      title: const Text('Reset Demo Data', style: TextStyle(color: AppTheme.primary, fontSize: 13, fontWeight: FontWeight.bold)),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
+                      onTap: () async {
+                        Navigator.pop(context);
+                        await ref.read(inspectionsProvider.notifier).resetDemoData();
+                        if (context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Demo data has been reset')));
+                          context.go('/dashboard');
+                        }
+                      },
+                    ),
+                  ],
                 ],
               ),
             ),

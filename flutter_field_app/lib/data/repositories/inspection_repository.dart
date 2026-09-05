@@ -38,4 +38,9 @@ class InspectionRepository {
   Future<void> saveTemplate(InspectionTemplate template) async {
     await _templatesBox.put(template.id, template);
   }
+
+  Future<void> clearAll() async {
+    await _box.clear();
+    await _templatesBox.clear();
+  }
 }

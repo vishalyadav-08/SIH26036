@@ -76,17 +76,27 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _handleBiometricAuth() async {
     try {
+      if (AppConfig.useMockBackend) {
+        // Simulate a successful biometric scan for demo mode
+        await Future.delayed(const Duration(milliseconds: 800));
+        if (mounted) {
+          _idController.text = _selectedRole == 'OFFICER' ? 'demo-lmo' : 'demo-biz';
+          _pinController.text = '123456';
+          _handleLogin();
+        }
+        return;
+      }
+
       final bool canAuthenticateWithBiometrics = await _localAuth.canCheckBiometrics;
       final bool canAuthenticate = canAuthenticateWithBiometrics || await _localAuth.isDeviceSupported();
 
       if (canAuthenticate) {
         final bool didAuthenticate = await _localAuth.authenticate(
-          localizedReason: 'Please authenticate to access your field officer dashboard',
+          localizedReason: 'Please authenticate to access your dashboard',
           options: const AuthenticationOptions(stickyAuth: true, biometricOnly: false),
         );
 
         if (didAuthenticate && mounted) {
-          // Fallback biometrics not handled without backend session, just showing login flow normally or need token.
           _handleLogin();
         }
       }

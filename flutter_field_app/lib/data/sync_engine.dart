@@ -114,6 +114,7 @@ class SyncEngine {
             final resultStatus = results[0]['status'];
             if (resultStatus == 'SYNCED') {
               task.status = 'synced';
+              task.syncedAt = DateTime.now().toIso8601String();
             } else if (resultStatus == 'CONFLICT') {
               task.status = 'conflict';
             } else {
@@ -121,6 +122,7 @@ class SyncEngine {
             }
           } else {
             task.status = 'synced';
+            task.syncedAt = DateTime.now().toIso8601String();
           }
           await _repository.saveInspection(task);
         } else if (response.statusCode == 409) {
@@ -135,6 +137,7 @@ class SyncEngine {
         await _repository.saveInspection(task);
       }
     }
+    await cleanupOldData();
   }
 
   Future<void> fetchInspections() async {
@@ -165,6 +168,19 @@ class SyncEngine {
       }
     } catch (e) {
       // Network fetch failed; existing Hive data remains available
+    }
+  }
+
+  Future<void> cleanupOldData() async {
+    final tasks = _repository.getAllInspections();
+    final now = DateTime.now();
+    for (var task in tasks) {
+      if (task.status == 'synced' && task.syncedAt != null) {
+        final syncedDate = DateTime.tryParse(task.syncedAt!);
+        if (syncedDate != null && now.difference(syncedDate).inDays >= 7) {
+          await _repository.deleteInspection(task.id);
+        }
+      }
     }
   }
 }

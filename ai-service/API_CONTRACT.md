@@ -1,0 +1,77 @@
+# AI Service API Contract
+
+This document defines the AI service API boundary and its integration with the Django backend.
+
+## Boundary Principles
+
+AI Service is never an authorization authority.
+Django decides whether data may be disclosed.
+AI only reasons over data Django has explicitly authorized.
+
+## 1. Chat Endpoint (External)
+
+**Endpoint:** `POST /api/v1/chat`
+
+**Purpose:** Submit a query to the AI Assistant.
+
+**Request:**
+```json
+{
+  "message": "string",
+  "conversationId": "uuid (optional)",
+  "context": {
+    "page": "string",
+    "feature": "string",
+    "role": "string"
+  }
+}
+```
+
+## 2. Django Internal Context Endpoint (Internal)
+
+**Endpoint:** `POST /api/v1/internal/ai/context` (on Django Backend)
+
+**Purpose:** Provide authorized live data or context to the AI service.
+
+**Request DTO:**
+```json
+{
+  "intent": "LIVE_DATA_REQUEST | WORKFLOW_ACTION | unknown",
+  "context": {
+    "page": "business_dashboard",
+    "feature": "applications",
+    "role": "business"
+  }
+}
+```
+
+**Response DTO (Success):**
+```json
+{
+  "authorized": true,
+  "data": {
+    "applicationReference": "APP-2026-00124",
+    "status": "UNDER_REVIEW",
+    "createdAt": "2026-08-25"
+  },
+  "source": "django"
+}
+```
+
+**Response DTO (Denied/Failed):**
+```json
+{
+  "authorized": false,
+  "data": null,
+  "reason": "not_authorized"
+}
+```
+
+## Security & Failures
+
+- **Service Authentication:** Uses `X-AI-Service-Token` header.
+- **User Authentication:** Forwards the browser's `Authorization: Bearer <JWT>` header to Django.
+- **Data Minimization:** Django explicitly builds a safe DTO; ORM objects, passwords, and administrative metadata are strictly excluded.
+- **Mock Data Mode:** Set `AI_DJANGO_USE_MOCK_DATA=True` in Django to return mock data during development. If False and domain models are missing, it fails safely with 503 Unavailable.
+- **Failure Behavior:** If Django is down, returns 401, or times out, the AI Service fails closed, omitting live data safely.
+- **Prompt Injection:** Django DTO strings are wrapped by the AI Service in explicit `BEGIN DATA` tags to prevent executable instructions.

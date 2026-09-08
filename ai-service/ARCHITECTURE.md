@@ -1,0 +1,486 @@
+# AI Assistant Service Architecture
+
+## System Context
+
+The AI service operates as a standalone application distinct from the core MapanSetu Django backend.
+
+```text
+MapanSetu
+â”‚
+â”œâ”€â”€ frontend/
+â”‚   â””â”€â”€ Next.js / React
+â”‚
+â”œâ”€â”€ backend/
+â”‚   â””â”€â”€ Django + DRF
+â”‚
+â”œâ”€â”€ flutter_field_app/
+â”‚   â””â”€â”€ Flutter official field application
+â”‚
+â””â”€â”€ ai-service/
+    â””â”€â”€ Standalone AI Assistant service
+```
+
+## Target AI Service Structure
+
+The target architecture structure for the AI service is defined as follows:
+
+```text
+ai-service/
+â”œâ”€â”€ app/
+â”‚   â”œâ”€â”€ main.py
+â”‚   â”œâ”€â”€ api/
+â”‚   â”‚   â”œâ”€â”€ chat.py
+â”‚   â”‚   â”œâ”€â”€ health.py
+â”‚   â”‚   â””â”€â”€ admin.py
+â”‚   â”œâ”€â”€ core/
+â”‚   â”‚   â”œâ”€â”€ config.py
+â”‚   â”‚   â”œâ”€â”€ security.py
+â”‚   â”‚   â””â”€â”€ logging.py
+â”‚   â”œâ”€â”€ providers/
+â”‚   â”‚   â”œâ”€â”€ base.py
+â”‚   â”‚   â”œâ”€â”€ openai_provider.py
+â”‚   â”‚   â””â”€â”€ gemini_provider.py
+â”‚   â”œâ”€â”€ rag/
+â”‚   â”‚   â”œâ”€â”€ ingestion.py
+â”‚   â”‚   â”œâ”€â”€ chunking.py
+â”‚   â”‚   â”œâ”€â”€ embeddings.py
+â”‚   â”‚   â”œâ”€â”€ retrieval.py
+â”‚   â”‚   â””â”€â”€ citations.py
+â”‚   â”œâ”€â”€ prompts/
+â”‚   â”‚   â”œâ”€â”€ system.py
+â”‚   â”‚   â”œâ”€â”€ legal.py
+â”‚   â”‚   â””â”€â”€ mapansetu.py
+â”‚   â”œâ”€â”€ guardrails/
+â”‚   â”‚   â”œâ”€â”€ policy.py
+â”‚   â”‚   â”œâ”€â”€ hallucination.py
+â”‚   â”‚   â””â”€â”€ legal_boundary.py
+â”‚   â”œâ”€â”€ models/
+â”‚   â”‚   â”œâ”€â”€ chat.py
+â”‚   â”‚   â””â”€â”€ knowledge.py
+â”‚   â””â”€â”€ services/
+â”‚       â”œâ”€â”€ chat_service.py
+â”‚       â””â”€â”€ knowledge_service.py
+â”œâ”€â”€ knowledge/
+â”œâ”€â”€ scripts/
+â”œâ”€â”€ tests/
+â”œâ”€â”€ requirements.txt
+â”œâ”€â”€ .env.example
+â””â”€â”€ README.md
+```
+
+## LLM Provider Architecture
+
+Application code depends on a common provider abstraction, allowing configuration-driven selection of models (e.g., Gemini or OpenAI) without modifying source code.
+
+```text
+AI Assistant
+      â”‚
+      â–¼
+LLM Provider Interface
+      â”‚
+      â”œâ”€â”€ OpenAI Provider
+      â”‚
+      â””â”€â”€ Gemini Provider
+```
+
+Provider selection is configuration-driven.
+Example:
+```text
+AI_PROVIDER=gemini
+AI_MODEL=<configured-model>
+```
+API credentials are held securely within the AI service environment/secrets and are never exposed to the frontend, browser, mobile app, public API responses, Git, or logs.
+
+## Retrieval-Augmented Generation (RAG) Architecture
+
+The assistant uses RAG to ground its answers rather than relying on model fine-tuning.
+
+```text
+Approved Documents
+       â”‚
+       â–¼
+Document Ingestion
+       â”‚
+       â–¼
+Text Extraction
+       â”‚
+       â–¼
+Chunking + Metadata
+       â”‚
+       â–¼
+Embeddings
+       â”‚
+       â–¼
+Vector Store
+       â”‚
+       â–¼
+User Question
+       â”‚
+       â–¼
+Retriever
+       â”‚
+       â–¼
+Relevant Knowledge
+       â”‚
+       â–¼
+LLM Provider
+       â”‚
+       â–¼
+Answer + Sources
+```
+
+Vector Storage: PostgreSQL + pgvector is evaluated as the preferred initial approach for storing embeddings. No alternative vector databases (Qdrant, Pinecone, Weaviate) are to be introduced without a separate ADR.
+
+The architecture preserves source metadata for retrieved knowledge. Minimum source metadata includes:
+- document ID
+- title
+- source
+- authority
+- version
+- section
+- page where available
+- effective date where applicable
+- document category
+- review status
+
+## Knowledge Categories
+
+1. **MapanSetu**: Product workflows, application states, user roles, certificate verification, inspection workflow, offline workflow, website help, FAQs.
+2. **Legal Metrology**: Authoritative, curated legal/government material. (The AI must not treat arbitrary internet content as automatically authoritative).
+3. **Website**: Public content and navigation.
+4. **Glossary / FAQ**: Controlled explanatory content.
+
+### Knowledge Authority Priority
+
+```text
+Approved authoritative legal/government material
+                â†“
+Approved departmental material
+                â†“
+Approved MapanSetu documentation
+                â†“
+Approved explanatory material
+```
+
+The retrieval system prefers approved/current material and will not silently invent regulatory information when no verified source exists.
+
+## Security and Trust Boundaries
+
+The browser never communicates directly with the LLM provider using the provider API key. The AI service must not expose API keys, JWTs, password hashes, private signing keys, internal credentials, or unnecessary personal/domain data.
+
+```text
+Browser
+  â†“
+Next.js
+  â†“
+AI Service
+  â†“
+LLM Provider
+```
+
+For future phase features requesting user-specific data, Django will act as the gatekeeper for authentication and authorization. The AI service will consume the existing Django API and will not determine whether a user is allowed to see the application.
+
+```text
+User
+ â”‚
+ â–¼
+Next.js
+ â”‚
+ â–¼
+AI Service
+ â”‚
+ â–¼
+Django API
+ â”‚
+ â–¼
+Authentication + Authorization
+ â”‚
+ â–¼
+Permitted MapanSetu Data
+ â”‚
+ â–¼
+AI Service
+ â”‚
+ â–¼
+Response
+```
+
+## Prompt Architecture
+
+Prompts are constructed in a layered approach to safeguard against hallucination and prompt injection from retrieved documents. Retrieved documents are treated as data, not executable instructions.
+
+```text
+System Instructions
+        +
+AI Safety / Legal Boundary
+        +
+Retrieved Knowledge
+        +
+Allowed Conversation Context
+        +
+User Question
+```
+
+## Legal / Regulatory Guardrail
+
+The assistant must distinguish:
+```text
+Informational guidance
+        â‰ 
+Legal authority
+        â‰ 
+Officer decision
+```
+
+If verified information is unavailable, the assistant must not fabricate a regulation, tolerance, validity period, or legal requirement. For questions requiring an authorized decision, the assistant directs the user to the appropriate official process rather than making the decision itself.
+
+## Source Requirement
+
+For knowledge-grounded factual answers, the response conceptually is:
+```text
+Answer
+  +
+Sources
+  +
+Optional suggested action
+```
+The source corresponds to retrieved knowledge actually used for the response.
+
+## Error and Fallback Behavior
+
+The architecture defines safe behavior for:
+- AI provider unavailable
+- invalid provider configuration
+- retrieval unavailable
+- knowledge unavailable
+- timeout
+- rate limiting
+- malformed request
+- empty question
+- unsupported question
+- no relevant knowledge found
+
+The AI Assistant falls back gracefully rather than inventing an answer.
+
+## Database Boundary
+
+The AI service maintains its own persistence for AI-specific data (conversations, knowledge documents, chunks, embeddings, ingestion status). It must NOT duplicate canonical MapanSetu entities (User, Business, Instrument, Application, Inspection, Certificate), which remain governed by the Django system.
+Application code depends on a common provider abstraction, allowing configuration-driven selection of models (e.g., Gemini or OpenAI) without modifying source code.
+
+```text
+AI Assistant
+      │
+      ▼
+LLM Provider Interface
+      │
+      ├── OpenAI Provider
+      │
+      └── Gemini Provider
+```
+
+Provider selection is configuration-driven.
+Example:
+```text
+AI_PROVIDER=gemini
+AI_MODEL=<configured-model>
+```
+API credentials are held securely within the AI service environment/secrets and are never exposed to the frontend, browser, mobile app, public API responses, Git, or logs.
+
+## Retrieval-Augmented Generation (RAG) Architecture
+
+The assistant uses RAG to ground its answers rather than relying on model fine-tuning.
+
+```text
+Approved Documents
+       │
+       ▼
+Document Ingestion
+       │
+       ▼
+Text Extraction
+       │
+       ▼
+Chunking + Metadata
+       │
+       ▼
+Embeddings
+       │
+       ▼
+Vector Store
+       │
+       ▼
+User Question
+       │
+       ▼
+Retriever
+       │
+       ▼
+Relevant Knowledge
+       │
+       ▼
+LLM Provider
+       │
+       ▼
+Answer + Sources
+```
+
+Vector Storage: PostgreSQL + pgvector is evaluated as the preferred initial approach for storing embeddings. No alternative vector databases (Qdrant, Pinecone, Weaviate) are to be introduced without a separate ADR.
+
+The architecture preserves source metadata for retrieved knowledge. Minimum source metadata includes:
+- document ID
+- title
+- source
+- authority
+- version
+- section
+- page where available
+- effective date where applicable
+- document category
+- review status
+
+## Knowledge Categories
+
+1. **MapanSetu**: Product workflows, application states, user roles, certificate verification, inspection workflow, offline workflow, website help, FAQs.
+2. **Legal Metrology**: Authoritative, curated legal/government material. (The AI must not treat arbitrary internet content as automatically authoritative).
+3. **Website**: Public content and navigation.
+4. **Glossary / FAQ**: Controlled explanatory content.
+
+### Knowledge Authority Priority
+
+```text
+Approved authoritative legal/government material
+                ↓
+Approved departmental material
+                ↓
+Approved MapanSetu documentation
+                ↓
+Approved explanatory material
+```
+
+The retrieval system prefers approved/current material and will not silently invent regulatory information when no verified source exists.
+
+## Security and Trust Boundaries
+
+The browser never communicates directly with the LLM provider using the provider API key. The AI service must not expose API keys, JWTs, password hashes, private signing keys, internal credentials, or unnecessary personal/domain data.
+
+```text
+Browser
+  ↓
+Next.js
+  ↓
+AI Service
+  ↓
+LLM Provider
+```
+
+For future phase features requesting user-specific data, Django will act as the gatekeeper for authentication and authorization. The AI service will consume the existing Django API and will not determine whether a user is allowed to see the application.
+
+```text
+User
+ │
+ ▼
+Next.js
+ │
+ ▼
+AI Service
+ │
+ ▼
+Django API
+ │
+ ▼
+Authentication + Authorization
+ │
+ ▼
+Permitted MapanSetu Data
+ │
+ ▼
+AI Service
+ │
+ ▼
+Response
+```
+
+## Prompt Architecture
+
+Prompts are constructed in a layered approach to safeguard against hallucination and prompt injection from retrieved documents. Retrieved documents are treated as data, not executable instructions.
+
+```text
+System Instructions
+        +
+AI Safety / Legal Boundary
+        +
+Retrieved Knowledge
+        +
+Allowed Conversation Context
+        +
+User Question
+```
+
+## Legal / Regulatory Guardrail
+
+The assistant must distinguish:
+```text
+Informational guidance
+        ≠
+Legal authority
+        ≠
+Officer decision
+```
+
+If verified information is unavailable, the assistant must not fabricate a regulation, tolerance, validity period, or legal requirement. For questions requiring an authorized decision, the assistant directs the user to the appropriate official process rather than making the decision itself.
+
+## Source Requirement
+
+For knowledge-grounded factual answers, the response conceptually is:
+```text
+Answer
+  +
+Sources
+  +
+Optional suggested action
+```
+The source corresponds to retrieved knowledge actually used for the response.
+
+## Error and Fallback Behavior
+
+The architecture defines safe behavior for:
+- AI provider unavailable
+- invalid provider configuration
+- retrieval unavailable
+- knowledge unavailable
+- timeout
+- rate limiting
+- malformed request
+- empty question
+- unsupported question
+- no relevant knowledge found
+
+The AI Assistant falls back gracefully rather than inventing an answer.
+
+## Database Boundary
+
+The AI service maintains its own persistence for AI-specific data (conversations, knowledge documents, chunks, embeddings, ingestion status). It must NOT duplicate canonical MapanSetu entities (User, Business, Instrument, Application, Inspection, Certificate), which remain governed by the Django system.
+
+## Frontend Boundary
+
+The frontend communicates with the AI service through the approved AI API boundary. The frontend must not contain LLM API keys, provider SDK credentials, RAG logic, vector database credentials, or private AI service secrets.
+
+## Live MapanSetu Data Boundary
+
+AI Service is never an authorization authority.
+Django decides whether data may be disclosed.
+AI only reasons over data Django has explicitly authorized.
+
+```text
+AI Service
+   ↓
+controlled Django API (/api/v1/internal/ai/context)
+   ↓
+authorized DTO
+   ↓
+AI reasoning
+```
+
+AI Service has no direct database access. 
+Django is authoritative for authorization and live data.
+AI is advisory only.

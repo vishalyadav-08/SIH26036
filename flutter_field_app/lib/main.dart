@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:flutter_field_app/l10n/app_localizations.dart';
-import 'package:flutter_field_app/theme/app_theme.dart';
+import 'package:flutter_field_app/app/theme/app_theme.dart';
 import 'package:flutter_field_app/shared/top_app_bar.dart';
 import 'package:flutter_field_app/shared/bottom_nav_bar.dart';
 import 'package:flutter_field_app/shared/navigation_drawer.dart';

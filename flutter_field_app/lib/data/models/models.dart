@@ -40,6 +40,8 @@ class InspectionTask extends HiveObject {
   String? notes;
   @HiveField(17)
   String? result;
+  @HiveField(18)
+  String? syncedAt;
 
   InspectionTask({
     required this.id,
@@ -60,6 +62,7 @@ class InspectionTask extends HiveObject {
     this.capturedAt,
     this.notes,
     this.result,
+    this.syncedAt,
   });
 
   factory InspectionTask.fromJson(Map<String, dynamic> json) {
@@ -75,6 +78,7 @@ class InspectionTask extends HiveObject {
       description: json['description'] as String? ?? '',
       notes: json['notes'] as String?,
       result: json['result'] as String?,
+      syncedAt: json['syncedAt'] as String?,
     );
   }
 
@@ -89,6 +93,13 @@ class InspectionTask extends HiveObject {
       'scheduledTime': scheduledTime,
       'urgency': urgency,
       'description': description,
+      'gpsLatitude': gpsLatitude,
+      'gpsLongitude': gpsLongitude,
+      'gpsAccuracy': gpsAccuracy,
+      'capturedAt': capturedAt,
+      'notes': notes,
+      'result': result,
+      'syncedAt': syncedAt,
     };
   }
 }
@@ -145,11 +156,14 @@ class EvidenceItem {
   String title;
   @HiveField(2)
   String imagePath;
+  @HiveField(3)
+  String? gpsCoords;
 
   EvidenceItem({
     required this.id,
     required this.title,
     required this.imagePath,
+    this.gpsCoords,
   });
 }
 

@@ -32,6 +32,7 @@ urlpatterns = [
     path(f"{API}audit/", include("audit.urls")),
     path(f"{API}", include("common.urls")),
     path(f"{API}sync/", include("sync.urls")),
+    path(f"{API}internal/ai/", include("ai_integration.urls")),
 
     path(f"{API}schema/", SpectacularAPIView.as_view(), name="schema"),
     path(

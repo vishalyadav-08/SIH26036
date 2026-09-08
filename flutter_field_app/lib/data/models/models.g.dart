@@ -35,13 +35,14 @@ class InspectionTaskAdapter extends TypeAdapter<InspectionTask> {
       capturedAt: fields[15] as String?,
       notes: fields[16] as String?,
       result: fields[17] as String?,
+      syncedAt: fields[18] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, InspectionTask obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(19)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -77,7 +78,9 @@ class InspectionTaskAdapter extends TypeAdapter<InspectionTask> {
       ..writeByte(16)
       ..write(obj.notes)
       ..writeByte(17)
-      ..write(obj.result);
+      ..write(obj.result)
+      ..writeByte(18)
+      ..write(obj.syncedAt);
   }
 
   @override
@@ -197,19 +200,22 @@ class EvidenceItemAdapter extends TypeAdapter<EvidenceItem> {
       id: fields[0] as String,
       title: fields[1] as String,
       imagePath: fields[2] as String,
+      gpsCoords: fields[3] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, EvidenceItem obj) {
     writer
-      ..writeByte(3)
+      ..writeByte(4)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.title)
       ..writeByte(2)
-      ..write(obj.imagePath);
+      ..write(obj.imagePath)
+      ..writeByte(3)
+      ..write(obj.gpsCoords);
   }
 
   @override

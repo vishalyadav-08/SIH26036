@@ -14,26 +14,56 @@ services:
         value: "False"
       - key: SECRET_KEY
         generateValue: true
+
+      # ── Database (Supabase PostgreSQL) ───────────────────────────────────
+      # Set this in the Render dashboard → Environment → DATABASE_URI
+      # Copy the "URI" connection string from: Supabase → Settings → Database
       - key: DATABASE_URI
-        fromDatabase:
-          name: mapansetu-db
-          property: connectionString
+        sync: false          # fill manually in Render dashboard
+
+      # ── Hosts & CORS ─────────────────────────────────────────────────────
       - key: ALLOWED_HOSTS
         value: ".onrender.com"
       - key: CSRF_TRUSTED_ORIGINS
-        value: "https://mapansetu-backend.onrender.com,https://mapansetu-frontend.vercel.app"
+        value: "https://mapansetu-backend.onrender.com,https://mapansetu.vercel.app"
       - key: CORS_ALLOWED_ORIGINS
-        value: "https://mapansetu-frontend.vercel.app"
+        value: "https://mapansetu.vercel.app"
       - key: FRONTEND_URL
-        value: "https://mapansetu-frontend.vercel.app"
+        value: "https://mapansetu.vercel.app"
       - key: BACKEND_URL
         value: "https://mapansetu-backend.onrender.com"
-      - key: EMAIL_BACKEND
-        value: "django.core.mail.backends.console.EmailBackend"
 
-# ─── PostgreSQL Database ────────────────────────────────────────────────────
-databases:
-  - name: mapansetu-db
-    databaseName: mapansetu
-    user: mapansetu
-    plan: free
+      # ── Supabase Storage (S3-compatible) ─────────────────────────────────
+      # Endpoint: Supabase → Settings → Storage → S3 Connection → Endpoint
+      # Format:   https://<PROJECT_REF>.supabase.co/storage/v1/s3
+      # Region:   shown on same page (e.g. ap-southeast-1)
+      # Keys:     Supabase → Settings → Storage → S3 Access Keys → New access key
+      - key: MINIO_ENDPOINT
+        sync: false          # https://<PROJECT_REF>.supabase.co/storage/v1/s3
+      - key: MINIO_ACCESS_KEY
+        sync: false          # Supabase S3 Access Key ID
+      - key: MINIO_SECRET_KEY
+        sync: false          # Supabase S3 Secret Access Key
+      - key: MINIO_BUCKET
+        value: "mapansetu"
+      - key: MINIO_REGION
+        sync: false          # e.g. ap-southeast-1 (shown in Supabase S3 settings)
+
+      # ── Email (Gmail SMTP) ────────────────────────────────────────────────
+      # 1. Enable 2-Step Verification on your Google account.
+      # 2. Go to: https://myaccount.google.com/apppasswords
+      # 3. Create an App Password (name it "MapanSetu") -> copy 16-character key.
+      - key: EMAIL_BACKEND
+        value: "django.core.mail.backends.smtp.EmailBackend"
+      - key: EMAIL_HOST
+        value: "smtp.gmail.com"
+      - key: EMAIL_PORT
+        value: "587"
+      - key: EMAIL_USE_TLS
+        value: "True"
+      - key: EMAIL_HOST_USER
+        sync: false          # your-email@gmail.com
+      - key: EMAIL_HOST_PASSWORD
+        sync: false          # 16-character Google App Password
+      - key: DEFAULT_FROM_EMAIL
+        sync: false          # your-email@gmail.com

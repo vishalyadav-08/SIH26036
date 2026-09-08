@@ -208,7 +208,7 @@ if MINIO_ENDPOINT:
                 "querystring_auth": True,
                 # Supabase Storage uses path-style S3 URLs
                 # (https://host/bucket/key), not virtual-hosted-style.
-                "use_path_style_url": True,
+                "addressing_style": "path",
             },
         },
         "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},

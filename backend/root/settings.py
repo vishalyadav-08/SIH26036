@@ -187,9 +187,10 @@ INSPECTION_REQUIRE_EVIDENCE = os.getenv("INSPECTION_REQUIRE_EVIDENCE", "false" i
 )
 
 # Object storage (ADR-007) --------------------------------------------------
-# Evidence images and certificate PDFs go to MinIO via the S3 API. Left on the
-# local filesystem until MINIO_ENDPOINT is set, so nothing breaks before the
-# container is running.
+# Evidence images and certificate PDFs go to Supabase Storage via its S3-compatible
+# API. Falls back to the local filesystem until MINIO_ENDPOINT is set, so nothing
+# breaks before storage is configured.
+# Supabase S3 endpoint format: https://<PROJECT_REF>.supabase.co/storage/v1/s3
 
 MINIO_ENDPOINT = os.getenv("MINIO_ENDPOINT")
 
@@ -202,8 +203,12 @@ if MINIO_ENDPOINT:
                 "access_key": os.getenv("MINIO_ACCESS_KEY"),
                 "secret_key": os.getenv("MINIO_SECRET_KEY"),
                 "bucket_name": os.getenv("MINIO_BUCKET", "mapansetu"),
+                "region_name": os.getenv("MINIO_REGION", "ap-southeast-1"),
                 "default_acl": None,
                 "querystring_auth": True,
+                # Supabase Storage uses path-style S3 URLs
+                # (https://host/bucket/key), not virtual-hosted-style.
+                "use_path_style_url": True,
             },
         },
         "staticfiles": {"BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage"},

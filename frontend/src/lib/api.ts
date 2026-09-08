@@ -36,9 +36,23 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    // Forward the error payload exactly as defined by the API contract
+    // Convert error response objects into proper Error instances so
+    // catch blocks and React error boundaries receive error.message
+    // instead of rendering "[object Object]".
     if (error.response && error.response.data) {
-      return Promise.reject(error.response.data);
+      const data = error.response.data;
+      // Extract a human-readable message from common API error shapes
+      const message =
+        (typeof data === "string" && data) ||
+        data?.detail ||
+        data?.message ||
+        data?.error ||
+        (Array.isArray(data?.non_field_errors) && data.non_field_errors[0]) ||
+        `Request failed with status ${error.response.status}`;
+      const err = new Error(typeof message === "string" ? message : JSON.stringify(message));
+      // Attach the raw response data for callers that need it
+      (err as Error & { data: unknown }).data = data;
+      return Promise.reject(err);
     }
     return Promise.reject(error);
   }

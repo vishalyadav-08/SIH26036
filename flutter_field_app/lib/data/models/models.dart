@@ -29,8 +29,20 @@ class InspectionTask extends HiveObject {
   @HiveField(11)
   List<EvidenceItem> evidence;
   @HiveField(12)
+  double? gpsLatitude;
+  @HiveField(13)
+  double? gpsLongitude;
+  @HiveField(14)
+  double? gpsAccuracy;
+  @HiveField(15)
+  String? capturedAt;
+  @HiveField(16)
+  String? notes;
+  @HiveField(17)
+  String? result;
+  @HiveField(18)
   String? syncedAt;
-  
+
   InspectionTask({
     required this.id,
     required this.appId,
@@ -44,6 +56,12 @@ class InspectionTask extends HiveObject {
     this.checklists = const [],
     this.readings = const [],
     this.evidence = const [],
+    this.gpsLatitude,
+    this.gpsLongitude,
+    this.gpsAccuracy,
+    this.capturedAt,
+    this.notes,
+    this.result,
     this.syncedAt,
   });
 
@@ -58,6 +76,8 @@ class InspectionTask extends HiveObject {
       scheduledTime: json['scheduledTime'] as String? ?? '',
       urgency: json['urgency'] as String? ?? '',
       description: json['description'] as String? ?? '',
+      notes: json['notes'] as String?,
+      result: json['result'] as String?,
       syncedAt: json['syncedAt'] as String?,
     );
   }
@@ -73,6 +93,12 @@ class InspectionTask extends HiveObject {
       'scheduledTime': scheduledTime,
       'urgency': urgency,
       'description': description,
+      'gpsLatitude': gpsLatitude,
+      'gpsLongitude': gpsLongitude,
+      'gpsAccuracy': gpsAccuracy,
+      'capturedAt': capturedAt,
+      'notes': notes,
+      'result': result,
       'syncedAt': syncedAt,
     };
   }
@@ -109,6 +135,8 @@ class MeasurementReading {
   double maxPermissibleError;
   @HiveField(4)
   String unit;
+  @HiveField(5)
+  double indicatedWeight;
 
   MeasurementReading({
     required this.id,
@@ -116,6 +144,7 @@ class MeasurementReading {
     required this.referenceWeight,
     required this.maxPermissibleError,
     required this.unit,
+    this.indicatedWeight = 0.0,
   });
 }
 

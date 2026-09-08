@@ -105,10 +105,10 @@ export default function AdminInstrumentsPage() {
                     </td>
                     <td className="py-3.5 px-4">
                       <div className="font-semibold text-slate-800">
-                        {ins.instrumentType.replace(/_/g, " ")}
+                        {(ins.instrumentType || "Scale").replace(/_/g, " ")}
                       </div>
                       <div className="text-[10px] text-slate-500">
-                        {ins.manufacturer} • Model: {ins.model}
+                        {ins.manufacturer || "Manufacturer"} • Model: {ins.model || "Standard"}
                       </div>
                     </td>
                     <td className="py-3.5 px-4 font-medium text-slate-700">

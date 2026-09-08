@@ -110,7 +110,7 @@ class ProfileScreen extends ConsumerWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              isHi ? 'अधिकारी शर्मा' : 'Officer Sharma',
+                              ref.watch(currentUserProvider)?.displayName ?? (isHi ? 'अज्ञात अधिकारी' : 'Unknown Officer'),
                               style: theme.textTheme.headlineSmall?.copyWith(
                                 fontWeight: FontWeight.bold,
                                 color: AppTheme.onSurface,
@@ -118,7 +118,7 @@ class ProfileScreen extends ConsumerWidget {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              l10n?.legalMetrologyOfficer ?? 'Legal Metrology Officer',
+                              l10n?.legalMetrologyOfficer ?? 'Legal Metrology Officer (LMO)',
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: AppTheme.secondary,
                               ),
@@ -130,14 +130,14 @@ class ProfileScreen extends ConsumerWidget {
                                 color: AppTheme.secondaryContainer,
                                 borderRadius: BorderRadius.circular(AppTheme.radiusFull),
                               ),
-                              child: const Row(
+                              child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Icon(Icons.badge, size: 14, color: AppTheme.onSecondaryContainer),
-                                  SizedBox(width: 4),
+                                  const Icon(Icons.badge, size: 14, color: AppTheme.onSecondaryContainer),
+                                  const SizedBox(width: 4),
                                   Text(
-                                    'LMO-2024-088',
-                                    style: TextStyle(
+                                    ref.watch(currentUserProvider)?.id ?? 'N/A',
+                                    style: const TextStyle(
                                       fontSize: 11,
                                       fontWeight: FontWeight.bold,
                                       color: AppTheme.onSecondaryContainer,

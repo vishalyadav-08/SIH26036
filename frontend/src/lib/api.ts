@@ -6,7 +6,7 @@ import { HOST } from "@/config/host";
 // ============================================================================
 // When true, all services use local mock data implementations.
 // When false, ZERO mock fallback occurs. Actual HTTP API requests are made.
-export const USE_MOCK_API = true;
+export const USE_MOCK_API = false;
 
 const axiosInstance = axios.create({
   baseURL: HOST.api,
@@ -16,6 +16,13 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use((config) => {
+  if (config.url) {
+    const [path, query] = config.url.split("?");
+    if (!path.endsWith("/")) {
+      config.url = `${path}/${query ? `?${query}` : ""}`;
+    }
+  }
+
   if (typeof window !== "undefined") {
     const token = localStorage.getItem("mapansetu_access_token");
     if (token && config.headers) {

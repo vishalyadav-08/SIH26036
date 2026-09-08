@@ -79,7 +79,7 @@ export default function FieldDashboardPage() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#cbd5e1] pb-6">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-[#111c2d] tracking-tight flex items-center gap-2">
-            Field Officer Console <span className="text-[#727784] font-normal text-xl">| क्षेत्रीय अधिकारी</span>
+            LMO Console <span className="text-[#727784] font-normal text-xl">| क्षेत्रीय अधिकारी</span>
           </h1>
           <p className="text-xs md:text-sm text-[#414753] mt-1">
             Offline-first statutory inspection toolkit, verification checklists, and sync manager.

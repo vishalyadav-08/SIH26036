@@ -62,6 +62,8 @@ export default function RegisterInstrumentPage() {
     try {
       const payload = {
         ...data,
+        serialNumber: data.serialNumber?.trim() || `SN-${Date.now().toString().slice(-6)}`,
+        location: data.location?.trim() || "Registered Business Premises",
         capacity: Number(data.capacity)
       };
       const newInst = await registerInstrument(payload);

@@ -29,14 +29,20 @@ class InspectionTaskAdapter extends TypeAdapter<InspectionTask> {
       checklists: (fields[9] as List).cast<ChecklistItem>(),
       readings: (fields[10] as List).cast<MeasurementReading>(),
       evidence: (fields[11] as List).cast<EvidenceItem>(),
-      syncedAt: fields[12] as String?,
+      gpsLatitude: fields[12] as double?,
+      gpsLongitude: fields[13] as double?,
+      gpsAccuracy: fields[14] as double?,
+      capturedAt: fields[15] as String?,
+      notes: fields[16] as String?,
+      result: fields[17] as String?,
+      syncedAt: fields[18] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, InspectionTask obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(19)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -62,6 +68,18 @@ class InspectionTaskAdapter extends TypeAdapter<InspectionTask> {
       ..writeByte(11)
       ..write(obj.evidence)
       ..writeByte(12)
+      ..write(obj.gpsLatitude)
+      ..writeByte(13)
+      ..write(obj.gpsLongitude)
+      ..writeByte(14)
+      ..write(obj.gpsAccuracy)
+      ..writeByte(15)
+      ..write(obj.capturedAt)
+      ..writeByte(16)
+      ..write(obj.notes)
+      ..writeByte(17)
+      ..write(obj.result)
+      ..writeByte(18)
       ..write(obj.syncedAt);
   }
 
@@ -135,13 +153,14 @@ class MeasurementReadingAdapter extends TypeAdapter<MeasurementReading> {
       referenceWeight: fields[2] as double,
       maxPermissibleError: fields[3] as double,
       unit: fields[4] as String,
+      indicatedWeight: fields[5] as double,
     );
   }
 
   @override
   void write(BinaryWriter writer, MeasurementReading obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -151,7 +170,9 @@ class MeasurementReadingAdapter extends TypeAdapter<MeasurementReading> {
       ..writeByte(3)
       ..write(obj.maxPermissibleError)
       ..writeByte(4)
-      ..write(obj.unit);
+      ..write(obj.unit)
+      ..writeByte(5)
+      ..write(obj.indicatedWeight);
   }
 
   @override

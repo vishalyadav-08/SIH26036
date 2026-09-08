@@ -22,7 +22,7 @@ import { useAuth } from "@/hooks/useAuth";
 const ADMIN_NAV_ITEMS = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Applications", href: "/admin/applications", icon: ClipboardList },
-  { label: "Officers", href: "/admin/officers", icon: Users },
+  { label: "LMOs", href: "/admin/officers", icon: Users },
   { label: "Instruments", href: "/admin/instruments", icon: Gauge },
   { label: "Certificates", href: "/admin/certificates", icon: Award },
   { label: "Audit Log", href: "/admin/audit", icon: History },
@@ -64,7 +64,7 @@ export function AdminHeader() {
                   MapanSetu
                 </span>
                 <span className="text-[10px] font-semibold text-[#004e9f] uppercase tracking-wider mt-0.5">
-                  Supervisor Portal
+                  GATCs Portal
                 </span>
               </div>
             </Link>
@@ -90,10 +90,10 @@ export function AdminHeader() {
               </div>
               <div className="text-left leading-none">
                 <div className="text-xs font-bold text-[#111c2d] truncate max-w-[130px]">
-                  {user?.displayName || "Admin Supervisor"}
+                  {user?.displayName || "GATC Supervisor"}
                 </div>
                 <div className="text-[10px] text-[#414753] font-mono mt-0.5">
-                  ADMIN SUPERVISOR
+                  GATCS SUPERVISOR
                 </div>
               </div>
             </div>
@@ -102,7 +102,7 @@ export function AdminHeader() {
               type="button"
               onClick={handleLogout}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#414753] hover:text-[#b91c1c] bg-white hover:bg-[#fff1f2] border border-[#cbd5e1] hover:border-[#fecdd3] rounded transition-colors cursor-pointer"
-              title="Sign out of Admin account"
+              title="Sign out of GATC account"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Sign Out</span>
@@ -136,7 +136,7 @@ export function AdminHeader() {
             </div>
             <div>
               <div className="text-xs font-bold text-[#111c2d]">
-                {user?.displayName || "Admin Supervisor"}
+                {user?.displayName || "GATC Supervisor"}
               </div>
               <div className="text-[10px] text-[#414753] font-mono">
                 {user?.email} • Legal Metrology Department

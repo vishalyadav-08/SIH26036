@@ -45,7 +45,7 @@ export function AssignOfficerModal({
       await onAssign(
         selectedOfficerId,
         selected?.name || "Inspector Sharma",
-        note || "Assigned by Admin Supervisor"
+        note || "Assigned by GATCs"
       );
       onClose();
     } finally {
@@ -71,7 +71,7 @@ export function AssignOfficerModal({
                 id="assign-modal-title"
                 className="text-base font-bold text-slate-900"
               >
-                Assign Field Officer
+                Assign LMO
               </h2>
               <p className="text-xs text-slate-500 font-mono">
                 {applicationNumber}
@@ -94,7 +94,7 @@ export function AssignOfficerModal({
               htmlFor="officer-select"
               className="text-xs font-bold text-slate-700 uppercase tracking-wider block"
             >
-              Select Active Inspector:
+              Select Active LMO:
             </label>
             <select
               id="officer-select"

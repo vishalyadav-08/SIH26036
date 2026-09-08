@@ -1,9 +1,9 @@
 {
   "@@locale": "en",
   "appTitle": "MapanSetu",
-  "fieldOfficerPortal": "Field Officer Portal",
+  "fieldOfficerPortal": "LMO Portal",
   "sihPrototype": "SIH 2026 PROTOTYPE",
-  "officerId": "Officer ID",
+  "officerId": "LMO ID",
   "password": "Password",
   "forgotPassword": "Forgot Password?",
   "signIn": "Sign In",
@@ -11,7 +11,7 @@
   "language": "Language",
   "english": "English",
   "hindi": "हिन्दी",
-  "loginFailed": "Invalid Officer ID or Password",
+  "loginFailed": "Invalid LMO ID or Password",
   
   "dashboard": "Dashboard",
   "welcomeBack": "Welcome back to the field.",
@@ -82,7 +82,7 @@
   "passResult": "PASS",
   "failResult": "FAIL",
   "correctionResult": "REQUIRES CORRECTION",
-  "officerNotes": "Officer Notes",
+  "officerNotes": "LMO Notes",
   "officerNotesPlaceholder": "Add any final observations...",
   "submitInspection": "Submit Inspection",
 
@@ -109,7 +109,7 @@
   "mergeAndReview": "Merge & Review",
 
   "profile": "Profile",
-  "legalMetrologyOfficer": "Legal Metrology Officer",
+  "legalMetrologyOfficer": "Legal Metrology Officer (LMO)",
   "operationalStats": "Operational Stats",
   "localStorage": "Local Storage",
   "accountSecurity": "Account Security",

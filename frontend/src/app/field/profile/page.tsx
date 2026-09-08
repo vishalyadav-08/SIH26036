@@ -34,7 +34,7 @@ export default function FieldProfilePage() {
           <div className="grid grid-cols-2 gap-4 pt-2">
             <div>
               <p className="text-xs text-slate-500 font-semibold uppercase">Name</p>
-              <p className="text-sm font-medium">{user?.displayName || "Field Officer"}</p>
+              <p className="text-sm font-medium">{user?.displayName || "LMO"}</p>
             </div>
             <div>
               <p className="text-xs text-slate-500 font-semibold uppercase">Role</p>

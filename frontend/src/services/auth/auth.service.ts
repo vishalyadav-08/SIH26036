@@ -9,48 +9,131 @@ export const DEMO_ACCOUNTS: Record<
   string,
   { password: string; response: LoginResponse }
 > = {
-  "business@example.test": {
+  // 1. Business Portal Accounts
+  "info@shreebalaji.demo": {
     password: "synthetic-password",
     response: {
       accessToken: "demo-jwt-business-token-sih26036",
       tokenType: "Bearer",
-      expiresAt: "2026-08-30T12:00:00Z",
+      expiresAt: "2026-12-31T23:59:59Z",
       user: {
         id: "usr-demo-biz-001",
-        email: "business@example.test",
-        displayName: "Demo Business Owner",
+        email: "info@shreebalaji.demo",
+        displayName: "Synthetic Biz Owner",
         role: "BUSINESS",
         businessId: "biz-demo-001",
         active: true,
       },
     },
   },
-  "admin@example.test": {
+  "business@mapansetu.in": {
+    password: "synthetic-password",
+    response: {
+      accessToken: "demo-jwt-business-token-sih26036",
+      tokenType: "Bearer",
+      expiresAt: "2026-12-31T23:59:59Z",
+      user: {
+        id: "usr-demo-biz-002",
+        email: "business@mapansetu.in",
+        displayName: "Shree Balaji Weighing Solutions",
+        role: "BUSINESS",
+        businessId: "biz-demo-001",
+        active: true,
+      },
+    },
+  },
+
+  // 2. LMO (Legal Metrology Officer) Accounts
+  "vinod.sharma@lmo.up.gov.demo": {
+    password: "synthetic-password",
+    response: {
+      accessToken: "demo-jwt-officer-token-sih26036",
+      tokenType: "Bearer",
+      expiresAt: "2026-12-31T23:59:59Z",
+      user: {
+        id: "usr-demo-off-001",
+        email: "vinod.sharma@lmo.up.gov.demo",
+        displayName: "Vinod Sharma (LMO)",
+        role: "LMO",
+        active: true,
+      },
+    },
+  },
+  "lmo@mapansetu.in": {
+    password: "synthetic-password",
+    response: {
+      accessToken: "demo-jwt-officer-token-sih26036",
+      tokenType: "Bearer",
+      expiresAt: "2026-12-31T23:59:59Z",
+      user: {
+        id: "usr-demo-off-002",
+        email: "lmo@mapansetu.in",
+        displayName: "Vinod Sharma (LMO)",
+        role: "LMO",
+        active: true,
+      },
+    },
+  },
+
+  // 3. GATCs (Government Approved Test Centre) Accounts
+  "gatc@up.gov.demo": {
+    password: "synthetic-password",
+    response: {
+      accessToken: "demo-jwt-gatc-token-sih26036",
+      tokenType: "Bearer",
+      expiresAt: "2026-12-31T23:59:59Z",
+      user: {
+        id: "usr-demo-gatc-001",
+        email: "gatc@up.gov.demo",
+        displayName: "Demo Test Centre (GATC)",
+        role: "GATC",
+        active: true,
+      },
+    },
+  },
+  "gatc@mapansetu.in": {
+    password: "synthetic-password",
+    response: {
+      accessToken: "demo-jwt-gatc-token-sih26036",
+      tokenType: "Bearer",
+      expiresAt: "2026-12-31T23:59:59Z",
+      user: {
+        id: "usr-demo-gatc-002",
+        email: "gatc@mapansetu.in",
+        displayName: "Government Approved Test Centre",
+        role: "GATC",
+        active: true,
+      },
+    },
+  },
+
+  // 4. Admin Supervisor Accounts
+  "admin@up.gov.demo": {
     password: "synthetic-password",
     response: {
       accessToken: "demo-jwt-admin-token-sih26036",
       tokenType: "Bearer",
-      expiresAt: "2026-08-30T12:00:00Z",
+      expiresAt: "2026-12-31T23:59:59Z",
       user: {
         id: "usr-demo-adm-001",
-        email: "admin@example.test",
-        displayName: "Supervisor Admin",
+        email: "admin@up.gov.demo",
+        displayName: "Demo Supervisor (GATC)",
         role: "ADMIN",
         active: true,
       },
     },
   },
-  "officer@example.test": {
+  "admin@mapansetu.in": {
     password: "synthetic-password",
     response: {
-      accessToken: "demo-jwt-officer-token-sih26036",
+      accessToken: "demo-jwt-admin-token-sih26036",
       tokenType: "Bearer",
-      expiresAt: "2026-08-30T12:00:00Z",
+      expiresAt: "2026-12-31T23:59:59Z",
       user: {
-        id: "usr-demo-off-001",
-        email: "officer@example.test",
-        displayName: "Inspector Sharma (LMO)",
-        role: "OFFICER",
+        id: "usr-demo-adm-002",
+        email: "admin@mapansetu.in",
+        displayName: "Central Admin Supervisor",
+        role: "ADMIN",
         active: true,
       },
     },
@@ -71,7 +154,7 @@ export async function loginUser(
   }
 
   // Real API
-  const res = await api.post<LoginResponse>("/auth/login", {
+  const res = await api.post<LoginResponse>("/auth/login/", {
     email: normalizedEmail,
     password: credentials.password,
   });
@@ -88,7 +171,7 @@ export async function fetchCurrentUser(): Promise<User> {
   }
 
   // Real API
-  const res = await api.get<User>("/users/me");
+  const res = await api.get<User>("/users/me/");
   return res as unknown as User;
 }
 

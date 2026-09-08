@@ -32,7 +32,10 @@ final dioProvider = Provider<Dio>((ref) {
       return handler.next(options);
     },
     onError: (error, handler) async {
-      // Handle 401 token refresh here if needed
+      if (error.response?.statusCode == 401) {
+        // Token expired or invalid — clear it so the next launch forces re-login
+        await storage.delete(key: 'access_token');
+      }
       return handler.next(error);
     }
   ));
@@ -52,26 +55,24 @@ final syncEngineProvider = Provider<SyncEngine>((ref) {
 });
 
 final inspectionsProvider = StateNotifierProvider<InspectionsNotifier, List<InspectionTask>>((ref) {
-  return InspectionsNotifier(ref.watch(repositoryProvider));
+  return InspectionsNotifier(ref.watch(repositoryProvider), ref.watch(syncEngineProvider));
 });
 
 class InspectionsNotifier extends StateNotifier<List<InspectionTask>> {
   final InspectionRepository _repository;
+  final SyncEngine _syncEngine;
 
-  InspectionsNotifier(this._repository) : super([]) {
+  InspectionsNotifier(this._repository, this._syncEngine) : super([]) {
     _loadInspections();
   }
 
-  void _loadInspections() {
+  void _loadInspections() async {
     if (!AppConfig.useMockBackend) {
-      // In a real app with backend, we would trigger a fetch here.
-      // e.g. ref.read(syncEngineProvider).fetchInspections();
-      // For now, load whatever is in Hive repository
+      await _syncEngine.fetchInspections();
       state = _repository.getAllInspections();
     } else {
       final data = _repository.getAllInspections();
       if (data.isEmpty) {
-        // Seed with dummy data
         _seedDummyData();
       } else {
         state = data;
@@ -80,28 +81,29 @@ class InspectionsNotifier extends StateNotifier<List<InspectionTask>> {
   }
 
   void _seedDummyData() {
+    if (!AppConfig.useMockBackend) return; // double-check
     final dummy = [
       InspectionTask(
-        id: 'task_001',
-        appId: 'APP-2024-001',
-        title: 'Routine Weights Check',
-        businessName: 'Global Traders',
-        sector: 'North Delhi Market',
+        id: 'demo_task_001',
+        appId: 'APP-DEMO-2026-001',
+        title: 'Class III Electronic Weighing Scale',
+        businessName: 'Demo Retail Grocery (Synthetic)',
+        sector: 'Demo District Sector 4',
         status: 'scheduled',
-        scheduledTime: '10:00 AM Today',
+        scheduledTime: 'Today, 10:00 AM',
         urgency: 'normal',
-        description: 'Verify 50kg standard weights.',
+        description: 'Demo Application Ref: DEMO-APP-001. Verification of 30kg commercial retail scale.',
       ),
       InspectionTask(
-        id: 'task_002',
-        appId: 'APP-2024-002',
-        title: 'Unannounced Audit: Retail Scales',
-        businessName: 'South Delhi Market',
-        sector: 'South Delhi Market',
+        id: 'demo_task_002',
+        appId: 'APP-DEMO-2026-002',
+        title: 'Fuel Dispenser Volumetric Verification',
+        businessName: 'Demo Energy Station (Synthetic)',
+        sector: 'Demo District Highway',
         status: 'urgent',
-        scheduledTime: '11:30 AM Today',
+        scheduledTime: 'Today, 11:30 AM',
         urgency: 'urgent',
-        description: 'Surprise check of retail scales.',
+        description: 'Demo Application Ref: DEMO-APP-002. Surprise check of liquid petroleum dispensers.',
       ),
     ];
     for (var task in dummy) {
@@ -113,6 +115,12 @@ class InspectionsNotifier extends StateNotifier<List<InspectionTask>> {
   void addOrUpdateTask(InspectionTask task) {
     _repository.saveInspection(task);
     state = _repository.getAllInspections();
+  }
+
+  Future<void> resetDemoData() async {
+    if (!AppConfig.useMockBackend) return;
+    await _repository.clearAll();
+    _seedDummyData();
   }
 }
 
@@ -129,7 +137,7 @@ class TemplatesNotifier extends StateNotifier<List<InspectionTemplate>> {
 
   void _loadTemplates() {
     final data = _repository.getAllTemplates();
-    if (data.isEmpty) {
+    if (data.isEmpty && AppConfig.useMockBackend) {
       _seedDummyData();
     } else {
       state = data;
@@ -137,6 +145,7 @@ class TemplatesNotifier extends StateNotifier<List<InspectionTemplate>> {
   }
 
   void _seedDummyData() {
+    if (!AppConfig.useMockBackend) return; // double-check
     final dummy = [
       InspectionTemplate(
         id: 'tmpl_1',

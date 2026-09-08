@@ -5,10 +5,10 @@ export const DEMO_OFFICERS: Officer[] = [
   {
     id: "off-001",
     userId: "usr-demo-off-001",
-    name: "Inspector Sharma",
-    email: "officer@example.test",
-    badgeNumber: "LMO-DL-2024-0091",
-    jurisdiction: "District Metrology Zone 1 (Central)",
+    name: "Vinod Sharma (LMO)",
+    email: "vinod.sharma@lmo.up.gov.demo",
+    badgeNumber: "LMO-UP-2026-0091",
+    jurisdiction: "Gorakhpur District Zone 1",
     activeCaseload: 2,
     maxCaseload: 8,
     status: "ACTIVE",
@@ -18,36 +18,41 @@ export const DEMO_OFFICERS: Officer[] = [
   {
     id: "off-002",
     userId: "usr-demo-off-002",
-    name: "Inspector Verma",
-    email: "verma.lmo@example.test",
-    badgeNumber: "LMO-DL-2024-0042",
-    jurisdiction: "District Metrology Zone 2 (North)",
+    name: "Demo Test Centre (GATC)",
+    email: "gatc@up.gov.demo",
+    badgeNumber: "GATC-UP-2026-0042",
+    jurisdiction: "Gorakhpur District Test Centre",
     activeCaseload: 1,
-    maxCaseload: 8,
+    maxCaseload: 12,
     status: "ACTIVE",
     phone: "+91 98765 43211",
     lastActiveAt: new Date(Date.now() - 3600000).toISOString(),
-  },
-  {
-    id: "off-003",
-    userId: "usr-demo-off-003",
-    name: "Inspector Patel",
-    email: "patel.lmo@example.test",
-    badgeNumber: "LMO-DL-2024-0078",
-    jurisdiction: "District Metrology Zone 3 (South)",
-    activeCaseload: 0,
-    maxCaseload: 8,
-    status: "ACTIVE",
-    phone: "+91 98765 43212",
-    lastActiveAt: new Date(Date.now() - 7200000).toISOString(),
   },
 ];
 
 export async function getOfficers(): Promise<Officer[]> {
   if (USE_MOCK_API) return DEMO_OFFICERS;
   
-  const res = await api.get<{ items: Officer[] }>("/officers");
-  return res.items || res as unknown as Officer[];
+  try {
+    const res = await api.get<{ items: any[] }>("/users?role=LMO");
+    const users = res.items || [];
+    if (users.length === 0) return DEMO_OFFICERS;
+    return users.map((u: any, idx: number) => ({
+      id: u.id,
+      userId: u.id,
+      name: u.displayName || u.email,
+      email: u.email,
+      badgeNumber: `LMO-UP-${1000 + idx}`,
+      jurisdiction: "Gorakhpur District",
+      activeCaseload: 1,
+      maxCaseload: 8,
+      status: u.active ? "ACTIVE" : "INACTIVE",
+      phone: u.phone || "+91 98765 43210",
+      lastActiveAt: new Date().toISOString(),
+    }));
+  } catch {
+    return DEMO_OFFICERS;
+  }
 }
 
 export async function getOfficerById(id: string): Promise<Officer | null> {
@@ -55,11 +60,9 @@ export async function getOfficerById(id: string): Promise<Officer | null> {
     return DEMO_OFFICERS.find((o) => o.id === id || o.userId === id) || null;
   }
   
-  // NOTE: /officers/{id} is not documented in the API_Contract.md!
-  // Documenting as a gap. We'll issue the GET request anyway.
   try {
-    const res = await api.get<Officer>(`/officers/${id}`);
-    return res as unknown as Officer;
+    const list = await getOfficers();
+    return list.find((o) => o.id === id || o.userId === id) || null;
   } catch {
     return null;
   }

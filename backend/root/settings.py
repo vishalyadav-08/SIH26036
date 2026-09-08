@@ -32,6 +32,21 @@ EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", "True") == "True"
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
+# Google sign-in -------------------------------------------------------------
+# External identity is an extension point (ARCHITECTURE.md section 12). Leave
+# the client id unset and the endpoint reports itself unavailable rather than
+# half-working.
+
+GOOGLE_OAUTH_CLIENT_ID = os.getenv("GOOGLE_OAUTH_CLIENT_ID")
+
+# Certificate signing (ADR-011, CRYPTOGRAPHY.md section 6) --------------------
+# Prototype key material, injected through environment configuration and
+# labelled non-production. The private key is never committed or logged.
+# Production requires a managed key store / HSM.
+
+CERTIFICATE_PRIVATE_KEY = os.getenv("CERTIFICATE_PRIVATE_KEY", "").replace("\\n", "\n")
+CERTIFICATE_PUBLIC_KEY = os.getenv("CERTIFICATE_PUBLIC_KEY", "").replace("\\n", "\n")
+
 # Core ----------------------------------------------------------------------
 
 SECRET_KEY = os.getenv("SECRET_KEY", "django-insecure-change-me-before-any-deployment")
@@ -41,6 +56,16 @@ AI_DJANGO_USE_MOCK_DATA = os.getenv("AI_DJANGO_USE_MOCK_DATA", "False") == "True
 DEBUG = os.getenv("DEBUG", "True") == "True"
 
 ALLOWED_HOSTS = [h for h in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",") if h]
+
+# Render.com & deployed frontend origins (needed for CSRF + secure cookies)
+CSRF_TRUSTED_ORIGINS = [
+    o for o in os.getenv(
+        "CSRF_TRUSTED_ORIGINS",
+        "http://localhost:3000",
+    ).split(",") if o
+]
+
+AUTH_USER_MODEL = "authentication.User"
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -75,6 +100,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -140,6 +166,25 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
+# Where uploads land when object storage is not configured (see below).
+# Files are never served from here directly: /api/v1/evidence/{id}/file/
+# checks access on every request.
+MEDIA_URL = "media/"
+# Overridable so a throwaway database run (seed checks, CI) can point its
+# files somewhere throwaway too.
+MEDIA_ROOT = Path(os.getenv("MEDIA_ROOT", BASE_DIR / "media"))
+
+# Per-item evidence limit (DATA_MODEL.md "Evidence limits"). Prototype value.
+EVIDENCE_MAX_BYTES = 10 * 1024 * 1024
+
+# DEMO/CONFIGURABLE (ADR-016): an inspection needs at least one evidence item
+# before a decision can be recorded. Off only for environments that have no
+# way to attach files.
+INSPECTION_REQUIRE_EVIDENCE = os.getenv("INSPECTION_REQUIRE_EVIDENCE", "false" if DEBUG else "true").lower() in (
+    "1", "true", "yes",
+)
 
 # Object storage (ADR-007) --------------------------------------------------
 # Evidence images and certificate PDFs go to MinIO via the S3 API. Left on the
@@ -170,8 +215,13 @@ if MINIO_ENDPOINT:
 CORS_ALLOWED_ORIGINS = [
     o for o in os.getenv(
         "CORS_ALLOWED_ORIGINS",
-        "http://localhost:3000,http://localhost:3001",
+        "http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,http://127.0.0.1:3001",
     ).split(",") if o
+]
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^http://localhost:\d+$",
+    r"^http://127\.0\.0\.1:\d+$",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -179,18 +229,33 @@ CORS_ALLOW_CREDENTIALS = True
 # DRF -----------------------------------------------------------------------
 
 REST_FRAMEWORK = {
+    # Bearer token in the Authorization header, per ARCHITECTURE.md section 7.
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "EXCEPTION_HANDLER": "common.exceptions.exception_handler",
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_THROTTLE_CLASSES": ("rest_framework.throttling.ScopedRateThrottle",),
     # Public certificate verification is unauthenticated (ADR-017), so it is
     # rate-limited by scope rather than left open.
     "DEFAULT_THROTTLE_RATES": {
-        "public_verify": "30/min",
-        "login": "10/min",
+        "public_verify": "300/min" if DEBUG else "30/min",
+        "login": "600/min" if DEBUG else "10/min",
+        "google_login": "300/min" if DEBUG else "10/min",
+        "signup": "300/min" if DEBUG else "5/min",
     },
 }
 
+# There is no refresh endpoint yet (ARCHITECTURE.md leaves refresh/logout
+# policy open), so a 15-minute access token would silently strand anyone who
+# left a tab open — including mid-demo. The prototype uses a long-lived token
+# and makes that an explicit, configurable choice rather than a hidden one.
+# Production must shorten this and add refresh before any real deployment.
+ACCESS_TOKEN_MINUTES = int(os.getenv("ACCESS_TOKEN_MINUTES", 480))
+
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=ACCESS_TOKEN_MINUTES),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,

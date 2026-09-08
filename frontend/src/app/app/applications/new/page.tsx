@@ -137,7 +137,7 @@ export default function NewApplicationPage() {
                       </SelectTrigger>
                       <SelectContent>
                         {instruments.map(inst => (
-                          <SelectItem key={inst.id} value={inst.id || inst.instrumentNumber}>
+                          <SelectItem key={inst.id} value={inst.id}>
                             {inst.instrumentNumber} - {String(inst.instrumentType).replace(/_/g, " ").toLowerCase()}
                           </SelectItem>
                         ))}

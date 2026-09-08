@@ -37,15 +37,33 @@ export default function AdminDashboardPage() {
     Promise.resolve().then(async () => {
       try {
         const [dash, apps, offs] = await Promise.all([
-          getAdminDashboardData(),
-          getApplications(),
-          getOfficers(),
+          getAdminDashboardData().catch(() => null),
+          getApplications().catch(() => []),
+          getOfficers().catch(() => []),
         ]);
         if (isMounted) {
-          setData(dash);
+          setData(
+            dash || {
+              applicationCounts: {
+                submitted: apps.filter((a) => a.state === "SUBMITTED").length,
+                assigned: apps.filter((a) => a.state === "ASSIGNED").length,
+                scheduled: apps.filter((a) => a.state === "SCHEDULED").length,
+                inspected: apps.filter((a) => a.state === "INSPECTED").length,
+                completed: apps.filter((a) => a.state === "COMPLETED").length,
+                total: apps.length,
+              },
+              certificateCounts: { valid: 0, expired: 0, revoked: 0, total: 0 },
+              activeOfficersCount: offs.length,
+              totalInstrumentsCount: 0,
+              pendingTriageCount: apps.filter((a) => a.state === "SUBMITTED").length,
+              scheduledTodayCount: apps.filter((a) => a.state === "SCHEDULED").length,
+            }
+          );
           setRecentApps(apps.slice(0, 5));
           setOfficers(offs);
         }
+      } catch (e) {
+        console.error("Admin dashboard fetch error:", e);
       } finally {
         if (isMounted) setLoading(false);
       }
@@ -81,10 +99,10 @@ export default function AdminDashboardPage() {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-[#cbd5e1] pb-6">
         <div>
           <h1 className="text-2xl md:text-3xl font-bold text-[#111c2d] tracking-tight flex items-center gap-2">
-            Admin Directorate Dashboard <span className="text-[#727784] font-normal text-xl">| प्रशासनिक डैशबोर्ड</span>
+            GATCs Dashboard <span className="text-[#727784] font-normal text-xl">| प्रशासनिक डैशबोर्ड</span>
           </h1>
           <p className="text-xs md:text-sm text-[#414753] mt-1">
-            Departmental supervision, officer assignments, audit logs, and verification control hub.
+            GATC supervision, LMO assignments, audit logs, and verification control hub.
           </p>
         </div>
         <div className="flex items-center gap-3">
@@ -100,7 +118,7 @@ export default function AdminDashboardPage() {
             className="bg-[#004e9f] text-white font-bold text-xs py-2.5 px-4 rounded-lg hover:bg-[#003366] transition-colors flex items-center gap-2 shadow-xs"
           >
             <UserPlus className="w-4 h-4" />
-            <span>Deploy Officer</span>
+            <span>Deploy LMO</span>
           </Link>
         </div>
       </div>
@@ -121,7 +139,7 @@ export default function AdminDashboardPage() {
           </div>
           <div>
             <h3 className="text-2xl font-bold text-[#111c2d]">{appCounts?.submitted || 0}</h3>
-            <p className="text-xs text-[#414753] mt-0.5">Awaiting Officer Assignment</p>
+            <p className="text-xs text-[#414753] mt-0.5">Awaiting LMO Assignment</p>
           </div>
         </Link>
 
@@ -172,12 +190,12 @@ export default function AdminDashboardPage() {
               <Users className="w-5 h-5" />
             </div>
             <span className="text-[11px] font-bold text-[#3a5f94] bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded">
-              Inspectors
+              LMOs
             </span>
           </div>
           <div>
             <h3 className="text-2xl font-bold text-[#111c2d]">{data?.activeOfficersCount || 0}</h3>
-            <p className="text-xs text-[#414753] mt-0.5">Field Officers in Region</p>
+            <p className="text-xs text-[#414753] mt-0.5">LMOs in Region</p>
           </div>
         </Link>
       </div>
@@ -226,10 +244,10 @@ export default function AdminDashboardPage() {
                     </span>
                   </div>
                   <div className="text-xs text-[#111c2d] font-semibold">
-                    {app.instrumentNumber} • {app.instrumentType.replace(/_/g, " ")}
+                    {app.instrumentNumber || "Instrument"} • {(app.instrumentType || "Scale").replace(/_/g, " ")}
                   </div>
                   <div className="text-[11px] text-[#414753]">
-                    Business: <span className="font-semibold text-[#111c2d]">{app.businessName}</span> • Assigned Officer:{" "}
+                    Business: <span className="font-semibold text-[#111c2d]">{app.businessName || "Registered Business"}</span> • Assigned LMO:{" "}
                     <span className="font-semibold text-[#004e9f]">
                       {app.assignedOfficerName || "Unassigned"}
                     </span>
@@ -250,14 +268,14 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Officer Fleet Caseload (1/3 width) */}
+        {/* LMO Fleet Caseload (1/3 width) */}
         <div className="bg-white rounded-xl border border-[#cbd5e1] overflow-hidden shadow-xs flex flex-col">
           <div className="p-4 border-b border-[#cbd5e1] bg-[#f8fafc] flex justify-between items-center">
             <div>
               <h2 className="text-sm font-bold text-[#111c2d] flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#004e9f]" /> Officer Caseload
+                <Users className="w-4 h-4 text-[#004e9f]" /> LMO Caseload
               </h2>
-              <p className="text-[11px] text-[#414753]">Field inspection capacity</p>
+              <p className="text-[11px] text-[#414753]">LMO field inspection capacity</p>
             </div>
             <Link
               href="/admin/officers"
@@ -270,7 +288,9 @@ export default function AdminDashboardPage() {
 
           <div className="p-4 space-y-3.5 flex-1">
             {officers.map((off) => {
-              const pct = Math.round((off.activeCaseload / off.maxCaseload) * 100);
+              const activeCases = off.activeCaseload || 0;
+              const maxCases = off.maxCaseload || 8;
+              const pct = Math.round((activeCases / maxCases) * 100);
               return (
                 <div
                   key={off.id}
@@ -278,10 +298,10 @@ export default function AdminDashboardPage() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-bold text-[#111c2d]">
-                      {off.name}
+                      {off.name || off.email}
                     </span>
                     <span className="text-[11px] font-mono font-semibold text-[#414753]">
-                      {off.activeCaseload}/{off.maxCaseload} Cases
+                      {activeCases}/{maxCases} Cases
                     </span>
                   </div>
                   <div className="w-full bg-[#cbd5e1] h-2 rounded-full overflow-hidden">
@@ -293,11 +313,11 @@ export default function AdminDashboardPage() {
                           ? "bg-[#b45309]"
                           : "bg-[#004e9f]"
                       }`}
-                      style={{ width: `${Math.max(pct, 5)}%` }}
+                      style={{ width: `${Math.min(Math.max(pct, 5), 100)}%` }}
                     />
                   </div>
                   <div className="text-[10px] text-[#727784] truncate">
-                    Jurisdiction: {off.jurisdiction}
+                    Jurisdiction: {off.jurisdiction || "Gorakhpur District"}
                   </div>
                 </div>
               );

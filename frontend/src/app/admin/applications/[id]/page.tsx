@@ -137,7 +137,7 @@ export default function AdminApplicationDetailPage({
                 className="inline-flex items-center gap-1.5 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs transition-colors cursor-pointer"
               >
                 <UserCheck className="w-4 h-4" />
-                <span>Assign Officer</span>
+                <span>Assign LMO</span>
               </button>
             )}
 
@@ -218,7 +218,7 @@ export default function AdminApplicationDetailPage({
             <div className="flex justify-between">
               <span className="text-slate-500 font-medium">Instrument Category:</span>
               <span className="font-semibold text-slate-900">
-                {app.instrumentType.replace(/_/g, " ")}
+                {(app.instrumentType || "Scale").replace(/_/g, " ")}
               </span>
             </div>
             <div className="flex justify-between">
@@ -246,7 +246,7 @@ export default function AdminApplicationDetailPage({
           </div>
           <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-2.5 text-xs">
             <div className="flex justify-between items-center">
-              <span className="text-slate-500 font-medium">Assigned Officer:</span>
+              <span className="text-slate-500 font-medium">Assigned LMO:</span>
               <span className="font-bold text-indigo-950">
                 {app.assignedOfficerName || (
                   <span className="text-amber-800 italic">Unassigned (Action Required)</span>

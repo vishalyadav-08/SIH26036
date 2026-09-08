@@ -28,7 +28,7 @@ export function GuestGuard({ children }: { children: ReactNode }) {
     const handleContinue = () => {
       if (user.role === "BUSINESS") {
         router.replace("/app");
-      } else if (user.role === "OFFICER") {
+      } else if (user.role === "OFFICER" || user.role === "LMO") {
         router.replace("/field");
       } else {
         router.replace("/admin");

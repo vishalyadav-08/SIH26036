@@ -6,6 +6,9 @@ import 'package:geolocator/geolocator.dart';
 import 'dart:io';
 import 'package:flutter_field_app/l10n/app_localizations.dart';
 import 'package:flutter_field_app/app/theme/app_theme.dart';
+import 'package:flutter_field_app/providers/providers.dart';
+import 'package:flutter_field_app/data/models/models.dart';
+import 'package:flutter_field_app/config/app_config.dart';
 
 class InspectionWizardScreen extends ConsumerStatefulWidget {
   const InspectionWizardScreen({super.key});
@@ -43,7 +46,7 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
 
   // Step 3: Evidence & GPS State
   final List<Map<String, String>> _capturedImages = [];
-  String _gpsCoords = '28.6139° N, 77.2090° E (Accuracy: ±3.2m)';
+  String _gpsCoords = '';
   bool _isCapturingGps = false;
 
   // Step 4: Assessment State
@@ -70,47 +73,64 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
   }
 
   Future<void> _pickImage() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Please enable device location services first.')),
-        );
-      }
-      return;
-    }
-    
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
+    String coords = _gpsCoords;
+    if (!AppConfig.useMockBackend) {
+      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Location permission denied.')),
+            const SnackBar(content: Text('Please enable device location services first.')),
           );
         }
         return;
       }
-    }
-    
-    if (permission == LocationPermission.deniedForever) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Location permission permanently denied.')),
-        );
+      
+      LocationPermission permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Location permission denied.')),
+            );
+          }
+          return;
+        }
       }
-      return;
+      
+      if (permission == LocationPermission.deniedForever) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Location permission permanently denied.')),
+          );
+        }
+        return;
+      }
+      try {
+        final pos = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+        );
+        coords = '${pos.latitude.toStringAsFixed(4)}° N, ${pos.longitude.toStringAsFixed(4)}° E';
+        setState(() {
+          _gpsCoords = coords;
+        });
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Failed to access location.')),
+          );
+        }
+      }
+    } else {
+      if (coords.isEmpty) {
+        coords = '26.7606° N, 83.3732° E [Demo Data]';
+        setState(() {
+          _gpsCoords = coords;
+        });
+      }
     }
 
     try {
-      final pos = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-      );
-      final coords = '${pos.latitude.toStringAsFixed(4)}° N, ${pos.longitude.toStringAsFixed(4)}° E';
-      setState(() {
-        _gpsCoords = coords;
-      });
-
       final ImagePicker picker = ImagePicker();
       final XFile? image = await picker.pickImage(source: ImageSource.camera);
       if (image != null) {
@@ -121,7 +141,7 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to access camera or location.')),
+          const SnackBar(content: Text('Failed to access camera.')),
         );
       }
     }
@@ -130,6 +150,13 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
   Future<void> _captureLocation() async {
     setState(() => _isCapturingGps = true);
     try {
+      if (AppConfig.useMockBackend) {
+        await Future.delayed(const Duration(milliseconds: 800));
+        setState(() {
+          _gpsCoords = '26.7606° N, 83.3732° E (Accuracy: ±10.0m) [Demo Data]';
+        });
+        return;
+      }
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
@@ -142,7 +169,8 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
       });
     } catch (e) {
       setState(() {
-        _gpsCoords = '28.6139° N, 77.2090° E (Acquired via GNSS Satellite)';
+        // GPS capture failed (service unavailable or permission denied); leave coords empty
+        _gpsCoords = '';
       });
     } finally {
       setState(() => _isCapturingGps = false);
@@ -152,6 +180,51 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
   void _submitInspection() {
     final l10n = AppLocalizations.of(context);
     final isHi = l10n?.localeName == 'hi';
+
+    // Retrieve the current task from the provider
+    final tasks = ref.read(inspectionsProvider);
+    if (tasks.isNotEmpty) {
+      final task = tasks.first; // The active assignment being inspected
+      task.status = 'ready_to_sync';
+      task.readings = _readings.asMap().entries.map((entry) {
+        final r = entry.value;
+        return MeasurementReading(
+          id: 'm_${entry.key}',
+          name: 'Point ${entry.key + 1}',
+          referenceWeight: double.tryParse(r.referenceController.text) ?? 0.0,
+          maxPermissibleError: 0.05, // Standard 0.05 kg MPE per inspection protocol
+          unit: 'kg',
+          indicatedWeight: double.tryParse(r.indicatedController.text) ?? 0.0,
+        );
+      }).toList();
+      task.evidence = _capturedImages.asMap().entries.map((entry) {
+        return EvidenceItem(
+          id: 'ev_${DateTime.now().millisecondsSinceEpoch}_${entry.key}',
+          title: 'Evidence ${entry.key + 1}',
+          imagePath: entry.value['path']!,
+        );
+      }).toList();
+      
+      // Parse GPS
+      if (_gpsCoords.contains('°')) {
+         try {
+           final parts = _gpsCoords.split('°');
+           if (parts.length >= 2) {
+             task.gpsLatitude = double.tryParse(parts[0].trim());
+             final longPart = parts[1].split(',').last.trim().split('°').first;
+             task.gpsLongitude = double.tryParse(longPart);
+             task.gpsAccuracy = 10.0;
+           }
+         } catch(e) {
+           // Ignore parsing errors, keep default GPS values if available
+         }
+      }
+      task.capturedAt = DateTime.now().toUtc().toIso8601String();
+      task.notes = _notesController.text;
+      task.result = _finalDecision.toUpperCase();
+
+      ref.read(inspectionsProvider.notifier).addOrUpdateTask(task);
+    }
 
     showDialog(
       context: context,
@@ -199,6 +272,10 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
     final l10n = AppLocalizations.of(context);
     final isHi = l10n?.localeName == 'hi';
 
+    final task = ref.watch(inspectionsProvider).isNotEmpty ? ref.watch(inspectionsProvider).first : null;
+    final taskTitle = task?.title ?? (isHi ? 'अज्ञात' : 'Unknown');
+    final taskId = task?.appId ?? 'N/A';
+
     return Scaffold(
       backgroundColor: AppTheme.surface,
       appBar: AppBar(
@@ -218,12 +295,12 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              isHi ? 'काउंटर स्केल' : 'Counter Scale',
+              taskTitle,
               style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
-            const Text(
-              'APP-DEMO-001',
-              style: TextStyle(fontSize: 12, color: AppTheme.onSurfaceVariant),
+            Text(
+              taskId,
+              style: const TextStyle(fontSize: 12, color: AppTheme.onSurfaceVariant),
             ),
           ],
         ),
@@ -360,6 +437,25 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
               isHi ? 'माप दर्ज करने से पहले प्रत्येक अनिवार्य जांच पूरी करें।' : 'Complete each mandatory check before recording readings.',
               style: const TextStyle(fontSize: 13, color: AppTheme.onSurfaceVariant),
             ),
+            const SizedBox(height: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: AppTheme.secondaryContainer.withValues(alpha: 0.4),
+                borderRadius: BorderRadius.circular(AppTheme.radiusSm),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.info_outline, size: 13, color: AppTheme.onSurfaceVariant),
+                  const SizedBox(width: 5),
+                  Text(
+                    isHi ? 'MVP: चेकलिस्ट केवल स्थानीय रूप से संग्रहीत है।' : 'MVP limitation: Checklist stored locally on device only.',
+                    style: const TextStyle(fontSize: 11, color: AppTheme.onSurfaceVariant),
+                  ),
+                ],
+              ),
+            ),
             const SizedBox(height: 16),
             ...items.map((item) {
               final id = item['id']!;
@@ -441,7 +537,7 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
               final refVal = double.tryParse(reading.referenceController.text) ?? 0.0;
               final indVal = double.tryParse(reading.indicatedController.text) ?? 0.0;
               final error = indVal - refVal;
-              final isErrorState = error.abs() > 0.050; // Arbitrary 50g mpe for mock
+              final isErrorState = error.abs() > 0.050; // 50g standard tolerance threshold
 
               return Container(
                 margin: const EdgeInsets.only(bottom: 16),
@@ -587,7 +683,7 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
             InkWell(
               onTap: () {
                 setState(() {
-                  _readings.add(_ReadingData(ref: '10.000', ind: '10.000'));
+                  _readings.add(_ReadingData(ref: '', ind: ''));
                 });
               },
               borderRadius: BorderRadius.circular(AppTheme.radiusLg),
@@ -684,7 +780,13 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text('GPS Coordinates', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                        Text(_gpsCoords, style: const TextStyle(fontSize: 11, color: AppTheme.onSurfaceVariant)),
+                        Text(
+                          _gpsCoords.isNotEmpty ? _gpsCoords : 'Not captured yet — tap refresh to capture',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: _gpsCoords.isNotEmpty ? AppTheme.onSurfaceVariant : AppTheme.error,
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -874,6 +976,10 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
     final l10n = AppLocalizations.of(context);
     final isHi = l10n?.localeName == 'hi';
 
+    final task = ref.watch(inspectionsProvider).isNotEmpty ? ref.watch(inspectionsProvider).first : null;
+    final taskTitle = task?.title ?? (isHi ? 'अज्ञात' : 'Unknown');
+    final taskId = task?.appId ?? 'N/A';
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       body: SingleChildScrollView(
@@ -881,9 +987,9 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Warning Banner
+            // Ready to Sync Banner
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+              padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: AppTheme.warning.withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(AppTheme.radiusMd),
@@ -908,7 +1014,7 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
             ),
             const SizedBox(height: 2),
             Text(
-              'APP-DEMO-001 | ${isHi ? 'काउंटर स्केल' : 'Counter Scale'}',
+              '$taskId | $taskTitle',
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),

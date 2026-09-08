@@ -78,7 +78,7 @@ export function FieldHeader() {
                   MapanSetu
                 </span>
                 <span className="text-[10px] font-semibold text-[#004e9f] uppercase tracking-wider mt-0.5">
-                  Field Officer PWA
+                  LMO PWA
                 </span>
               </div>
             </Link>
@@ -94,10 +94,10 @@ export function FieldHeader() {
               </div>
               <div className="text-left leading-none">
                 <div className="text-xs font-bold text-[#111c2d] truncate max-w-[140px]">
-                  {user?.displayName || "Field Officer"}
+                  {user?.displayName || "LMO"}
                 </div>
                 <div className="text-[10px] text-[#414753] font-mono mt-0.5">
-                  OFFICER (LMO)
+                  LMO
                 </div>
               </div>
             </div>
@@ -106,7 +106,7 @@ export function FieldHeader() {
               type="button"
               onClick={handleLogout}
               className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-[#414753] hover:text-[#b91c1c] bg-white hover:bg-[#fff1f2] border border-[#cbd5e1] hover:border-[#fecdd3] rounded transition-colors cursor-pointer"
-              title="Sign out of Officer account"
+              title="Sign out of LMO account"
             >
               <LogOut className="w-3.5 h-3.5" />
               <span>Sign Out</span>
@@ -140,7 +140,7 @@ export function FieldHeader() {
             </div>
             <div>
               <div className="text-xs font-bold text-[#111c2d]">
-                {user?.displayName || "Field Officer"}
+                {user?.displayName || "LMO"}
               </div>
               <div className="text-[10px] text-[#414753] font-mono">
                 {user?.email} &bull; Legal Metrology Officer

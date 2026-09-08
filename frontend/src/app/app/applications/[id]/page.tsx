@@ -158,7 +158,7 @@ export default function ApplicationDetailPage() {
               <AlertCircle className="h-5 w-5" />
               <AlertTitle>Application Rejected</AlertTitle>
               <AlertDescription className="mt-2">
-                This verification application was rejected by the officer. Please review your instrument and submit a new application when the issues are resolved.
+                This verification application was rejected by the LMO. Please review your instrument and submit a new application when the issues are resolved.
               </AlertDescription>
             </Alert>
           )}
@@ -189,7 +189,7 @@ export default function ApplicationDetailPage() {
               </div>
 
               <div>
-                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Assigned Officer</div>
+                <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Assigned LMO</div>
                 {application.assignedOfficerName ? (
                   <div className="flex items-center gap-2 mt-1">
                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 border border-slate-200">
@@ -197,7 +197,7 @@ export default function ApplicationDetailPage() {
                     </div>
                     <div>
                       <div className="font-medium text-slate-900">{application.assignedOfficerName}</div>
-                      <div className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold mt-0.5">Legal Metrology Officer</div>
+                      <div className="text-[10px] text-slate-500 uppercase tracking-wider font-semibold mt-0.5">Legal Metrology Officer (LMO)</div>
                     </div>
                   </div>
                 ) : (

@@ -4,13 +4,13 @@ import { AdminHeader } from "@/components/layout/AdminHeader";
 import { Sidebar } from "@/components/layout/Sidebar";
 
 export const metadata = {
-  title: "MapanSetu Admin Portal",
-  description: "Administrative oversight and management.",
+  title: "MapanSetu GATCs Portal",
+  description: "GATC oversight and verification management.",
 };
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
   return (
-    <AuthGuard allowedRoles={["ADMIN"]}>
+    <AuthGuard allowedRoles={["ADMIN", "GATC"]}>
       <div className="min-h-screen flex flex-col bg-[#f8fafc] text-[#111c2d]">
         <AdminHeader />
         

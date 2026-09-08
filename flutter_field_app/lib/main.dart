@@ -9,7 +9,6 @@ import 'package:flutter_field_app/shared/bottom_nav_bar.dart';
 import 'package:flutter_field_app/shared/navigation_drawer.dart';
 import 'package:flutter_field_app/providers/providers.dart';
 import 'package:flutter_field_app/data/repositories/inspection_repository.dart';
-
 import 'package:flutter_field_app/app/router/app_router.dart';
 
 void main() async {
@@ -69,11 +68,12 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider);
+    final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
       title: 'MapanSetu',
       theme: AppTheme.lightTheme,
-      routerConfig: ref.watch(routerProvider),
+      routerConfig: router,
       debugShowCheckedModeBanner: false,
       locale: locale,
       localizationsDelegates: AppLocalizations.localizationsDelegates,

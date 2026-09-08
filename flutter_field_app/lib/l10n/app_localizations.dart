@@ -107,7 +107,7 @@ abstract class AppLocalizations {
   /// No description provided for @fieldOfficerPortal.
   ///
   /// In en, this message translates to:
-  /// **'Field Officer Portal'**
+  /// **'LMO Portal'**
   String get fieldOfficerPortal;
 
   /// No description provided for @sihPrototype.
@@ -119,7 +119,7 @@ abstract class AppLocalizations {
   /// No description provided for @officerId.
   ///
   /// In en, this message translates to:
-  /// **'Officer ID'**
+  /// **'LMO ID'**
   String get officerId;
 
   /// No description provided for @password.
@@ -167,7 +167,7 @@ abstract class AppLocalizations {
   /// No description provided for @loginFailed.
   ///
   /// In en, this message translates to:
-  /// **'Invalid Officer ID or Password'**
+  /// **'Invalid LMO ID or Password'**
   String get loginFailed;
 
   /// No description provided for @dashboard.
@@ -575,7 +575,7 @@ abstract class AppLocalizations {
   /// No description provided for @officerNotes.
   ///
   /// In en, this message translates to:
-  /// **'Officer Notes'**
+  /// **'LMO Notes'**
   String get officerNotes;
 
   /// No description provided for @officerNotesPlaceholder.
@@ -719,7 +719,7 @@ abstract class AppLocalizations {
   /// No description provided for @legalMetrologyOfficer.
   ///
   /// In en, this message translates to:
-  /// **'Legal Metrology Officer'**
+  /// **'Legal Metrology Officer (LMO)'**
   String get legalMetrologyOfficer;
 
   /// No description provided for @operationalStats.

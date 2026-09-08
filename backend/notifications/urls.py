@@ -1,5 +1,12 @@
-"""Routes for the notifications module, mounted under /api/v1/ by root/urls.py."""
+"""Notification routes, mounted at /api/v1/notifications/ by root/urls.py."""
 
-from django.urls import path  # noqa: F401
+from django.urls import path
 
-urlpatterns = []
+from .views import MarkAllReadView, MarkReadView, NotificationListView, UnreadCountView
+
+urlpatterns = [
+    path("", NotificationListView.as_view(), name="notification-list"),
+    path("unread-count/", UnreadCountView.as_view(), name="notification-unread-count"),
+    path("read-all/", MarkAllReadView.as_view(), name="notification-read-all"),
+    path("<uuid:notification_id>/read/", MarkReadView.as_view(), name="notification-read"),
+]

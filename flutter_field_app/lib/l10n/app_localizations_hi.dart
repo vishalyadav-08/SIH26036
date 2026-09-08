@@ -13,13 +13,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get appTitle => 'मापनसेतु';
 
   @override
-  String get fieldOfficerPortal => 'फील्ड अधिकारी पोर्टल';
+  String get fieldOfficerPortal => 'एलएमओ (LMO) पोर्टल';
 
   @override
   String get sihPrototype => 'SIH 2026 प्रोटोटाइप';
 
   @override
-  String get officerId => 'अधिकारी आईडी';
+  String get officerId => 'एलएमओ आईडी (LMO ID)';
 
   @override
   String get password => 'पासवर्ड';
@@ -43,7 +43,7 @@ class AppLocalizationsHi extends AppLocalizations {
   String get hindi => 'हिन्दी';
 
   @override
-  String get loginFailed => 'अमान्य अधिकारी आईडी या पासवर्ड';
+  String get loginFailed => 'अमान्य एलएमओ आईडी या पासवर्ड';
 
   @override
   String get dashboard => 'डैशबोर्ड';
@@ -249,10 +249,10 @@ class AppLocalizationsHi extends AppLocalizations {
   String get failResult => 'विफल (FAIL)';
 
   @override
-  String get correctionResult => 'सुधार की आवश्यकता';
+  String get correctionResult => 'सुधार आवश्यक है';
 
   @override
-  String get officerNotes => 'अधिकारी की टिप्पणियाँ';
+  String get officerNotes => 'एलएमओ टिप्पणियाँ';
 
   @override
   String get officerNotesPlaceholder => 'कोई भी अंतिम अवलोकन जोड़ें...';
@@ -264,14 +264,14 @@ class AppLocalizationsHi extends AppLocalizations {
   String get syncCenter => 'सिंक केंद्र';
 
   @override
-  String get manageDataSync => 'अपना डेटा सिंक्रोनाइज़ेशन प्रबंधित करें।';
+  String get manageDataSync => 'अपने डेटा सिंक्रनाइज़ेशन को प्रबंधित करें।';
 
   @override
-  String get itemsReady => 'आइटम तैयार';
+  String get itemsReady => 'आइटम तैयार हैं';
 
   @override
   String get waitingForConnection =>
-      'सिंक के लिए कनेक्शन की प्रतीक्षा कर रहा है।';
+      'सिंक करने के लिए कनेक्शन की प्रतीक्षा कर रहा है।';
 
   @override
   String get syncAllData => 'सभी डेटा सिंक करें';
@@ -292,11 +292,11 @@ class AppLocalizationsHi extends AppLocalizations {
   String get queue => 'कतार';
 
   @override
-  String get conflictDetected => 'टकराव पाया गया';
+  String get conflictDetected => 'विरोधाभास का पता चला';
 
   @override
   String get conflictNotice =>
-      'जब आप ऑफ़लाइन काम कर रहे थे तब सर्वर पर यह निरीक्षण संशोधित किया गया था। कृपया नीचे टकराव का समाधान करें।';
+      'ऑफ़लाइन काम करने के दौरान सर्वर पर इस निरीक्षण को संशोधित किया गया था। कृपया नीचे दिए गए विरोधाभास को हल करें।';
 
   @override
   String get yourLocalVersion => 'आपका स्थानीय संस्करण';
@@ -320,13 +320,13 @@ class AppLocalizationsHi extends AppLocalizations {
   String get keepServer => 'सर्वर रखें';
 
   @override
-  String get mergeAndReview => 'विलय और समीक्षा करें';
+  String get mergeAndReview => 'विलय करें और समीक्षा करें';
 
   @override
   String get profile => 'प्रोफ़ाइल';
 
   @override
-  String get legalMetrologyOfficer => 'विधिक माप विज्ञान अधिकारी';
+  String get legalMetrologyOfficer => 'विधिक माप विज्ञान अधिकारी (LMO)';
 
   @override
   String get operationalStats => 'परिचालन आँकड़े';

@@ -212,7 +212,17 @@ export default function PublicCertificateVerificationPage({
         ) : (
           <div className="space-y-6">
             {/* Top Status Banner */}
-            <Card className={currentStatus === "VALID" ? "border-emerald-200 bg-emerald-50/50" : currentStatus === "INVALID" ? "border-rose-200 bg-rose-50/50" : ""}>
+            <Card
+              className={
+                currentStatus === "VALID"
+                  ? "border-emerald-200 bg-emerald-50/50"
+                  : currentStatus === "REVOKED"
+                  ? "border-red-200 bg-red-50/50"
+                  : currentStatus === "EXPIRED"
+                  ? "border-amber-200 bg-amber-50/50"
+                  : "border-rose-200 bg-rose-50/50"
+              }
+            >
               <CardContent className="p-6 sm:p-8">
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-4">
                   <div className="flex items-start gap-4">
@@ -471,7 +481,7 @@ export default function PublicCertificateVerificationPage({
                     Re-check
                   </Button>
                   <Button asChild className="gap-1.5 shadow-xs flex-1 sm:flex-initial">
-                    <Link href="/">
+                    <Link href="/verify">
                       <ArrowLeft className="w-3.5 h-3.5" />
                       New Certificate Lookup
                     </Link>
@@ -482,15 +492,20 @@ export default function PublicCertificateVerificationPage({
 
             {/* Demo Testing Switcher (Prototype helper) */}
             <div className="p-4 rounded-xl bg-background border text-xs print:hidden">
-              <span className="font-bold text-muted-foreground uppercase tracking-wider block mb-2">
-                Quick Demo Switcher (SIH Evaluation Fixtures):
-              </span>
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-bold text-muted-foreground uppercase tracking-wider block">
+                  Quick Demo Switcher (Live Backend Certificates):
+                </span>
+                <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200 font-medium">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Live PostgreSQL / Django
+                </span>
+              </div>
               <div className="flex flex-wrap gap-2">
                 {[
-                  { id: "CERT-DEMO-001", label: "Valid Active" },
-                  { id: "CERT-EXPIRED-001", label: "Expired" },
-                  { id: "CERT-REVOKED-001", label: "Revoked" },
-                  { id: "CERT-TAMPER-001", label: "Invalid / Tampered" },
+                  { id: "CERT-DEMO-0002", label: "Valid Active (Measuring Tape)", status: "VALID" },
+                  { id: "CERT-DEMO-0001", label: "Revoked (Platform Scale)", status: "REVOKED" },
+                  { id: "CERT-INVALID-0001", label: "Invalid / Not Found", status: "INVALID" },
                 ].map((fixture) => (
                   <Button
                     key={fixture.id}
@@ -501,8 +516,8 @@ export default function PublicCertificateVerificationPage({
                   >
                     <Link href={`/verify/${fixture.id}`}>
                       <span className="font-mono font-bold">{fixture.id}</span>
-                      <span className={decodedCertNo.toUpperCase() === fixture.id ? "opacity-75" : "text-muted-foreground"}>
-                        ({fixture.label})
+                      <span className={decodedCertNo.toUpperCase() === fixture.id ? "opacity-90 font-medium" : "text-muted-foreground"}>
+                        — {fixture.label}
                       </span>
                     </Link>
                   </Button>

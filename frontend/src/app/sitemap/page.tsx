@@ -202,7 +202,7 @@ export default function SitemapPage() {
                     <Lock className="w-3.5 h-3.5 text-[#3a5f94]" />
                     <span>Portal Sign In</span>
                   </Link>
-                  <p className="text-[#414753] text-[11px] pl-5.5">Business, Inspector &amp; Admin login.</p>
+                  <p className="text-[#414753] text-[11px] pl-5.5">Business, LMO &amp; GATC login.</p>
                 </li>
 
                 <li>
@@ -240,9 +240,9 @@ export default function SitemapPage() {
                 <li>
                   <Link href="/admin" className="font-semibold text-[#111c2d] hover:text-[#004e9f] flex items-center gap-2">
                     <UserCheck className="w-3.5 h-3.5 text-[#3a5f94]" />
-                    <span>Admin / Officer Console</span>
+                    <span>GATCs / LMO Console</span>
                   </Link>
-                  <p className="text-[#414753] text-[11px] pl-5.5">Officer assignment and supervision.</p>
+                  <p className="text-[#414753] text-[11px] pl-5.5">LMO assignment and supervision.</p>
                 </li>
               </ul>
             </div>

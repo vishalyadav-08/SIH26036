@@ -9,6 +9,13 @@ FIELD_MAP = {
     "tradeName": "trade_name",
     "contactName": "contact_name",
     "jurisdictionLabel": "jurisdiction_label",
+    "constitutionType": "constitution_type",
+    "gstNumber": "gst_number",
+    "panNumber": "pan_number",
+    "isManufacturer": "is_manufacturer",
+    "isDealer": "is_dealer",
+    "isRepairer": "is_repairer",
+    "isPacker": "is_packer",
 }
 
 

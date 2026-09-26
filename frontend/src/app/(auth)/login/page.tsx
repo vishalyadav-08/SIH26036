@@ -360,6 +360,14 @@ function LoginForm() {
                 </div>
               </div>
             </div>
+
+            {/* Registration Link */}
+            <div className="mt-6 text-center text-sm text-slate-600">
+              Don't have an account?{' '}
+              <Link href="/register" className="font-bold text-blue-600 hover:text-blue-700 hover:underline">
+                Register your Business
+              </Link>
+            </div>
           </div>
         </div>
       </main>

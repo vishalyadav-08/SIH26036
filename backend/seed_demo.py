@@ -17,13 +17,16 @@ from authentication.models import User
 from businesses.models import Business
 from certificates.models import Certificate
 from certificates import services as cert_svc
-from inspections.models import Inspection
-from inspections import services as insp_svc
+from compliance.models import QuarterlyReturn
 from evidence.models import Evidence
 from evidence.services import store_evidence
+from inspections.models import Inspection
+from inspections import services as insp_svc
 from instruments.models import Instrument
+from licensing.models import LicenseApplication, License
 from notifications.models import Notification
 from notifications.services import expiry_warnings
+from payments.models import FeeSchedule, PaymentTransaction
 from scheduling.models import Schedule
 
 PASSWORD = "synthetic-password"
@@ -50,6 +53,11 @@ Inspection.objects.all().delete()
 Schedule.objects.all().delete()
 Application.objects.all().delete()
 Instrument.objects.all().delete()
+QuarterlyReturn.objects.all().delete()
+PaymentTransaction.objects.all().delete()
+FeeSchedule.objects.all().delete()
+License.objects.all().delete()
+LicenseApplication.objects.all().delete()
 User.objects.exclude(is_superuser=True).delete()
 Business.objects.all().delete()
 AuditLog.objects.all().delete()

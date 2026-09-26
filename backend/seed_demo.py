@@ -46,6 +46,11 @@ def synthetic_photo(label, colour):
     return SimpleUploadedFile(f"{label.lower()}.png", buffer.getvalue(), "image/png")
 
 # Reset in dependency order.
+from enforcement.models import Notice, EnforcementAction, ConsumerComplaint
+Notice.objects.all().delete()
+EnforcementAction.objects.all().delete()
+ConsumerComplaint.objects.all().delete()
+
 Notification.objects.all().delete()
 Certificate.objects.all().delete()
 Evidence.objects.all().delete()

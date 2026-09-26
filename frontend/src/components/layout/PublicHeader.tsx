@@ -31,7 +31,7 @@ export function PublicHeader() {
   const navLinks = [
     { href: "/", labelKey: "nav.home", icon: Home },
     { href: "/about", labelKey: "nav.about", icon: Info },
-    { href: "/#services", labelKey: "nav.services", icon: CheckCircle2 },
+    { href: "/app/licenses/apply", labelKey: "Apply for License", icon: FileCheck },
     { href: "/verify", labelKey: "nav.verify", icon: FileCheck },
     { href: "/gatc-locator", labelKey: "nav.gatc", icon: MapPin },
     { href: "/help", labelKey: "nav.help", icon: HelpCircle },

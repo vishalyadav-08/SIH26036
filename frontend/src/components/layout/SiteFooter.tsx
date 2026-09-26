@@ -60,8 +60,13 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="hover:text-[#004e9f] hover:underline transition-colors">
-                  {t("nav.about")}
+                <Link href="/app/licenses/apply" className="hover:text-[#004e9f] hover:underline transition-colors">
+                  Apply for License
+                </Link>
+              </li>
+              <li>
+                <Link href="/app/compliance" className="hover:text-[#004e9f] hover:underline transition-colors">
+                  File Quarterly Returns
                 </Link>
               </li>
               <li>
@@ -70,8 +75,8 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/help" className="hover:text-[#004e9f] hover:underline transition-colors">
-                  {t("nav.help")}
+                <Link href="/admin" className="hover:text-[#004e9f] hover:underline transition-colors">
+                  Officer / Admin Login
                 </Link>
               </li>
               <li>

@@ -18,6 +18,10 @@ import {
   RefreshCw,
   CheckCircle2,
   CalendarCheck,
+  Map,
+  Shield,
+  Box,
+  Link2,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -60,11 +64,15 @@ export function Sidebar({ role }: SidebarProps) {
           subtitle: "Test Centre & Admin Hub",
           items: [
             { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+            { label: "Jurisdiction", href: "/admin/jurisdiction", icon: Map },
+            { label: "Enforcement", href: "/admin/enforcement", icon: Shield },
+            { label: "Standards & Seals", href: "/admin/seals", icon: Box },
             { label: "Applications", href: "/admin/applications", icon: ClipboardList },
             { label: "LMOs", href: "/admin/officers", icon: Users },
             { label: "Instruments", href: "/admin/instruments", icon: Gauge },
             { label: "Certificates", href: "/admin/certificates", icon: Award },
             { label: "Schedules", href: "/admin/schedules", icon: CalendarCheck },
+            { label: "Integrations", href: "/admin/integrations", icon: Link2 },
             { label: "Audit Log", href: "/admin/audit", icon: History },
             { label: "Settings", href: "/admin/settings", icon: Settings },
           ],

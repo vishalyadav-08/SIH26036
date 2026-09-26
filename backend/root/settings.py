@@ -99,6 +99,9 @@ INSTALLED_APPS = [
     "payments",
     "jurisdiction",
     "compliance",
+    "enforcement",
+    "standards",
+    "integrations",
 ]
 
 MIDDLEWARE = [

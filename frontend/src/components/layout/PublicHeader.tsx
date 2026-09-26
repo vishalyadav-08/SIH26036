@@ -18,7 +18,8 @@ import {
   HelpCircle, 
   Mail, 
   FileCheck,
-  LayoutDashboard
+  LayoutDashboard,
+  MapPin
 } from "lucide-react";
 
 export function PublicHeader() {
@@ -32,6 +33,7 @@ export function PublicHeader() {
     { href: "/about", labelKey: "nav.about", icon: Info },
     { href: "/#services", labelKey: "nav.services", icon: CheckCircle2 },
     { href: "/verify", labelKey: "nav.verify", icon: FileCheck },
+    { href: "/gatc-locator", labelKey: "nav.gatc", icon: MapPin },
     { href: "/help", labelKey: "nav.help", icon: HelpCircle },
     { href: "/contact", labelKey: "nav.contact", icon: Mail },
   ];

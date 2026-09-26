@@ -101,6 +101,14 @@ export default function LandingHomepage() {
                     </Link>
                   )}
 
+                  <Link
+                    href="/legal-metrology-act"
+                    className="inline-flex items-center justify-center gap-2 bg-[#ff9933] hover:bg-[#e68a00] text-[#111c2d] px-6 py-3 rounded font-semibold text-sm transition-colors shadow-sm focus:outline-none focus:ring-2 focus:ring-[#ff9933] focus:ring-offset-2"
+                  >
+                    <FileText className="w-4 h-4" />
+                    <span>Legal Metrology Act</span>
+                  </Link>
+
                   <a
                     href="#how-it-works"
                     className="inline-flex items-center justify-center gap-1.5 bg-transparent text-[#414753] hover:text-[#004e9f] px-4 py-3 rounded font-medium text-sm transition-colors"

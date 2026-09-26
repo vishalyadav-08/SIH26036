@@ -95,6 +95,10 @@ INSTALLED_APPS = [
     "audit",
     "sync",
     "ai_integration",
+    "licensing",
+    "payments",
+    "jurisdiction",
+    "compliance",
 ]
 
 MIDDLEWARE = [

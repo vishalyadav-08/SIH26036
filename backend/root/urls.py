@@ -19,6 +19,10 @@ urlpatterns = [
     path(f"{API}businesses/", include("businesses.urls")),
     path(f"{API}instruments/", include("instruments.urls")),
     path(f"{API}applications/", include("applications.urls")),
+    path(f"{API}licenses/", include("licensing.urls")),
+    path(f"{API}payments/", include("payments.urls")),
+    path(f"{API}jurisdiction/", include("jurisdiction.urls")),
+    path(f"{API}compliance/", include("compliance.urls")),
     path(f"{API}schedules/", include("scheduling.urls")),
     path(f"{API}inspections/", include("inspections.urls")),
     # Evidence owns both /inspections/{id}/evidence/ and /evidence/{id}/, so

@@ -39,7 +39,7 @@ export default function NewQuarterlyReturnPage() {
     };
 
     try {
-      const ret = await ComplianceService.createReturn(payload);
+      const ret = await ComplianceService.createReturn(payload) as any;
       // Automatically submit the return for MVP demo (in reality they'd add records first)
       await ComplianceService.submitReturn(ret.id);
       router.push('/app/compliance');

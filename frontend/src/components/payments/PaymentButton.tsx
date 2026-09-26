@@ -17,7 +17,7 @@ export function PaymentButton({ params, onSuccess, onError, className }: Payment
     setLoading(true);
     try {
       // 1. Initiate payment in backend
-      const transaction = await PaymentsService.initiatePayment(params);
+      const transaction = await PaymentsService.initiatePayment(params) as any;
       
       // 2. Simulate external gateway redirect / Razorpay window
       // For MVP, we simulate instant success callback

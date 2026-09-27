@@ -18,9 +18,17 @@ export function ScheduleModal({
   applicationNumber,
   assignedOfficerName,
 }: ScheduleModalProps) {
-  const [dateTime, setDateTime] = useState("2026-09-05T10:00");
+  const getTomorrowDefault = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    d.setHours(10, 0, 0, 0);
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+  };
+
+  const [dateTime, setDateTime] = useState(getTomorrowDefault());
   const [note, setNote] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -28,9 +36,13 @@ export function ScheduleModal({
     e.preventDefault();
     if (!dateTime) return;
     setIsSubmitting(true);
+    setError(null);
     try {
       await onSchedule(new Date(dateTime).toISOString(), note);
       onClose();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "An error occurred while scheduling.";
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -113,6 +125,13 @@ export function ScheduleModal({
               <strong>({assignedOfficerName || "Inspector Sharma"})</strong> will see this case in their Field PWA.
             </span>
           </div>
+
+          {error && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-[11px] text-red-900 flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+              <span>{error}</span>
+            </div>
+          )}
 
           <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
             <button

@@ -22,6 +22,7 @@ export function AssignOfficerModal({
   const [selectedOfficerId, setSelectedOfficerId] = useState<string>("");
   const [note, setNote] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (isOpen) {
@@ -40,6 +41,7 @@ export function AssignOfficerModal({
     e.preventDefault();
     if (!selectedOfficerId) return;
     setIsSubmitting(true);
+    setError(null);
     try {
       const selected = officers.find((o) => o.userId === selectedOfficerId);
       await onAssign(
@@ -48,6 +50,9 @@ export function AssignOfficerModal({
         note || "Assigned by GATCs"
       );
       onClose();
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "An error occurred while assigning.";
+      setError(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -133,6 +138,13 @@ export function AssignOfficerModal({
               Assigning will transition application state from <strong>SUBMITTED</strong> to <strong>ASSIGNED</strong> and dispatch an alert to the officer.
             </span>
           </div>
+
+          {error && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-[11px] text-red-900 flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+              <span>{error}</span>
+            </div>
+          )}
 
           <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
             <button

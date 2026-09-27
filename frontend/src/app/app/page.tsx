@@ -92,20 +92,37 @@ export default function BusinessDashboard() {
             Overview of your registered instruments, verification applications, and regulatory standing.
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
+        <div className="flex items-center gap-2 md:gap-3 flex-wrap justify-end">
+          <Link
+            href="/app/compliance/new"
             className="bg-white border border-[#cbd5e1] text-[#004e9f] font-semibold text-xs py-2.5 px-4 rounded-lg hover:bg-[#f0f3ff] transition-colors flex items-center gap-2 shadow-xs cursor-pointer"
           >
+            <FileCheck2 className="w-4 h-4" />
+            <span className="hidden sm:inline">File Return</span>
+            <span className="sm:hidden">Return</span>
+          </Link>
+          <Link
+            href="/app/licenses/apply"
+            className="bg-white border border-[#cbd5e1] text-[#004e9f] font-semibold text-xs py-2.5 px-4 rounded-lg hover:bg-[#f0f3ff] transition-colors flex items-center gap-2 shadow-xs cursor-pointer"
+          >
+            <Building2 className="w-4 h-4" />
+            <span className="hidden sm:inline">Apply License</span>
+            <span className="sm:hidden">License</span>
+          </Link>
+          <button
+            type="button"
+            className="bg-white border border-[#cbd5e1] text-[#004e9f] font-semibold text-xs py-2.5 px-4 rounded-lg hover:bg-[#f0f3ff] transition-colors flex items-center gap-2 shadow-xs cursor-pointer hidden md:flex"
+          >
             <Download className="w-4 h-4" />
-            <span>Download Report</span>
+            <span>Report</span>
           </button>
           <Link
             href="/app/applications/new"
             className="bg-[#004e9f] text-white font-bold text-xs py-2.5 px-4 rounded-lg hover:bg-[#003366] transition-colors flex items-center gap-2 shadow-xs"
           >
             <Plus className="w-4 h-4" />
-            <span>New Application</span>
+            <span className="hidden sm:inline">New Application</span>
+            <span className="sm:hidden">New</span>
           </Link>
         </div>
       </div>
@@ -343,6 +360,31 @@ export default function BusinessDashboard() {
               </div>
             </div>
           )}
+
+          {/* Quick Actions Box */}
+          <div className="bg-white rounded-xl border border-[#cbd5e1] overflow-hidden shadow-xs">
+            <div className="p-4 border-b border-[#cbd5e1] bg-[#f8fafc]">
+              <h2 className="text-sm font-bold text-[#111c2d]">
+                Quick Actions
+              </h2>
+            </div>
+            <div className="p-3 grid grid-cols-2 gap-2">
+              <Link
+                href="/app/licenses/apply"
+                className="flex flex-col items-center justify-center p-3 rounded-lg border border-[#cbd5e1] hover:border-[#004e9f] hover:bg-[#f0f3ff] transition-all group"
+              >
+                <Building2 className="w-5 h-5 text-[#727784] group-hover:text-[#004e9f] mb-2" />
+                <span className="text-[11px] font-bold text-[#111c2d] text-center leading-tight">Apply for License</span>
+              </Link>
+              <Link
+                href="/app/compliance/new"
+                className="flex flex-col items-center justify-center p-3 rounded-lg border border-[#cbd5e1] hover:border-[#004e9f] hover:bg-[#f0f3ff] transition-all group"
+              >
+                <FileCheck2 className="w-5 h-5 text-[#727784] group-hover:text-[#004e9f] mb-2" />
+                <span className="text-[11px] font-bold text-[#111c2d] text-center leading-tight">File Quarterly Return</span>
+              </Link>
+            </div>
+          </div>
 
           {/* Recent Notifications Box */}
           <div className="bg-white rounded-xl border border-[#cbd5e1] overflow-hidden shadow-xs">

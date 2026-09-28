@@ -45,33 +45,42 @@ def synthetic_photo(label, colour):
 
     return SimpleUploadedFile(f"{label.lower()}.png", buffer.getvalue(), "image/png")
 
-# Reset in dependency order.
-from enforcement.models import Notice, EnforcementAction, ConsumerComplaint
-Notice.objects.all().delete()
-EnforcementAction.objects.all().delete()
-ConsumerComplaint.objects.all().delete()
+from django.apps import apps
+from django.db.models import ProtectedError
+from authentication.models import User
 
-Notification.objects.all().delete()
-Certificate.objects.all().delete()
-Evidence.objects.all().delete()
-Inspection.objects.all().delete()
-Schedule.objects.all().delete()
-Application.objects.all().delete()
-Instrument.objects.all().delete()
-from sync.models import SyncRecord
-from standards.models import SealAllocation
+# Dynamically find and delete all models from our apps to avoid ProtectedError 
+# when new tables with foreign keys are added.
+project_apps = [
+    app.label for app in apps.get_app_configs()
+    if app.name in (
+        'applications', 'audit', 'authentication', 'businesses', 'certificates', 
+        'compliance', 'enforcement', 'evidence', 'inspections', 'instruments', 
+        'integrations', 'jurisdiction', 'licensing', 'notifications', 'payments', 
+        'scheduling', 'standards', 'sync'
+    )
+]
 
-SyncRecord.objects.all().delete()
-SealAllocation.objects.all().delete()
+models_to_clear = []
+for label in project_apps:
+    models_to_clear.extend(apps.get_app_config(label).get_models())
 
-QuarterlyReturn.objects.all().delete()
-PaymentTransaction.objects.all().delete()
-FeeSchedule.objects.all().delete()
-License.objects.all().delete()
-LicenseApplication.objects.all().delete()
-User.objects.exclude(is_superuser=True).delete()
-Business.objects.all().delete()
-AuditLog.objects.all().delete()
+while models_to_clear:
+    progress = False
+    failed = []
+    for model in models_to_clear:
+        try:
+            if model == User:
+                model.objects.exclude(is_superuser=True).delete()
+            else:
+                model.objects.all().delete()
+            progress = True
+        except ProtectedError:
+            failed.append(model)
+    if not progress and failed:
+        print(f"Warning: Could not clear some models due to circular protection: {[m.__name__ for m in failed]}")
+        break
+    models_to_clear = failed
 
 # Synthetic Gorakhpur coordinate (General public location/city center)
 GKP_LAT = "26.760600"

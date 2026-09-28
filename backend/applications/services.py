@@ -17,8 +17,8 @@ S = Application.State
 ALLOWED = {
     S.DRAFT: {S.SUBMITTED, S.CANCELLED},
     S.SUBMITTED: {S.ASSIGNED, S.REJECTED, S.CANCELLED},
-    S.ASSIGNED: {S.SCHEDULED, S.INSPECTION_IN_PROGRESS, S.CANCELLED},
-    S.SCHEDULED: {S.INSPECTION_IN_PROGRESS, S.CANCELLED},
+    S.ASSIGNED: {S.ASSIGNED, S.SCHEDULED, S.INSPECTION_IN_PROGRESS, S.CANCELLED},
+    S.SCHEDULED: {S.ASSIGNED, S.SCHEDULED, S.INSPECTION_IN_PROGRESS, S.CANCELLED},
     S.INSPECTION_IN_PROGRESS: {S.COMPLETED, S.CANCELLED},
     S.COMPLETED: set(),
     S.REJECTED: set(),
@@ -31,10 +31,13 @@ INITIATOR = {
     (S.SUBMITTED, S.ASSIGNED): {User.Role.ADMIN, User.Role.GATC},
     (S.SUBMITTED, S.REJECTED): {User.Role.ADMIN, User.Role.GATC},
     (S.SUBMITTED, S.CANCELLED): {User.Role.BUSINESS, User.Role.ADMIN, User.Role.GATC},
+    (S.ASSIGNED, S.ASSIGNED): {User.Role.ADMIN, User.Role.GATC},
     # The assigned officer books their own visit; an admin or GATC may also do it.
     (S.ASSIGNED, S.SCHEDULED): {User.Role.ADMIN, User.Role.GATC, *User.FIELD_STAFF_ROLES},
     (S.ASSIGNED, S.INSPECTION_IN_PROGRESS): {User.Role.ADMIN, User.Role.GATC, *User.FIELD_STAFF_ROLES},
     (S.ASSIGNED, S.CANCELLED): {User.Role.ADMIN, User.Role.GATC},
+    (S.SCHEDULED, S.ASSIGNED): {User.Role.ADMIN, User.Role.GATC},
+    (S.SCHEDULED, S.SCHEDULED): {User.Role.ADMIN, User.Role.GATC, *User.FIELD_STAFF_ROLES},
     (S.SCHEDULED, S.INSPECTION_IN_PROGRESS): {User.Role.ADMIN, User.Role.GATC, *User.FIELD_STAFF_ROLES},
     (S.SCHEDULED, S.CANCELLED): {User.Role.ADMIN, User.Role.GATC, *User.FIELD_STAFF_ROLES},
     (S.INSPECTION_IN_PROGRESS, S.COMPLETED): {User.Role.ADMIN, User.Role.GATC, *User.FIELD_STAFF_ROLES},
@@ -160,6 +163,18 @@ def assign_officer(*, user, application, officer_id, note=""):
     if officer is None:
         raise OwnershipError("Unknown or inactive officer.")
 
+    if application.state == S.SCHEDULED:
+        from scheduling.services import cancel_active_schedule
+        cancel_active_schedule(application=application, reason="Re-assigned to different officer")
+
+    # End any existing active assignment
+    old_assignment = ApplicationAssignment.objects.filter(
+        application=application, unassigned_at__isnull=True
+    ).first()
+    if old_assignment:
+        old_assignment.unassigned_at = timezone.now()
+        old_assignment.save(update_fields=["unassigned_at"])
+
     ApplicationAssignment.objects.create(
         application=application, officer=officer, assigned_by=user, assignment_note=note
     )
@@ -179,16 +194,19 @@ def assign_officer(*, user, application, officer_id, note=""):
 
 
 def schedule_application(*, user, application, scheduled_at, note=""):
-    """ASSIGNED -> SCHEDULED. The scheduling module owns the booking itself
-    (appointment history, officer double-booking policy); this keeps the
-    transition callable from the application's own service surface.
+    """ASSIGNED -> SCHEDULED, or SCHEDULED -> SCHEDULED. The scheduling module owns the booking itself."""
+    from scheduling.services import book_visit, reschedule_visit
+    from scheduling.models import Schedule
 
-    Imported lazily: scheduling depends on this module for assert_transition.
-    """
-    from scheduling.services import book_visit
+    if application.state == S.SCHEDULED:
+        active = Schedule.objects.filter(application=application, status=Schedule.Status.CONFIRMED).last()
+        if active:
+            reschedule_visit(user=user, schedule=active, scheduled_at=scheduled_at, note=note)
+            # Re-read application state just in case, though reschedule_visit updates Schedule not App
+            application.refresh_from_db(fields=["state"])
+            return application
 
     book_visit(user=user, application=application, scheduled_at=scheduled_at, note=note)
-
     return application
 
 

@@ -58,6 +58,12 @@ Inspection.objects.all().delete()
 Schedule.objects.all().delete()
 Application.objects.all().delete()
 Instrument.objects.all().delete()
+from sync.models import SyncRecord
+from standards.models import SealAllocation
+
+SyncRecord.objects.all().delete()
+SealAllocation.objects.all().delete()
+
 QuarterlyReturn.objects.all().delete()
 PaymentTransaction.objects.all().delete()
 FeeSchedule.objects.all().delete()

@@ -40,10 +40,11 @@ def visible_schedules(user):
         "officer", "scheduled_by",
     )
 
-    if user.role == User.Role.ADMIN:
+    # Admins and GATCs act as supervisors/dispatchers and can view all schedules.
+    if user.role in (User.Role.ADMIN, User.Role.GATC):
         return queryset
 
-    if user.role in User.FIELD_STAFF_ROLES:
+    if user.role == User.Role.LMO:
         return queryset.filter(officer=user)
 
     if user.role == User.Role.BUSINESS and user.business_id:
@@ -91,7 +92,8 @@ def _assigned_officer(application, actor):
         raise IllegalTransition("Assign an officer before scheduling.")
 
     # An officer may book only the work actually assigned to them.
-    if actor.role in User.FIELD_STAFF_ROLES and assignment.officer_id != actor.id:
+    # GATCs act as dispatchers (like Admins) and can book on behalf of assigned officers.
+    if actor.role == User.Role.LMO and assignment.officer_id != actor.id:
         raise OwnershipError("You are not assigned to this application.")
 
     return assignment.officer

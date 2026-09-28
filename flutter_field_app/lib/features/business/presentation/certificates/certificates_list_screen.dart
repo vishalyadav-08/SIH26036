@@ -8,8 +8,10 @@ class CertificatesListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final certs = ref.watch(businessCertificatesProvider);
-    final instruments = ref.watch(businessInstrumentsProvider);
+    final certsAsync = ref.watch(businessCertificatesProvider);
+    final certs = certsAsync.valueOrNull ?? [];
+    final instrumentsAsync = ref.watch(businessInstrumentsProvider);
+    final instruments = instrumentsAsync.valueOrNull ?? [];
 
     return Scaffold(
       backgroundColor: AppTheme.surface,

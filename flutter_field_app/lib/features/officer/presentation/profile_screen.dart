@@ -8,7 +8,7 @@ import 'package:flutter_field_app/providers/providers.dart';
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
 
-  void _showLogoutDialog(BuildContext context, AppLocalizations? l10n) {
+  void _showLogoutDialog(BuildContext context, WidgetRef ref, AppLocalizations? l10n) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
@@ -50,7 +50,7 @@ class ProfileScreen extends ConsumerWidget {
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(ctx);
-                  context.go('/login');
+                  ref.read(currentUserProvider.notifier).state = null; ref.read(secureStorageProvider).delete(key: 'access_token'); context.go('/login');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.error,
@@ -426,7 +426,7 @@ class ProfileScreen extends ConsumerWidget {
               // Log Out Action
               Center(
                 child: OutlinedButton.icon(
-                  onPressed: () => _showLogoutDialog(context, l10n),
+                  onPressed: () => _showLogoutDialog(context, ref, l10n),
                   icon: const Icon(Icons.logout, size: 20),
                   label: Text(
                     l10n?.logOut ?? 'Log Out',

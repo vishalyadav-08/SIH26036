@@ -149,3 +149,25 @@ docs/reference/          Historical/non-active material — NOT authoritative
 ## Current implementation status
 
 Backend app files and URL mounts are scaffolds: most `models.py`, `views.py`, `services.py`, and `tests.py` do not yet implement the full contract. The Flutter field app exists at `flutter_field_app/` with a minimal scaffold; production field features are implementation tasks. The React web frontend contains the current field PWA shell, Dexie persistence, service worker, mock sync adapter, and route structure. Do not treat a documented endpoint as implemented until backend and contract tests prove it.
+
+---
+
+## SIH 2026 Submission Documentation
+
+> [!IMPORTANT]
+> The following documents were prepared for the **SIH 2026 (SIH26036)** idea submission.
+> They provide comprehensive coverage of the platform's vision, features, government benefits, and technical architecture.
+
+### Master Submission
+- [**IDEA_SUBMISSION.md**](../IDEA_SUBMISSION.md) — The complete SIH submission document with executive summary, problem analysis, solution overview, ROI, roadmap, and budget estimation.
+
+### Detailed Documentation
+
+| Document | Description |
+|---|---|
+| [features-comprehensive.md](features-comprehensive.md) | Complete catalog of 70+ features across Web, Mobile, and Platform |
+| [government-benefits.md](government-benefits.md) | Government ROI, cost-benefit analysis, alignment with 10+ government initiatives |
+| [one-nation-one-registration.md](one-nation-one-registration.md) | The flagship "One Nation, One Registration" concept — ULPIN, GST analogy, implementation |
+| [scalability-architecture.md](scalability-architecture.md) | National-scale architecture, multi-region deployment, performance benchmarks |
+| [competitive-analysis.md](competitive-analysis.md) | Feature-by-feature comparison with Bhoomi, Bhulekh, DILRMP, Bhu-Naksha, and others |
+| [compliance-regulatory.md](compliance-regulatory.md) | Complete legal, security, and regulatory compliance (DPDPA, IT Act, CERT-In, ISO) |

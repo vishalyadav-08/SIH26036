@@ -713,7 +713,23 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
       ),
       bottomNavigationBar: _buildWizardBottomBar(
         onBack: () => _goToStep(0),
-        onNext: () => _goToStep(2),
+        onNext: () {
+          if (_readings.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Please add at least one reading before continuing.')),
+            );
+            return;
+          }
+          for (var r in _readings) {
+            if (r.referenceController.text.trim().isEmpty || r.indicatedController.text.trim().isEmpty) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Please fill all reference and indicated values.')),
+              );
+              return;
+            }
+          }
+          _goToStep(2);
+        },
         nextLabel: l10n?.saveAndContinue ?? 'Save & Continue',
       ),
     );
@@ -964,7 +980,21 @@ class _InspectionWizardScreenState extends ConsumerState<InspectionWizardScreen>
       ),
       bottomNavigationBar: _buildWizardBottomBar(
         onBack: () => _goToStep(1),
-        onNext: () => _goToStep(3),
+        onNext: () {
+          if (_gpsCoords.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Please capture GPS coordinates first.')),
+            );
+            return;
+          }
+          if (_capturedImages.isEmpty) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Please capture at least one evidence photo.')),
+            );
+            return;
+          }
+          _goToStep(3);
+        },
         nextLabel: l10n?.saveAndContinue ?? 'Save & Continue',
         stepInfo: 'Step 3 of 4: ${l10n?.evidenceCountProgress ?? 'Evidence Captured'} (${_capturedImages.length}/3)',
       ),

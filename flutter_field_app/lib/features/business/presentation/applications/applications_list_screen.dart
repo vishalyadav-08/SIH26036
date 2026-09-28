@@ -9,8 +9,10 @@ class ApplicationsListScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final apps = ref.watch(businessApplicationsProvider);
-    final instruments = ref.watch(businessInstrumentsProvider);
+    final appsAsync = ref.watch(businessApplicationsProvider);
+    final apps = appsAsync.valueOrNull ?? [];
+    final instrumentsAsync = ref.watch(businessInstrumentsProvider);
+    final instruments = instrumentsAsync.valueOrNull ?? [];
 
     return Scaffold(
       backgroundColor: AppTheme.surface,

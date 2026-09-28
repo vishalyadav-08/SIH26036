@@ -62,6 +62,7 @@ export default function LicenseApplicationForm() {
             name="premises_address"
             id="premises_address"
             required
+            defaultValue="123, Industrial Estate, Phase 1, New Delhi"
             rows={3}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           />
@@ -73,6 +74,7 @@ export default function LicenseApplicationForm() {
             name="premises_proof_type"
             id="premises_proof_type"
             required
+            defaultValue="OWNED"
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           >
             <option value="OWNED">Owned</option>
@@ -88,6 +90,7 @@ export default function LicenseApplicationForm() {
               type="text"
               name="gst_number"
               id="gst_number"
+              defaultValue="22AAAAA0000A1Z5"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>
@@ -97,6 +100,7 @@ export default function LicenseApplicationForm() {
               type="text"
               name="pan_number"
               id="pan_number"
+              defaultValue="ABCDE1234F"
               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
             />
           </div>

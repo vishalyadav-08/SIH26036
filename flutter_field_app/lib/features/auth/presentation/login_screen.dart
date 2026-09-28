@@ -44,10 +44,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       final inputId = _idController.text.trim();
       final pin = _pinController.text.trim();
       if (pin == 'synthetic-password' || pin == '123456') {
-        if (inputId.contains('lmo') || inputId.startsWith('LMO') || _selectedRole == 'OFFICER') {
-          loggedInUser = User(id: 'DEMO-LMO-001', displayName: 'Demo LMO Officer', role: 'OFFICER');
-        } else {
-          loggedInUser = User(id: 'DEMO-BIZ-001', displayName: 'Demo Business User', role: 'BUSINESS');
+        if (_selectedRole == 'OFFICER' && (inputId == 'lmo@mapansetu.in' || inputId == 'vinod.sharma@lmo.up.gov.demo' || inputId == 'demo-lmo')) {
+          loggedInUser = User(id: 'DEMO-LMO-001', displayName: 'Vinod Sharma', role: 'OFFICER');
+        } else if (_selectedRole == 'BUSINESS' && (inputId == 'business@mapansetu.in' || inputId == 'demo-biz')) {
+          loggedInUser = User(id: 'DEMO-BIZ-001', displayName: 'Shree Balaji Weighing Solutions', role: 'BUSINESS');
         }
       }
     }
@@ -80,8 +80,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         // Simulate a successful biometric scan for demo mode
         await Future.delayed(const Duration(milliseconds: 800));
         if (mounted) {
-          _idController.text = _selectedRole == 'OFFICER' ? 'demo-lmo' : 'demo-biz';
-          _pinController.text = '123456';
+          _idController.text = _selectedRole == 'OFFICER' ? 'lmo@mapansetu.in' : 'business@mapansetu.in';
+          _pinController.text = 'synthetic-password';
           _handleLogin();
         }
         return;
@@ -345,6 +345,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
           ),
         ),
+        const SizedBox(height: 16),
+        if (_selectedRole == 'BUSINESS')
+          TextButton(
+            onPressed: () => context.push('/register'),
+            child: const Text('Don\'t have an account? Register your Business', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primary)),
+          ),
         const SizedBox(height: AppTheme.section),
         _buildLanguageSelector(currentLocale),
       ],

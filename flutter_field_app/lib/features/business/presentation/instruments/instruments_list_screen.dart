@@ -17,7 +17,8 @@ class _InstrumentsListScreenState extends ConsumerState<InstrumentsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final instruments = ref.watch(businessInstrumentsProvider);
+    final instrumentsAsync = ref.watch(businessInstrumentsProvider);
+    final instruments = instrumentsAsync.valueOrNull ?? [];
 
     final filtered = instruments.where((inst) {
       final matchesSearch = inst.instrumentNumber.toLowerCase().contains(_searchQuery.toLowerCase()) || 

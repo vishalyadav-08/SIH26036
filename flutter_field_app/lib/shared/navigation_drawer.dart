@@ -78,7 +78,7 @@ class CustomNavigationDrawer extends ConsumerWidget {
                     ),
                   ),
                   Text(
-                    l10n?.fieldOfficerPortal ?? 'LMO Portal',
+                    currentUser?.role == 'BUSINESS' ? 'Business Portal' : (l10n?.fieldOfficerPortal ?? 'LMO Portal'),
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.white.withValues(alpha: 0.8),
@@ -97,7 +97,7 @@ class CustomNavigationDrawer extends ConsumerWidget {
                           color: Colors.white,
                           border: Border.all(color: AppTheme.outlineVariant),
                         ),
-                        child: const Icon(Icons.person, size: 20, color: AppTheme.primary),
+                        child: Icon(currentUser?.role == 'BUSINESS' ? Icons.storefront : Icons.person, size: 20, color: AppTheme.primary),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -106,7 +106,7 @@ class CustomNavigationDrawer extends ConsumerWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              currentUser?.displayName ?? (isHi ? 'अज्ञात अधिकारी' : 'Unknown Officer'),
+                              currentUser?.displayName ?? (currentUser?.role == 'BUSINESS' ? 'Unknown Business' : (isHi ? 'अज्ञात अधिकारी' : 'Unknown Officer')),
                               style: const TextStyle(
                                 color: AppTheme.onSurface,
                                 fontWeight: FontWeight.bold,
@@ -189,7 +189,38 @@ class CustomNavigationDrawer extends ConsumerWidget {
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
-                children: [
+                children: currentUser?.role == 'BUSINESS' ? [
+                  _buildNavItem(
+                    context: context,
+                    title: 'Dashboard',
+                    icon: Icons.dashboard_outlined,
+                    route: 'business',
+                  ),
+                  _buildNavItem(
+                    context: context,
+                    title: 'Instruments',
+                    icon: Icons.scale_outlined,
+                    route: 'business/instruments',
+                  ),
+                  _buildNavItem(
+                    context: context,
+                    title: 'Applications',
+                    icon: Icons.assignment_outlined,
+                    route: 'business/applications',
+                  ),
+                  _buildNavItem(
+                    context: context,
+                    title: 'Certificates',
+                    icon: Icons.verified_outlined,
+                    route: 'business/certificates',
+                  ),
+                  _buildNavItem(
+                    context: context,
+                    title: 'Business Profile',
+                    icon: Icons.person_outline,
+                    route: 'business/profile',
+                  ),
+                ] : [
                   _buildNavItem(
                     context: context,
                     title: l10n?.dashboard ?? 'Dashboard',
@@ -264,9 +295,13 @@ class CustomNavigationDrawer extends ConsumerWidget {
                   ),
                   const SizedBox(height: 8),
                   OutlinedButton.icon(
-                    onPressed: () {
-                      Navigator.pop(context);
-                      context.go('/login');
+                    onPressed: () async {
+                      Navigator.pop(context); // Close drawer
+                      ref.read(currentUserProvider.notifier).state = null;
+                      await ref.read(secureStorageProvider).delete(key: 'access_token');
+                      if (context.mounted) {
+                        context.go('/login');
+                      }
                     },
                     icon: const Icon(Icons.logout, size: 16),
                     label: Text(l10n?.logOut ?? 'Log Out', style: const TextStyle(fontSize: 12)),

@@ -1,21 +1,30 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_field_app/data/models/business_models.dart';
+import 'package:flutter_field_app/providers/providers.dart';
 
-final businessProfileProvider = StateProvider<BusinessProfile>((ref) {
-  return BusinessProfile(
-    id: '', legalName: '', tradeName: '', contactName: '',
-    email: '', phone: '', address: '', jurisdictionLabel: '', status: ''
-  );
+final businessProfileProvider = FutureProvider<BusinessProfile>((ref) async {
+  final dio = ref.watch(dioProvider);
+  final response = await dio.get('/businesses/me/');
+  return BusinessProfile.fromJson(response.data);
 });
 
-final businessInstrumentsProvider = StateProvider<List<Instrument>>((ref) {
-  return [];
+final businessInstrumentsProvider = FutureProvider<List<Instrument>>((ref) async {
+  final dio = ref.watch(dioProvider);
+  final response = await dio.get('/instruments/');
+  final data = response.data['results'] ?? response.data['items'] ?? response.data;
+  return (data as List).map((json) => Instrument.fromJson(json)).toList();
 });
 
-final businessApplicationsProvider = StateProvider<List<VerificationApplication>>((ref) {
-  return [];
+final businessApplicationsProvider = FutureProvider<List<VerificationApplication>>((ref) async {
+  final dio = ref.watch(dioProvider);
+  final response = await dio.get('/applications/');
+  final data = response.data['results'] ?? response.data['items'] ?? response.data;
+  return (data as List).map((json) => VerificationApplication.fromJson(json)).toList();
 });
 
-final businessCertificatesProvider = StateProvider<List<Certificate>>((ref) {
-  return [];
+final businessCertificatesProvider = FutureProvider<List<Certificate>>((ref) async {
+  final dio = ref.watch(dioProvider);
+  final response = await dio.get('/certificates/');
+  final data = response.data['results'] ?? response.data['items'] ?? response.data;
+  return (data as List).map((json) => Certificate.fromJson(json)).toList();
 });

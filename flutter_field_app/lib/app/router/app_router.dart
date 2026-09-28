@@ -11,6 +11,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:flutter_field_app/providers/providers.dart';
 import 'package:flutter_field_app/features/auth/presentation/login_screen.dart';
+import 'package:flutter_field_app/features/auth/presentation/business_registration_screen.dart';
 import 'package:flutter_field_app/features/officer/presentation/dashboard_screen.dart';
 import 'package:flutter_field_app/features/officer/presentation/inspections_list_screen.dart';
 import 'package:flutter_field_app/features/officer/presentation/inspection_templates_screen.dart';
@@ -28,9 +29,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       final user = ref.read(currentUserProvider);
       final isLoggedIn = user != null;
       final isLoggingIn = state.uri.path == '/login';
+      final isRegistering = state.uri.path == '/register';
 
-      if (!isLoggedIn && !isLoggingIn) return '/login';
-      if (isLoggedIn && isLoggingIn) {
+      if (!isLoggedIn && !isLoggingIn && !isRegistering) return '/login';
+      if (isLoggedIn && (isLoggingIn || isRegistering)) {
         if (user.role == 'BUSINESS') return '/business';
         return '/dashboard';
       }
@@ -50,6 +52,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/login',
         builder: (context, state) => const LoginScreen(),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const BusinessRegistrationScreen(),
       ),
       GoRoute(
         path: '/wizard',

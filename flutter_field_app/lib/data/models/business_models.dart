@@ -21,6 +21,20 @@ class BusinessProfile {
     required this.status,
   });
 
+  factory BusinessProfile.fromJson(Map<String, dynamic> json) {
+    return BusinessProfile(
+      id: json['id'] ?? '',
+      legalName: json['legalName'] ?? '',
+      tradeName: json['tradeName'] ?? '',
+      contactName: json['contactName'] ?? '',
+      email: json['email'] ?? '',
+      phone: json['phone'] ?? '',
+      address: json['address'] ?? '',
+      jurisdictionLabel: json['jurisdictionLabel'] ?? '',
+      status: json['status'] ?? '',
+    );
+  }
+
   BusinessProfile copyWith({
     String? contactName,
     String? email,
@@ -65,6 +79,21 @@ class Instrument {
     required this.status,
     required this.nextDueDate,
   });
+
+  factory Instrument.fromJson(Map<String, dynamic> json) {
+    return Instrument(
+      id: json['id'] ?? '',
+      instrumentNumber: json['instrumentNumber'] ?? '',
+      serialNumber: json['serialNumber'] ?? '',
+      instrumentType: json['instrumentType'] ?? '',
+      manufacturer: json['manufacturer'] ?? '',
+      model: json['modelNumber'] ?? '',
+      capacity: json['capacity'] ?? '',
+      location: json['location'] ?? '',
+      status: json['status'] ?? '',
+      nextDueDate: json['nextDueDate'] ?? '',
+    );
+  }
 }
 
 class VerificationApplication {
@@ -81,6 +110,16 @@ class VerificationApplication {
     required this.status,
     required this.dateSubmitted,
   });
+
+  factory VerificationApplication.fromJson(Map<String, dynamic> json) {
+    return VerificationApplication(
+      id: json['id'] ?? '',
+      instrumentId: json['instrumentId'] ?? '',
+      reason: json['reason'] ?? '',
+      status: json['status'] ?? '',
+      dateSubmitted: json['requestedAt'] ?? json['dateSubmitted'] ?? '',
+    );
+  }
 }
 
 class Certificate {
@@ -95,4 +134,13 @@ class Certificate {
     required this.status,
     required this.validUntil,
   });
+
+  factory Certificate.fromJson(Map<String, dynamic> json) {
+    return Certificate(
+      id: json['id'] ?? '',
+      instrumentId: json['instrumentId'] ?? '',
+      status: json['status'] ?? '',
+      validUntil: json['validUntil'] ?? '',
+    );
+  }
 }

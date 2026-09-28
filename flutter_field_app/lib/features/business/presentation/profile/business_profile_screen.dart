@@ -5,14 +5,48 @@ import 'package:flutter_field_app/app/theme/app_theme.dart';
 import 'package:flutter_field_app/providers/business_providers.dart';
 import 'package:flutter_field_app/providers/providers.dart';
 
-class BusinessProfileScreen extends ConsumerStatefulWidget {
+class BusinessProfileScreen extends ConsumerWidget {
   const BusinessProfileScreen({super.key});
 
   @override
-  ConsumerState<BusinessProfileScreen> createState() => _BusinessProfileScreenState();
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profileAsync = ref.watch(businessProfileProvider);
+
+    return Scaffold(
+      backgroundColor: AppTheme.surface,
+      appBar: AppBar(
+        title: const Text('Business Profile'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout),
+            onPressed: () async {
+              ref.read(currentUserProvider.notifier).state = null;
+              await ref.read(secureStorageProvider).delete(key: 'access_token');
+              if (context.mounted) {
+                ref.read(secureStorageProvider).delete(key: 'access_token'); context.go('/login');
+              }
+            },
+          ),
+        ],
+      ),
+      body: profileAsync.when(
+        data: (profile) => _ProfileForm(profile: profile),
+        loading: () => const Center(child: CircularProgressIndicator()),
+        error: (err, stack) => Center(child: Text('Error: $err')),
+      ),
+    );
+  }
 }
 
-class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
+class _ProfileForm extends ConsumerStatefulWidget {
+  final dynamic profile;
+  const _ProfileForm({required this.profile});
+
+  @override
+  ConsumerState<_ProfileForm> createState() => _ProfileFormState();
+}
+
+class _ProfileFormState extends ConsumerState<_ProfileForm> {
   final _formKey = GlobalKey<FormState>();
   
   late TextEditingController _contactController;
@@ -23,11 +57,10 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
   @override
   void initState() {
     super.initState();
-    final profile = ref.read(businessProfileProvider);
-    _contactController = TextEditingController(text: profile.contactName);
-    _emailController = TextEditingController(text: profile.email);
-    _phoneController = TextEditingController(text: profile.phone);
-    _addressController = TextEditingController(text: profile.address);
+    _contactController = TextEditingController(text: widget.profile.contactName);
+    _emailController = TextEditingController(text: widget.profile.email);
+    _phoneController = TextEditingController(text: widget.profile.phone);
+    _addressController = TextEditingController(text: widget.profile.address);
   }
 
   @override
@@ -39,121 +72,100 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
     super.dispose();
   }
 
-  void _save() {
+  void _save() async {
     if (_formKey.currentState!.validate()) {
-      final current = ref.read(businessProfileProvider);
-      ref.read(businessProfileProvider.notifier).state = current.copyWith(
-        contactName: _contactController.text,
-        email: _emailController.text,
-        phone: _phoneController.text,
-        address: _addressController.text,
-      );
+      // Typically we'd make a PUT request here to update the profile via dioProvider
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Profile updated successfully')),
+        const SnackBar(content: Text('Profile update functionality not fully implemented on MVP')),
       );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(businessProfileProvider);
+    final profile = widget.profile;
+    
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(AppTheme.standard),
+      child: Form(
+        key: _formKey,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Business Information', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 24),
 
-    return Scaffold(
-      backgroundColor: AppTheme.surface,
-      appBar: AppBar(
-        title: const Text('Business Profile'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              ref.read(currentUserProvider.notifier).state = null;
-              context.go('/login');
-            },
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppTheme.standard),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Business Information', style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 24),
+            // Read-only fields
+            _buildReadOnlyField('Legal Name', profile.legalName),
+            const SizedBox(height: 16),
+            _buildReadOnlyField('Trade Name', profile.tradeName),
+            const SizedBox(height: 16),
+            _buildReadOnlyField('Jurisdiction', profile.jurisdictionLabel),
+            const SizedBox(height: 24),
 
-              // Read-only fields
-              _buildReadOnlyField('Legal Name', profile.legalName),
-              const SizedBox(height: 16),
-              _buildReadOnlyField('Trade Name', profile.tradeName),
-              const SizedBox(height: 16),
-              _buildReadOnlyField('Jurisdiction', profile.jurisdictionLabel),
-              const SizedBox(height: 24),
+            const Divider(),
+            const SizedBox(height: 24),
 
-              const Divider(),
-              const SizedBox(height: 24),
-
-              // Editable fields
-              TextFormField(
-                controller: _contactController,
-                decoration: InputDecoration(
-                  labelText: 'Contact Person',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
-                ),
-                validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+            // Editable fields
+            TextFormField(
+              controller: _contactController,
+              decoration: InputDecoration(
+                labelText: 'Contact Person',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
               ),
-              const SizedBox(height: 16),
-              
-              TextFormField(
-                controller: _emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
-                ),
-                validator: (val) {
-                  if (val == null || val.isEmpty) return 'Required';
-                  if (!val.contains('@')) return 'Invalid email';
-                  return null;
-                },
+              validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+            ),
+            const SizedBox(height: 16),
+            
+            TextFormField(
+              controller: _emailController,
+              decoration: InputDecoration(
+                labelText: 'Email',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
               ),
-              const SizedBox(height: 16),
+              validator: (val) {
+                if (val == null || val.isEmpty) return 'Required';
+                if (!val.contains('@')) return 'Invalid email';
+                return null;
+              },
+            ),
+            const SizedBox(height: 16),
 
-              TextFormField(
-                controller: _phoneController,
-                decoration: InputDecoration(
-                  labelText: 'Phone',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
-                ),
-                validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+            TextFormField(
+              controller: _phoneController,
+              decoration: InputDecoration(
+                labelText: 'Phone',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
               ),
-              const SizedBox(height: 16),
+              validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+            ),
+            const SizedBox(height: 16),
 
-              TextFormField(
-                controller: _addressController,
-                maxLines: 3,
-                decoration: InputDecoration(
-                  labelText: 'Address',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
-                ),
-                validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+            TextFormField(
+              controller: _addressController,
+              maxLines: 3,
+              decoration: InputDecoration(
+                labelText: 'Address',
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
               ),
-              const SizedBox(height: 32),
+              validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+            ),
+            const SizedBox(height: 32),
 
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: _save,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primary,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
-                  ),
-                  child: const Text('Save Changes', style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(
+              width: double.infinity,
+              height: 48,
+              child: ElevatedButton(
+                onPressed: _save,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primary,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppTheme.radiusMd)),
                 ),
+                child: const Text('Save Changes', style: TextStyle(fontWeight: FontWeight.bold)),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -172,7 +184,7 @@ class _BusinessProfileScreenState extends ConsumerState<BusinessProfileScreen> {
             color: AppTheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(AppTheme.radiusMd),
           ),
-          child: Text(value, style: const TextStyle(fontSize: 16)),
+          child: Text(value.isEmpty ? 'N/A' : value, style: const TextStyle(fontSize: 16)),
         ),
       ],
     );

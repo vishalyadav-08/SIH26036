@@ -9,11 +9,17 @@ class InstrumentDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final instruments = ref.watch(businessInstrumentsProvider);
-    final instrument = instruments.firstWhere((i) => i.id == instrumentId, orElse: () => throw Exception('Not found'));
+    final instrumentsAsync = ref.watch(businessInstrumentsProvider);
+    final instruments = instrumentsAsync.valueOrNull ?? [];
+    final instrument = instruments.where((i) => i.id == instrumentId).firstOrNull;
 
-    final apps = ref.watch(businessApplicationsProvider).where((a) => a.instrumentId == instrumentId).toList();
-    final certs = ref.watch(businessCertificatesProvider).where((c) => c.instrumentId == instrumentId).toList();
+    final appsAsync = ref.watch(businessApplicationsProvider);
+    final apps = (appsAsync.valueOrNull ?? []).where((a) => a.instrumentId == instrumentId).toList();
+    
+    final certsAsync = ref.watch(businessCertificatesProvider);
+    final certs = (certsAsync.valueOrNull ?? []).where((c) => c.instrumentId == instrumentId).toList();
+    
+    if (instrument == null) return const Scaffold(body: Center(child: Text('Instrument not found')));
 
     return Scaffold(
       backgroundColor: AppTheme.surface,

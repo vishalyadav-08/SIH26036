@@ -38,7 +38,7 @@ export default function NewApplicationPage() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       instrumentId: "",
-      reason: "",
+      reason: "Requesting verification for newly installed electronic weighing scale at the main checkout counter.",
     }
   });
 

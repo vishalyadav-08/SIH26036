@@ -16,18 +16,18 @@ export default function BusinessRegistrationPage() {
 
   // Form State
   const [formData, setFormData] = useState({
-    legal_name: "",
-    trade_name: "",
+    legal_name: "Shree Balaji Traders",
+    trade_name: "Balaji Electronics",
     constitution_type: "PROPRIETORSHIP",
-    gst_number: "",
-    pan_number: "",
-    contact_name: "",
-    email: "",
-    phone: "",
-    address: "",
-    pincode: "",
+    gst_number: "22AAAAA0000A1Z5",
+    pan_number: "ABCDE1234F",
+    contact_name: "Rahul Verma",
+    email: "rahul@balajitraders.in",
+    phone: "9876543210",
+    address: "123, Industrial Estate, Phase 1, New Delhi",
+    pincode: "110020",
     is_manufacturer: false,
-    is_dealer: false,
+    is_dealer: true,
     is_repairer: false,
     is_packer: false,
   });

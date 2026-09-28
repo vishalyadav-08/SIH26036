@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_field_app/l10n/app_localizations.dart';
 import 'package:flutter_field_app/app/theme/app_theme.dart';
 
-class CustomBottomNavBar extends StatelessWidget {
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_field_app/providers/providers.dart';
+
+class CustomBottomNavBar extends ConsumerWidget {
   final String currentRoute;
   final int syncQueueCount;
   final Function(String) onNavigate;
@@ -15,15 +18,24 @@ class CustomBottomNavBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l10n = AppLocalizations.of(context);
     final isHi = l10n?.localeName == 'hi';
+    final user = ref.watch(currentUserProvider);
+    final isBiz = user?.role == 'BUSINESS';
 
     int currentIndex = 0;
-    if (currentRoute == 'dashboard') currentIndex = 0;
-    if (currentRoute == 'inspections') currentIndex = 1;
-    if (currentRoute == 'sync') currentIndex = 2;
-    if (currentRoute == 'profile') currentIndex = 3;
+    if (isBiz) {
+      if (currentRoute == 'business') currentIndex = 0;
+      if (currentRoute == 'business/instruments') currentIndex = 1;
+      if (currentRoute == 'business/applications') currentIndex = 2;
+      if (currentRoute == 'business/profile') currentIndex = 3;
+    } else {
+      if (currentRoute == 'dashboard') currentIndex = 0;
+      if (currentRoute == 'inspections') currentIndex = 1;
+      if (currentRoute == 'sync') currentIndex = 2;
+      if (currentRoute == 'profile') currentIndex = 3;
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -42,39 +54,39 @@ class CustomBottomNavBar extends StatelessWidget {
           height: 72,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
+            children: isBiz ? [
               _buildNavItem(
-                index: 0,
-                route: 'dashboard',
-                icon: Icons.dashboard_outlined,
-                activeIcon: Icons.dashboard,
-                label: l10n?.dashboard ?? 'Dashboard',
-                isActive: currentIndex == 0,
+                index: 0, route: 'business', icon: Icons.dashboard_outlined, activeIcon: Icons.dashboard,
+                label: 'Dashboard', isActive: currentIndex == 0,
               ),
               _buildNavItem(
-                index: 1,
-                route: 'inspections',
-                icon: Icons.fact_check_outlined,
-                activeIcon: Icons.fact_check,
-                label: isHi ? 'निरीक्षण' : 'Inspections',
-                isActive: currentIndex == 1,
+                index: 1, route: 'business/instruments', icon: Icons.scale_outlined, activeIcon: Icons.scale,
+                label: 'Instruments', isActive: currentIndex == 1,
               ),
               _buildNavItem(
-                index: 2,
-                route: 'sync',
-                icon: Icons.sync_outlined,
-                activeIcon: Icons.sync,
-                label: isHi ? 'सिंक' : 'Sync',
-                isActive: currentIndex == 2,
-                badgeCount: syncQueueCount,
+                index: 2, route: 'business/applications', icon: Icons.assignment_outlined, activeIcon: Icons.assignment,
+                label: 'Applications', isActive: currentIndex == 2,
               ),
               _buildNavItem(
-                index: 3,
-                route: 'profile',
-                icon: Icons.person_outline,
-                activeIcon: Icons.person,
-                label: l10n?.profile ?? 'Profile',
-                isActive: currentIndex == 3,
+                index: 3, route: 'business/profile', icon: Icons.person_outline, activeIcon: Icons.person,
+                label: 'Profile', isActive: currentIndex == 3,
+              ),
+            ] : [
+              _buildNavItem(
+                index: 0, route: 'dashboard', icon: Icons.dashboard_outlined, activeIcon: Icons.dashboard,
+                label: l10n?.dashboard ?? 'Dashboard', isActive: currentIndex == 0,
+              ),
+              _buildNavItem(
+                index: 1, route: 'inspections', icon: Icons.fact_check_outlined, activeIcon: Icons.fact_check,
+                label: isHi ? 'निरीक्षण' : 'Inspections', isActive: currentIndex == 1,
+              ),
+              _buildNavItem(
+                index: 2, route: 'sync', icon: Icons.sync_outlined, activeIcon: Icons.sync,
+                label: isHi ? 'सिंक' : 'Sync', isActive: currentIndex == 2, badgeCount: syncQueueCount,
+              ),
+              _buildNavItem(
+                index: 3, route: 'profile', icon: Icons.person_outline, activeIcon: Icons.person,
+                label: l10n?.profile ?? 'Profile', isActive: currentIndex == 3,
               ),
             ],
           ),

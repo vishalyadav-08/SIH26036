@@ -68,6 +68,14 @@ class InspectionsNotifier extends StateNotifier<List<InspectionTask>> {
 
   void _loadInspections() async {
     if (!AppConfig.useMockBackend) {
+      // Clear out any old dummy data that might be stuck in the Hive box
+      final all = _repository.getAllInspections();
+      for (var t in all) {
+        if (t.id.startsWith('demo_task_')) {
+          await _repository.deleteInspection(t.id);
+        }
+      }
+      
       await _syncEngine.fetchInspections();
       state = _repository.getAllInspections();
     } else {
